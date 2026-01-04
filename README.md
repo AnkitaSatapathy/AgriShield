@@ -33,7 +33,7 @@ npm run dev
 ```
 Runs at: `http://localhost:5173`
 
-### Backend (Coming Soon)
+### Backend 
 ```bash
 cd backend
 python -m venv venv
@@ -54,7 +54,7 @@ Runs at: `http://localhost:8000`
 ## 📧 Contact
 
 Email: support@agrishield.com  
-Phone: +91 1800-123-456
+Phone: +91 724-123-4569
 
 ---
 © 2026 AgriShield. All rights reserved.
