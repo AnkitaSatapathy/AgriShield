@@ -5,22 +5,47 @@ AI-powered platform for crop failure prediction, disease detection, and farming 
 ## 📁 Project Structure
 ```
 AgriShield/
-├── frontend/              # React application (all files in one folder)
-│   ├── node_modules/
-│   ├── index.html
-│   ├── App.jsx           # Main homepage component
-│   ├── index.css
-│   ├── main.jsx
-│   ├── package-lock.json
-│   ├── postcss.config.js
-│   ├── tailwind.config.js
-│   ├── vite.config.js
-│   └── package.json
 │
-└── backend/               # FastAPI backend (all files in one folder)
-    ├── main.py           # API routes
-    ├── requirements.txt
-    └── .env
+├── data/
+│   ├── raw/                              # Raw datasets from Kaggle
+│   │   ├── crop_production.csv                 
+│   │   ├── weather_data.csv                    
+│   │   ├── disaster_data.csv                   
+│   │   └── soil_data.csv                      
+│   │
+│   └── processed/                        # Processed/merged datasets
+│       └── merged_dataset.csv                   
+│
+├── models/                               # Trained ML models & encoders
+│   ├── crop_failure_model.pkl                 
+│   ├── scaler.pkl                             
+│   ├── crop_encoder.pkl                       
+│   ├── state_encoder.pkl                      
+│   ├── crop_list.pkl                          
+│   ├── state_list.pkl                         
+│   ├── district_list.pkl                      
+│   └── district_info.pkl                      
+│
+├── backend/                              # FastAPI Backend
+│   ├── data_preprocessing.ipynb                
+│   ├── train_model.ipynb                      
+│   ├── test_predictions.ipynb                 
+│   ├── predict.py                             
+│   ├── main.py                                
+│   └── requirements.txt                        
+│
+└── frontend/                             # React Frontend
+    ├── node_modules/                          
+    ├── index.html                             
+    ├── main.jsx                               
+    ├── index.css                              
+    ├── App.jsx                          
+    ├── RiskPrediction.jsx                     
+    ├── vite.config.js                         
+    ├── tailwind.config.js                      
+    ├── postcss.config.js                      
+    ├── package.json                           
+    └── .gitignore                             
 ```
 
 ## 🚀 Running the Project
