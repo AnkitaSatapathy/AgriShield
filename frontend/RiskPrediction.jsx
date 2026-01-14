@@ -63,9 +63,56 @@ const RiskPrediction = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
     setResult(null);
+
+    // Validation check
+    const requiredFields = {
+      crop: 'Crop',
+      state: 'State',
+      district: 'District',
+      season: 'Season',
+      temperature: 'Temperature',
+      rainfall: 'Rainfall',
+      humidity: 'Humidity'
+    };
+
+    const missingFields = [];
+    for (const [key, label] of Object.entries(requiredFields)) {
+      if (!formData[key] || formData[key].toString().trim() === '') {
+        missingFields.push(label);
+      }
+    }
+
+    if (missingFields.length > 0) {
+      setError(`Please fill in the following required fields: ${missingFields.join(', ')}`);
+      return;
+    }
+
+    // Validate numeric fields
+    const temperature = parseFloat(formData.temperature);
+    const rainfall = parseFloat(formData.rainfall);
+    const humidity = parseFloat(formData.humidity);
+
+    if (isNaN(temperature)) {
+      setError('Please enter a valid temperature value');
+      return;
+    }
+    if (isNaN(rainfall)) {
+      setError('Please enter a valid rainfall value');
+      return;
+    }
+    if (isNaN(humidity)) {
+      setError('Please enter a valid humidity value');
+      return;
+    }
+
+    if (humidity < 0 || humidity > 100) {
+      setError('Humidity must be between 0 and 100 percent');
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const response = await fetch('http://localhost:8000/api/predict-risk', {
@@ -73,9 +120,9 @@ const RiskPrediction = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          temperature: parseFloat(formData.temperature),
-          rainfall: parseFloat(formData.rainfall),
-          humidity: parseFloat(formData.humidity),
+          temperature: temperature,
+          rainfall: rainfall,
+          humidity: humidity,
           disaster_occurred: parseInt(formData.disaster_occurred)
         })
       });
