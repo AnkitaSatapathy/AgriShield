@@ -3,6 +3,7 @@ from PIL import Image
 import numpy as np
 import tensorflow as tf
 import io
+import json
 
 router = APIRouter(
     prefix="/api",
@@ -10,25 +11,13 @@ router = APIRouter(
 )
 
 # Load model once
-model = tf.keras.models.load_model("../models/final_cnn_plant_disease.h5")
+model = tf.keras.models.load_model("../models/best_cpu_model.keras")
 
-CLASS_NAMES = [
-    'Pepper__bell___Bacterial_spot',
-    'Pepper__bell___healthy',
-    'Potato___Early_blight',
-    'Potato___healthy',
-    'Potato___Late_blight',
-    'Tomato__Target_Spot',
-    'Tomato__Tomato_mosaic_virus',
-    'Tomato__Tomato_YellowLeaf__Curl_Virus',
-    'Tomato_Bacterial_spot',
-    'Tomato_Early_blight',
-    'Tomato_healthy',
-    'Tomato_Late_blight',
-    'Tomato_Leaf_Mold',
-    'Tomato_Septoria_leaf_spot',
-    'Tomato_Spider_mites_Two_spotted_spider_mite'
-]
+# ✅ Load class indices dynamically (MATCHES TRAINED MODEL)
+with open("../models/class_indices.json", "r") as f:
+    class_indices = json.load(f)
+
+CLASS_NAMES = {v: k for k, v in class_indices.items()}
 
 # Comprehensive disease information with descriptions and treatments
 DISEASE_INFO = {
@@ -42,9 +31,9 @@ DISEASE_INFO = {
     },
     "Potato___Early_blight": {
         "description": "Early blight is caused by the Alternaria solani fungus and is one of the most common potato and tomato diseases. It starts on lower, older leaves as small brown spots with distinctive target-like concentric rings (bull's-eye pattern). Surrounding tissue turns yellow, leaves die and drop off. Can cause significant defoliation and sun scalding of tubers. Thrives in warm (75-85°F), humid conditions.",
-        "treatment": "Remove and destroy infected lower leaves immediately (can remove up to 1/3 of plant leaves). Apply fungicide containing chlorothalonil or copper every 7-10 days. Mulch heavily with straw or wood chips to prevent soil splash onto leaves. Water at soil level only - avoid wetting foliage. Rotate crops every 2-3 years with non-solanaceous plants. Space plants adequately for air circulation. Remove all crop debris at season end and bury or burn it. Maintain proper fertilization (adequate nitrogen and phosphorus, don't over-fertilize with potassium)."
+        "treatment": "Remove and destroy infected lower leaves immediately (can remove up to 1/3 of plant leaves). Apply fungicide containing chlorothalonil or copper every 7-10 days. Mulch heavily with straw or wood chips to prevent soil splash onto leaves. Water at soil level only - avoid wetting foliage. Rotate crops every 2-3 years with non-solanaceous plants. Space plants adequately for air circulation. Remove all crop debris at season end."
     },
-    "Potato___healthy": {
+     "Potato___healthy": {
         "description": "Excellent! Your potato plant is in perfect health with no disease symptoms. The foliage is green and vigorous, showing strong growth patterns.",
         "treatment": "Maintain current care: Hill soil around plants as they grow (prevents tuber greening). Water deeply once or twice weekly (1-2 inches total). Don't overwater - potatoes need well-drained soil. Apply balanced fertilizer when plants are 6 inches tall. Monitor weekly for Colorado potato beetles and disease signs. Mulch to conserve moisture. Harvest when plants begin to yellow naturally."
     },
@@ -95,7 +84,8 @@ DISEASE_INFO = {
 }
 
 def preprocess_image(image):
-    image = image.resize((128, 128))
+    # ✅ FIXED: must match training image size
+    image = image.resize((160, 160))
     image = np.array(image) / 255.0
     image = np.expand_dims(image, axis=0)
     return image
@@ -125,5 +115,6 @@ async def detect_disease(file: UploadFile = File(...)):
             "description": disease_data["description"],
             "treatment": disease_data["treatment"]
         }
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
