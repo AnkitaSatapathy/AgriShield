@@ -192,15 +192,6 @@ const DiseaseDetection = () => {
                 </div>
               </div>
             </div>
-          )}
-        </div>
-
-        {/* Info Section */}
-        <div className="mt-8 grid md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-xl p-6 shadow-lg text-center">
-            <div className="text-3xl mb-2">🌿</div>
-            <h3 className="font-bold text-gray-900 mb-2">15 Diseases</h3>
-            <p className="text-gray-600 text-sm">Detects diseases across multiple crops</p>
           </div>
           <div className="bg-white rounded-xl p-6 shadow-lg text-center">
             <div className="text-3xl mb-2">🎯</div>
