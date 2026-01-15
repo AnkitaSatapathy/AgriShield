@@ -219,7 +219,7 @@ const getDiseaseDescription = (technicalName) => {
             </h1>
           </div>
           <p className="text-xl text-gray-200 max-w-3xl mx-auto animate-fade-in">
-            AI-powered diagnosis using advanced computer vision to identify plant diseases instantly
+            ML-powered diagnosis using advanced computer vision to identify plant diseases instantly
           </p>
 
           {/* Stats */}
@@ -436,7 +436,7 @@ const getDiseaseDescription = (technicalName) => {
               <div className="grid md:grid-cols-3 gap-8">
                 {[
                   { icon: Upload, title: "Upload Image", desc: "Take a clear photo of the affected plant leaf and upload it", color: "green" },
-                  { icon: Activity, title: "AI Analysis", desc: "Our deep learning model analyzes using computer vision", color: "blue" },
+                  { icon: Activity, title: "ML Analysis", desc: "Our deep learning model analyzes using computer vision", color: "blue" },
                   { icon: Shield, title: "Get Results", desc: "Receive instant diagnosis with treatment recommendations", color: "purple" }
                 ].map((step, idx) => (
                   <div key={idx} className="text-center transform hover:scale-110 transition">
