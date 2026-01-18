@@ -110,8 +110,16 @@ const App = () => {
   };
 
   const goToHome = () => {
-    setCurrentPage('home');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // If this window was opened by another window (it's a child window from window.open),
+    // close it and focus the parent window
+    if (window.opener && window.opener !== window) {
+      window.opener.focus();
+      window.close();
+    } else {
+      // If this is the original window, just navigate to home
+      setCurrentPage('home');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   // If on Risk Prediction page, show only that component
