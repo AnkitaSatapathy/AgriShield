@@ -1,6 +1,6 @@
 """
 AgriShield FastAPI Backend
-Crop Failure Risk Prediction API
+Crop Failure Risk Prediction + Weather Advisory API
 """
 
 from fastapi import FastAPI, HTTPException
@@ -8,12 +8,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional
 import pickle
+import os
+from dotenv import load_dotenv
+
+# Import existing routers and functions
 from disease import router as disease_router
 from crop_recommendation_api import router as crop_recommendation_router    
-
-
-# Import prediction function from predict.py
 from predict import predict_crop_failure, crop_list, state_list, district_list
+
+# Import NEW weather services
+from weather_service import WeatherService
+from advisory_service import AdvisoryService
+
+# Load environment variables
+load_dotenv()
 
 # ============================================================================
 # FASTAPI APP INITIALIZATION
@@ -21,8 +29,8 @@ from predict import predict_crop_failure, crop_list, state_list, district_list
 
 app = FastAPI(
     title="AgriShield API",
-    description="Crop Failure Risk Prediction System using Machine Learning",
-    version="1.0.0",
+    description="Crop Failure Risk Prediction + Weather Advisory System using Machine Learning",
+    version="2.0.0",
     docs_url="/docs",
     redoc_url="/redoc"
 )
@@ -42,10 +50,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include existing routers
 app.include_router(disease_router)
 app.include_router(crop_recommendation_router)
+
 # ============================================================================
-# PYDANTIC MODELS (Request/Response Schemas)
+# INITIALIZE WEATHER SERVICES
+# ============================================================================
+
+try:
+    weather_service = WeatherService()
+    advisory_service = AdvisoryService(csv_path=os.path.join(os.path.dirname(__file__), "..", "data", "processed", "advisory.csv"))
+    weather_services_available = True
+    print("✅ Weather services initialized successfully")
+except Exception as e:
+    weather_services_available = False
+    print(f"⚠️ Weather services initialization failed: {str(e)}")
+
+# ============================================================================
+# PYDANTIC MODELS - EXISTING
 # ============================================================================
 
 class RiskPredictionRequest(BaseModel):
@@ -93,7 +117,47 @@ class RiskPredictionResponse(BaseModel):
 
 
 # ============================================================================
-# API ENDPOINTS
+# PYDANTIC MODELS - NEW WEATHER ENDPOINTS
+# ============================================================================
+
+class WeatherRequest(BaseModel):
+    """Request model for weather data"""
+    state: str = Field(..., description="State name")
+    district: str = Field(..., description="District name")
+    crop: Optional[str] = Field(None, description="Crop name (optional)")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "state": "Punjab",
+                "district": "Ludhiana",
+                "crop": "Rice"
+            }
+        }
+
+
+class AdvisoryRequest(BaseModel):
+    """Request model for crop advisory"""
+    crop: str = Field(..., description="Crop name")
+    weather_conditions: dict = Field(..., description="Current weather conditions")
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "crop": "Rice",
+                "weather_conditions": {
+                    "temperature": 32.0,
+                    "humidity": 78.0,
+                    "rainfall": 45.0,
+                    "wind_speed": 12.0,
+                    "soil_moisture": 70.0
+                }
+            }
+        }
+
+
+# ============================================================================
+# API ENDPOINTS - EXISTING
 # ============================================================================
 
 @app.get("/", tags=["Root"])
@@ -101,14 +165,25 @@ def read_root():
     """Root endpoint - API information"""
     return {
         "message": "Welcome to AgriShield API",
-        "description": "Crop Failure Risk Prediction System",
-        "version": "1.0.0",
+        "description": "Crop Failure Risk Prediction + Weather Advisory System",
+        "version": "2.0.0",
         "status": "active",
+        "features": {
+            "risk_prediction": "enabled",
+            "weather_advisory": "enabled" if weather_services_available else "disabled",
+            "disease_detection": "enabled",
+            "crop_recommendation": "enabled"
+        },
         "endpoints": {
-            "prediction": "POST /api/predict-risk",
+            "risk_prediction": "POST /api/predict-risk",
+            "weather_current": "POST /api/weather",
+            "weather_forecast": "POST /api/weather/forecast",
+            "weather_complete": "POST /api/weather/complete",
+            "advisory": "POST /api/advisory",
             "health": "GET /api/health",
             "crops": "GET /api/crops",
             "states": "GET /api/states",
+            "risk_prediction_states": "GET /api/risk-prediction/states",
             "districts": "GET /api/districts",
             "documentation": "GET /docs"
         }
@@ -120,29 +195,67 @@ def health_check():
     """Health check endpoint"""
     return {
         "status": "healthy",
-        "service": "AgriShield Risk Prediction API",
-        "version": "1.0.0",
-        "model_loaded": True
+        "service": "AgriShield Risk Prediction + Weather API",
+        "version": "2.0.0",
+        "model_loaded": True,
+        "weather_service": "active" if weather_services_available else "inactive"
     }
 
 
 @app.get("/api/crops", tags=["Data"])
 def get_crops():
     """Get list of available crops"""
+    crops_from_advisory = []
+    if weather_services_available:
+        try:
+            crops_from_advisory = advisory_service.get_available_crops()
+        except:
+            pass
+    
+    # Combine both lists and remove duplicates
+    all_crops = list(set(crop_list + crops_from_advisory))
+    
     return {
-        "crops": crop_list,
-        "count": len(crop_list),
-        "message": "Available crops for prediction"
+        "crops": sorted(all_crops),
+        "count": len(all_crops),
+        "message": "Available crops for prediction and advisory"
     }
 
 
 @app.get("/api/states", tags=["Data"])
 def get_states():
-    """Get list of available states"""
+    """Get list of available states - ALL 29 INDIAN STATES"""
+    all_states = [
+        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+        "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
+        "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+        "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+        "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
+        "Uttar Pradesh", "Uttarakhand", "West Bengal", "Jammu and Kashmir"
+    ]
+    
     return {
-        "states": state_list,
-        "count": len(state_list),
-        "message": "Available states for prediction"
+        "states": sorted(all_states),
+        "count": len(all_states),
+        "message": "All 29 Indian states available"
+    }
+
+
+@app.get("/api/risk-prediction/states", tags=["Data"])
+def get_risk_prediction_states():
+    """Get list of states supported for risk prediction (24 states from model training)"""
+    risk_states = [
+        "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Delhi",
+        "Goa", "Gujarat", "Haryana", "Jammu And Kashmir", "Jharkhand",
+        "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+        "Meghalaya", "Mizoram", "Nagaland", "Punjab", "Sikkim",
+        "Tamil Nadu", "Tripura", "Uttar Pradesh", "West Bengal"
+    ]
+    
+    return {
+        "states": sorted(risk_states),
+        "count": len(risk_states),
+        "message": "States supported for risk prediction (model trained on these 24 states)"
     }
 
 
@@ -164,23 +277,6 @@ def predict_risk(request: RiskPredictionRequest):
     
     This endpoint accepts crop, location, season, and weather data to predict
     the risk of crop failure using a trained machine learning model.
-    
-    **Parameters:**
-    - **crop**: Name of the crop (must be from available crops list)
-    - **state**: State name (must be from available states list)
-    - **district**: District name
-    - **season**: Growing season (Kharif, Rabi, Summer, Whole Year)
-    - **temperature**: Average expected temperature in Celsius
-    - **rainfall**: Total expected rainfall in mm
-    - **humidity**: Average expected humidity percentage
-    - **disaster_occurred**: Whether a disaster occurred (0=No, 1=Yes)
-    
-    **Returns:**
-    - Risk score (0-100%)
-    - Risk level (Low/Medium/High)
-    - Detailed explanation
-    - Actionable recommendations
-    - District soil information
     """
     
     try:
@@ -216,42 +312,273 @@ def predict_risk(request: RiskPredictionRequest):
         )
     
     except Exception as e:
+        print(f"Prediction error: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(
             status_code=500,
             detail=f"Internal server error: {str(e)}"
         )
 
 
+# ============================================================================
+# API ENDPOINTS - NEW WEATHER FEATURES
+# ============================================================================
+
+@app.post("/api/weather", tags=["Weather"])
+async def get_weather(request: WeatherRequest):
+    """
+    Get current weather data for a specific location
+    
+    **Parameters:**
+    - **state**: State name
+    - **district**: District name
+    - **crop**: (Optional) Crop name for additional context
+    
+    **Returns:**
+    - Current weather conditions (temperature, humidity, rainfall, wind speed, etc.)
+    """
+    if not weather_services_available:
+        raise HTTPException(
+            status_code=503,
+            detail="Weather service is currently unavailable. Please check API key configuration."
+        )
+    
+    try:
+        weather_data = weather_service.get_current_weather(request.district, request.state)
+        
+        if not weather_data:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Weather data not found for {request.district}, {request.state}. Please check state and district names."
+            )
+        
+        return {
+            "success": True,
+            "data": weather_data,
+            "location": {
+                "state": request.state,
+                "district": request.district,
+                "formatted": f"{request.district}, {request.state}, India"
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching weather data: {str(e)}"
+        )
+
+
+@app.post("/api/weather/forecast", tags=["Weather"])
+async def get_forecast(request: WeatherRequest):
+    """
+    Get 7-day weather forecast for a specific location
+    
+    **Returns:**
+    - 7-day weather forecast with daily high/low temperatures and precipitation
+    """
+    if not weather_services_available:
+        raise HTTPException(
+            status_code=503,
+            detail="Weather service is currently unavailable. Please check API key configuration."
+        )
+    
+    try:
+        forecast_data = weather_service.get_forecast(request.district, request.state)
+        
+        if not forecast_data:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Forecast data not found for {request.district}, {request.state}"
+            )
+        
+        return {
+            "success": True,
+            "data": forecast_data,
+            "location": {
+                "state": request.state,
+                "district": request.district,
+                "formatted": f"{request.district}, {request.state}, India"
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching forecast data: {str(e)}"
+        )
+
+
+@app.post("/api/advisory", tags=["Advisory"])
+async def get_advisory(request: AdvisoryRequest):
+    """
+    Get crop-specific advisory based on current weather conditions
+    
+    **Parameters:**
+    - **crop**: Crop name
+    - **weather_conditions**: Dict with temperature, humidity, rainfall, wind_speed, soil_moisture
+    
+    **Returns:**
+    - Crop-specific advisories and alerts based on weather thresholds
+    """
+    if not weather_services_available:
+        raise HTTPException(
+            status_code=503,
+            detail="Advisory service is currently unavailable."
+        )
+    
+    try:
+        advisories = advisory_service.get_advisories_for_crop(
+            crop_name=request.crop,
+            weather_data=request.weather_conditions
+        )
+        
+        return {
+            "success": True,
+            "data": {
+                "crop": request.crop,
+                "advisories": advisories,
+                "total_alerts": len(advisories),
+                "weather_conditions": request.weather_conditions
+            }
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching advisory data: {str(e)}"
+        )
+
+
+@app.post("/api/weather/complete", tags=["Weather"])
+async def get_complete_weather_advisory(request: WeatherRequest):
+    """
+    Get weather data, forecast, and crop advisory in ONE call
+    
+    This is the MAIN endpoint that combines everything for the Weather.jsx frontend.
+    
+    **Parameters:**
+    - **state**: State name
+    - **district**: District name
+    - **crop**: (Optional) Crop name for advisory
+    
+    **Returns:**
+    - Current weather conditions
+    - 7-day forecast
+    - Crop-specific advisory (if crop specified)
+    - Location information
+    """
+    if not weather_services_available:
+        raise HTTPException(
+            status_code=503,
+            detail="Weather service is currently unavailable. Please check API key in .env file."
+        )
+    
+    try:
+        # Get current weather
+        current_weather = weather_service.get_current_weather(request.district, request.state)
+        if not current_weather:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Weather data not found for {request.district}, {request.state}. Please verify the district name is correct."
+            )
+        
+        # Get 7-day forecast
+        forecast = weather_service.get_forecast(request.district, request.state)
+        
+        # Get crop advisory if crop is specified
+        advisory_data = None
+        if request.crop:
+            try:
+                weather_conditions = {
+                    "temperature": current_weather.get("temperature", 0),
+                    "humidity": current_weather.get("humidity", 0),
+                    "rainfall": current_weather.get("rainfall", 0),
+                    "wind_speed": current_weather.get("wind_speed", 0),
+                    "soil_moisture": current_weather.get("humidity", 0)  # Approximate with humidity
+                }
+                
+                guidance = advisory_service.get_crop_specific_guidance(
+                    crop_name=request.crop,
+                    weather_data=weather_conditions
+                )
+                
+                advisory_data = {
+                    "advisories": guidance,
+                    "risk_level": guidance.get("risk_level", "Low"),
+                    "weather_conditions": weather_conditions
+                }
+            except Exception as e:
+                print(f"Advisory error: {str(e)}")
+                advisory_data = {
+                    "advisories": [],
+                    "risk_level": "Low",
+                    "error": f"Could not generate advisory: {str(e)}"
+                }
+        
+        return {
+            "success": True,
+            "data": {
+                "current_weather": current_weather,
+                "forecast": forecast,
+                "advisory": advisory_data,
+                "location": {
+                    "state": request.state,
+                    "district": request.district,
+                    "formatted": f"{request.district}, {request.state}, India"
+                }
+            }
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching complete weather data: {str(e)}"
+        )
+
+
+# ============================================================================
+# INFORMATION ENDPOINTS
+# ============================================================================
+
 @app.get("/api/info", tags=["Information"])
 def get_api_info():
     """Get detailed API information"""
     return {
-        "api_name": "AgriShield Crop Failure Risk Prediction API",
-        "version": "1.0.0",
-        "description": "AI-powered crop failure risk assessment system",
+        "api_name": "AgriShield - Comprehensive Agricultural Platform",
+        "version": "2.0.0",
+        "description": "AI-powered crop failure risk assessment + real-time weather advisory system",
         "features": [
-            "Crop failure risk prediction",
-            "Multi-crop support",
-            "State and district level predictions",
-            "Weather-based risk assessment",
-            "Disaster impact analysis",
-            "Actionable recommendations"
+            "Crop failure risk prediction using ML",
+            "Real-time weather data integration",
+            "7-day weather forecasting",
+            "Crop-specific agricultural advisory",
+            "Weather-based risk alerts",
+            "Multi-crop and multi-state support",
+            "Disease detection",
+            "Crop recommendation system"
         ],
         "technology": {
             "framework": "FastAPI",
             "ml_library": "scikit-learn",
-            "model_type": "Classification",
+            "weather_api": "OpenWeatherMap",
+            "model_type": "Classification + Advisory Rules",
             "python_version": "3.8+"
         },
         "data_sources": [
             "Government crop production data",
             "Historical weather data",
+            "OpenWeatherMap real-time data",
+            "Agricultural advisory database",
             "Disaster records",
             "Soil quality data"
         ],
         "supported_crops": len(crop_list),
-        "supported_states": len(state_list),
-        "supported_districts": len(district_list)
+        "supported_states": 29,
+        "weather_service_status": "active" if weather_services_available else "inactive"
     }
 
 
@@ -269,6 +596,10 @@ async def not_found_handler(request, exc):
             "/",
             "/api/health",
             "/api/predict-risk",
+            "/api/weather",
+            "/api/weather/forecast",
+            "/api/weather/complete",
+            "/api/advisory",
             "/api/crops",
             "/api/states",
             "/api/districts",
@@ -296,15 +627,19 @@ async def startup_event():
     """Run on application startup"""
     print("\n" + "="*80)
     print(" "*25 + "AGRISHIELD API SERVER")
-    print(" "*30 + "Starting...")
+    print(" "*28 + "Version 2.0.0")
     print("="*80)
-    print(f"\n✅ API Version: 1.0.0")
-    print(f"✅ Models loaded successfully")
+    print(f"\n✅ API Version: 2.0.0")
+    print(f"✅ Risk Prediction Models: Loaded")
+    print(f"✅ Weather Service: {'Active' if weather_services_available else 'Inactive (check .env)'}")
+    print(f"✅ Advisory Service: {'Active' if weather_services_available else 'Inactive'}")
     print(f"✅ Supported Crops: {len(crop_list)}")
-    print(f"✅ Supported States: {len(state_list)}")
+    print(f"✅ Supported States: 29 (All Indian States for Weather)")
+    print(f"✅ Risk Prediction States: 24 (Model trained states)")
     print(f"✅ Supported Districts: {len(district_list)}")
     print(f"\n📖 API Documentation: http://localhost:8000/docs")
     print(f"🔗 API Base URL: http://localhost:8000")
+    print(f"🌤️  Weather Endpoint: POST http://localhost:8000/api/weather/complete")
     print("\n" + "="*80 + "\n")
 
 

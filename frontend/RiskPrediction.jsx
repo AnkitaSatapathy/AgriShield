@@ -42,8 +42,8 @@ const RiskPrediction = () => {
       const cropsData = await cropsRes.json();
       setCrops(cropsData.crops || []);
 
-      // Fetch states
-      const statesRes = await fetch('http://localhost:8000/api/states');
+      // Fetch states (only risk prediction supported states)
+      const statesRes = await fetch('http://localhost:8000/api/risk-prediction/states');
       const statesData = await statesRes.json();
       setStates(statesData.states || []);
 

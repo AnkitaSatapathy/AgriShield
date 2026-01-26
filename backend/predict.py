@@ -133,19 +133,21 @@ def predict_crop_failure(
     severity_score = disaster_occurred * 2
     
     # Create feature vector (must match training feature order)
-    features = np.array([[
-        crop_encoded,           # Crop_Encoded
-        state_encoded,          # State_Encoded
-        season_encoded,         # Season_Encoded
-        temperature,            # Avg_Temperature
-        rainfall,               # Total_Rainfall
-        humidity,               # Avg_Humidity
-        soil_quality,           # Soil_Quality_Score
-        rainfall_deviation,     # Rainfall_Deviation
-        temperature_deviation,  # Temperature_Deviation
-        disaster_occurred,      # Disaster_Occurred
-        severity_score          # Severity_Score
-    ]])
+    feature_data = {
+        'Crop_Encoded': crop_encoded,
+        'State_Encoded': state_encoded,
+        'Season_Encoded': season_encoded,
+        'Avg_Temperature': temperature,
+        'Total_Rainfall': rainfall,
+        'Avg_Humidity': humidity,
+        'Soil_Quality_Score': soil_quality,
+        'Rainfall_Deviation': rainfall_deviation,
+        'Temperature_Deviation': temperature_deviation,
+        'Disaster_Occurred': disaster_occurred,
+        'Severity_Score': severity_score
+    }
+    
+    features = pd.DataFrame([feature_data])
     
     # Scale features
     features_scaled = scaler.transform(features)
