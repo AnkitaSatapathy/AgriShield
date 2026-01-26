@@ -4,6 +4,7 @@ import RiskPrediction from './RiskPrediction';
 import DiseaseDetection from './DiseaseDetection';
 import CropRecommendation from './CropRecommendation';
 import Weather from './Weather';
+import FarmingTips from './FarmingTips';
 
 
 const App = () => {
@@ -24,6 +25,9 @@ const App = () => {
     }
     else if (window.location.hash === '#/weather-forecast') {
       setCurrentPage('weather-forecast');
+    }
+    else if (window.location.hash === '#/farming-tips') {
+      setCurrentPage('farming-tips');
     }
 
     const handleScroll = () => {
@@ -110,8 +114,10 @@ const App = () => {
       window.open(window.location.origin + '/#/weather-forecast', '_blank');
     } else if (link === 'govt-schemes') {
       setCurrentPage('govt-schemes');
+    } else if (link === 'farming-tips') {
+      setCurrentPage('farming-tips');
     } else {
-      alert(`${link} page coming soon!\n(Currently only Risk Prediction, Crop Recommendation, Disease Detection, Weather Forecast, and Govt Schemes are implemented)`);
+      alert(`${link} page coming soon!\n(Currently only Risk Prediction, Crop Recommendation, Disease Detection, Weather Forecast,Farming Tips and Govt Schemes are implemented)`);
     }
   };
 
@@ -298,8 +304,50 @@ const App = () => {
         
         <SchemesPage />
       </div>
+      
     );
   }
+
+  // If on Farming Tips page, show only that component
+  if (currentPage === 'farming-tips') {
+    return (
+      <div>
+        {/* Navigation for farming tips Page */}
+        <nav className="fixed w-full z-50 bg-white shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <button 
+                onClick={goToHome}
+                className="flex items-center space-x-2 cursor-pointer"
+              >
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
+                  <Leaf className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  AgriShield
+                </span>
+              </button>
+              
+              <button
+                onClick={goToHome}
+                className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
+              >
+                <ArrowRight className="w-4 h-4 rotate-180" />
+                <span>Back to Home</span>
+              </button>
+            </div>
+          </div>
+        </nav>
+        
+        <FarmingTips />
+      </div>
+      
+    );
+  }
+
+  // Main Home Page
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50">
       {/* Navigation */}
