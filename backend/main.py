@@ -461,38 +461,19 @@ async def get_advisory(request: AdvisoryRequest):
 
 @app.post("/api/weather/complete", tags=["Weather"])
 async def get_complete_weather_advisory(request: WeatherRequest):
-    """
-    Get weather data, forecast, and crop advisory in ONE call
-    
-    This is the MAIN endpoint that combines everything for the Weather.jsx frontend.
-    
-    **Parameters:**
-    - **state**: State name
-    - **district**: District name
-    - **crop**: (Optional) Crop name for advisory
-    
-    **Returns:**
-    - Current weather conditions
-    - 7-day forecast
-    - Crop-specific advisory (if crop specified)
-    - Location information
-    """
+    """Get weather data, forecast, and crop advisory in ONE call"""
     if not weather_services_available:
-        raise HTTPException(
-            status_code=503,
-            detail="Weather service is currently unavailable. Please check API key in .env file."
-        )
+        raise HTTPException(status_code=503, detail="Weather service unavailable")
     
     try:
+        location = f"{request.district}, {request.state}, India"
+        
         # Get current weather
         current_weather = weather_service.get_current_weather(request.district, request.state)
         if not current_weather:
-            raise HTTPException(
-                status_code=404,
-                detail=f"Weather data not found for {request.district}, {request.state}. Please verify the district name is correct."
-            )
+            raise HTTPException(status_code=404, detail=f"Weather data not found for {location}")
         
-        # Get 7-day forecast
+        # Get forecast
         forecast = weather_service.get_forecast(request.district, request.state)
         
         # Get crop advisory if crop is specified
@@ -504,25 +485,90 @@ async def get_complete_weather_advisory(request: WeatherRequest):
                     "humidity": current_weather.get("humidity", 0),
                     "rainfall": current_weather.get("rainfall", 0),
                     "wind_speed": current_weather.get("wind_speed", 0),
-                    "soil_moisture": current_weather.get("humidity", 0)  # Approximate with humidity
+                    "soil_moisture": current_weather.get("humidity", 0)  # Approximate
                 }
                 
-                guidance = advisory_service.get_crop_specific_guidance(
+                print(f"\n=== Processing Advisory for {request.crop} ===")
+                print(f"Weather conditions: {weather_conditions}")
+                
+                # Get advisories
+                advisories = advisory_service.get_advisories(
                     crop_name=request.crop,
-                    weather_data=weather_conditions
+                    weather_conditions=weather_conditions
                 )
                 
+                # Get guidance
+                guidance = advisory_service.get_crop_specific_guidance(
+                    crop_name=request.crop,
+                    weather_conditions=weather_conditions
+                )
+                
+                # Calculate risk
+                risk_level = advisory_service.calculate_risk_level(advisories)
+                
+                # Format as bullet points (each point separated by newline)
+                def format_guidance_list(items):
+                    """Format list items with bullet points"""
+                    if not items:
+                        return []
+                    # Take up to 5 unique items
+                    unique_items = list(set(items))[:5]
+                    return unique_items
+                
                 advisory_data = {
-                    "advisories": guidance,
-                    "risk_level": guidance.get("risk_level", "Low"),
+                    "advisories": advisories,
+                    "risk_level": risk_level,
+                    "guidance": {
+                        "irrigation": format_guidance_list(guidance.get('irrigation', [])),
+                        "sowing": format_guidance_list(guidance.get('sowing', [])),
+                        "spraying": format_guidance_list(guidance.get('spraying', [])),
+                        "harvesting": format_guidance_list(guidance.get('harvesting', [])),
+                        "general": format_guidance_list(guidance.get('general', []))
+                    },
                     "weather_conditions": weather_conditions
                 }
+                
+                print(f"Advisory generated with {len(advisories)} alerts")
+                print(f"Guidance points - Irrigation: {len(advisory_data['guidance']['irrigation'])}, "
+                      f"Sowing: {len(advisory_data['guidance']['sowing'])}, "
+                      f"Spraying: {len(advisory_data['guidance']['spraying'])}, "
+                      f"Harvesting: {len(advisory_data['guidance']['harvesting'])}")
+                
             except Exception as e:
                 print(f"Advisory error: {str(e)}")
+                import traceback
+                traceback.print_exc()
+                
                 advisory_data = {
                     "advisories": [],
                     "risk_level": "Low",
-                    "error": f"Could not generate advisory: {str(e)}"
+                    "guidance": {
+                        "irrigation": [
+                            f"Monitor soil moisture for {request.crop} regularly",
+                            f"Irrigate based on crop growth stage",
+                            f"Avoid waterlogging in {request.crop} fields"
+                        ],
+                        "sowing": [
+                            f"Use certified seeds for {request.crop}",
+                            f"Follow recommended spacing for {request.crop}",
+                            f"Ensure proper seed depth for optimal germination"
+                        ],
+                        "spraying": [
+                            f"Scout fields regularly for {request.crop} pests",
+                            f"Use recommended pesticides for {request.crop}",
+                            f"Apply during calm weather conditions"
+                        ],
+                        "harvesting": [
+                            f"Harvest {request.crop} at physiological maturity",
+                            f"Avoid harvesting during wet conditions",
+                            f"Ensure proper drying after harvest"
+                        ],
+                        "general": [
+                            f"Monitor {request.crop} for disease symptoms",
+                            f"Maintain field sanitation"
+                        ]
+                    },
+                    "error": f"Using fallback advisory: {str(e)}"
                 }
         
         return {
@@ -534,18 +580,16 @@ async def get_complete_weather_advisory(request: WeatherRequest):
                 "location": {
                     "state": request.state,
                     "district": request.district,
-                    "formatted": f"{request.district}, {request.state}, India"
+                    "formatted": location
                 }
             }
         }
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error fetching complete weather data: {str(e)}"
-        )
-
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 # ============================================================================
 # INFORMATION ENDPOINTS

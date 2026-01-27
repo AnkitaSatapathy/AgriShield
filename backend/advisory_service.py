@@ -1,273 +1,246 @@
+"""
+Advisory Service - Provides crop-specific weather-based advisories
+"""
+
 import pandas as pd
 import os
-from typing import List, Dict, Optional
-from pathlib import Path
 
 class AdvisoryService:
-    """Service to load and match crop advisories based on weather conditions"""
-    
-    def __init__(self, csv_path: str = None):
-        """
-        Initialize the advisory service
-        
-        Args:
-            csv_path: Path to advisory.csv file. If None, uses default path.
-        """
-        if csv_path is None:
-            # Default path relative to backend directory
-            base_dir = Path(__file__).parent.parent
-            csv_path = base_dir / "data" / "processed" / "advisory.csv"
-        
+    def __init__(self, csv_path="data/processed/advisory.csv"):
+        """Initialize the advisory service with the CSV data"""
         self.csv_path = csv_path
-        self.advisories_df = None
-        self.load_advisories()
+        self.advisory_data = None
+        self.load_advisory_data()
     
-    def load_advisories(self):
-        """Load advisory data from CSV file"""
+    def load_advisory_data(self):
+        """Load advisory data from CSV"""
         try:
             if not os.path.exists(self.csv_path):
-                raise FileNotFoundError(f"Advisory CSV not found at: {self.csv_path}")
+                print(f"Warning: Advisory CSV not found at {self.csv_path}")
+                self.advisory_data = pd.DataFrame()
+                return
             
-            self.advisories_df = pd.read_csv(self.csv_path)
+            self.advisory_data = pd.read_csv(self.csv_path)
+            print(f"✅ Loaded {len(self.advisory_data)} advisory records from CSV")
             
-            # Validate required columns
-            required_columns = [
-                'crop_name', 'condition_type', 'threshold_min', 
-                'threshold_max', 'parameter', 'advisory_message', 
-                'priority', 'action_type'
-            ]
+            # Normalize column names
+            self.advisory_data.columns = self.advisory_data.columns.str.lower().str.strip()
             
-            missing_columns = [col for col in required_columns if col not in self.advisories_df.columns]
-            if missing_columns:
-                raise ValueError(f"Missing required columns in CSV: {missing_columns}")
+            # Normalize crop names for matching
+            if 'crop_name' in self.advisory_data.columns:
+                self.advisory_data['crop_name'] = self.advisory_data['crop_name'].str.strip().str.title()
             
-            # Clean data
-            self.advisories_df['crop_name'] = self.advisories_df['crop_name'].str.strip()
-            self.advisories_df['parameter'] = self.advisories_df['parameter'].str.strip()
-            
-            print(f"✅ Loaded {len(self.advisories_df)} advisories from CSV")
+            print(f"Available crops in CSV: {self.advisory_data['crop_name'].unique()[:10]}")
             
         except Exception as e:
-            print(f"❌ Error loading advisory CSV: {e}")
-            # Create empty dataframe as fallback
-            self.advisories_df = pd.DataFrame(columns=[
-                'crop_name', 'condition_type', 'threshold_min', 
-                'threshold_max', 'parameter', 'advisory_message', 
-                'priority', 'action_type'
-            ])
+            print(f"Error loading advisory data: {str(e)}")
+            self.advisory_data = pd.DataFrame()
     
-    def get_advisories_for_crop(self, crop_name: str, weather_data: Dict) -> List[Dict]:
+    def match_parameter(self, csv_parameter, weather_conditions):
         """
-        Get advisories for a specific crop based on current weather conditions
-        
-        Args:
-            crop_name: Name of the crop (e.g., "Rice", "Wheat")
-            weather_data: Dictionary containing current weather parameters
-                Expected keys: temperature, humidity, rainfall, wind_speed
-        
-        Returns:
-            List of matching advisories sorted by priority
+        Match CSV parameter names to weather condition values
+        Handles multiple parameter name variations
         """
-        if self.advisories_df is None or len(self.advisories_df) == 0:
-            return []
+        param_lower = csv_parameter.lower().strip()
         
-        try:
-            # Filter advisories for the specific crop
-            crop_advisories = self.advisories_df[
-                self.advisories_df['crop_name'].str.lower() == crop_name.lower()
-            ].copy()
-            
-            if len(crop_advisories) == 0:
-                return []
-            
-            matching_advisories = []
-            
-            # Map parameter names to weather data keys
-            parameter_mapping = {
-                'temperature': 'temperature',
-                'temp': 'temperature',
-                'humidity': 'humidity',
-                'rain_24h': 'rainfall',
-                'rainfall': 'rainfall',
-                'wind_speed': 'wind_speed',
-                'windspeed': 'wind_speed',
-                'soil_moisture': 'humidity'  # Approximate with humidity if not available
-            }
-            
-            # Check each advisory against weather conditions
-            for _, advisory in crop_advisories.iterrows():
-                parameter = advisory['parameter'].lower()
-                threshold_min = float(advisory['threshold_min'])
-                threshold_max = float(advisory['threshold_max'])
-                
-                # Get the weather value for this parameter
-                weather_key = parameter_mapping.get(parameter)
-                if not weather_key or weather_key not in weather_data:
-                    continue
-                
-                weather_value = float(weather_data[weather_key])
-                
-                # Check if weather value is within threshold range
-                if threshold_min <= weather_value <= threshold_max:
-                    matching_advisories.append({
-                        'crop_name': advisory['crop_name'],
-                        'condition_type': advisory['condition_type'],
-                        'parameter': advisory['parameter'],
-                        'current_value': weather_value,
-                        'threshold_min': threshold_min,
-                        'threshold_max': threshold_max,
-                        'advisory_message': advisory['advisory_message'],
-                        'priority': advisory['priority'],
-                        'action_type': advisory['action_type']
-                    })
-            
-            # Sort by priority (high > medium > low)
-            priority_order = {'high': 0, 'medium': 1, 'low': 2}
-            matching_advisories.sort(
-                key=lambda x: priority_order.get(x['priority'].lower(), 3)
-            )
-            
-            return matching_advisories
-            
-        except Exception as e:
-            print(f"Error getting advisories: {e}")
-            return []
+        # Temperature variations
+        if param_lower in ['temperature', 'temp', 'temp_max', 'temp_min', 'avg_temp']:
+            return weather_conditions.get('temperature', 0)
+        
+        # Rainfall variations
+        elif param_lower in ['rainfall', 'rain', 'rain_24h', 'precipitation', 'precip']:
+            return weather_conditions.get('rainfall', 0)
+        
+        # Humidity variations
+        elif param_lower in ['humidity', 'rh', 'relative_humidity', 'avg_humidity']:
+            return weather_conditions.get('humidity', 0)
+        
+        # Wind speed variations
+        elif param_lower in ['wind_speed', 'wind', 'windspeed', 'avg_wind']:
+            return weather_conditions.get('wind_speed', 0)
+        
+        # Soil moisture variations
+        elif param_lower in ['soil_moisture', 'moisture', 'soil_water', 'sm']:
+            return weather_conditions.get('soil_moisture', 0)
+        
+        return None
     
-    def get_crop_specific_guidance(self, crop_name: str, weather_data: Dict) -> Dict:
+    def get_advisories(self, crop_name, weather_conditions):
         """
-        Get comprehensive crop-specific guidance based on weather
+        Get weather-based advisories for a specific crop
         
         Args:
             crop_name: Name of the crop
-            weather_data: Current weather data
+            weather_conditions: Dict with keys: temperature, humidity, rainfall, wind_speed, soil_moisture
         
         Returns:
-            Dictionary with categorized guidance (irrigation, spraying, etc.)
+            List of advisory objects
         """
-        advisories = self.get_advisories_for_crop(crop_name, weather_data)
+        if self.advisory_data.empty:
+            print("Advisory data is empty")
+            return []
         
-        # Categorize advisories by action type
+        # Normalize crop name for matching
+        crop_name_normalized = crop_name.strip().title()
+        
+        # Filter for the specific crop (case-insensitive)
+        crop_advisories = self.advisory_data[
+            self.advisory_data['crop_name'].str.lower() == crop_name_normalized.lower()
+        ].copy()
+        
+        if crop_advisories.empty:
+            print(f"No advisories found for crop: {crop_name}")
+            print(f"Available crops: {self.advisory_data['crop_name'].unique()[:20]}")
+            return []
+        
+        print(f"Found {len(crop_advisories)} total advisories for {crop_name}")
+        
+        triggered_advisories = []
+        
+        # Check each advisory against weather conditions
+        for _, advisory in crop_advisories.iterrows():
+            try:
+                parameter = advisory.get('parameter', '')
+                threshold_min = float(advisory.get('threshold_min', 0))
+                threshold_max = float(advisory.get('threshold_max', 999999))
+                
+                # Get the corresponding weather parameter value
+                param_value = self.match_parameter(parameter, weather_conditions)
+                
+                if param_value is None:
+                    continue
+                
+                # Check if condition is triggered
+                if threshold_min <= param_value <= threshold_max:
+                    triggered_advisories.append({
+                        'crop': crop_name,
+                        'condition_type': advisory.get('condition_type', ''),
+                        'parameter': parameter,
+                        'current_value': param_value,
+                        'threshold_min': threshold_min,
+                        'threshold_max': threshold_max,
+                        'advisory_message': advisory.get('advisory_message', 'No advisory available'),
+                        'priority': advisory.get('priority', 'medium'),
+                        'action_type': advisory.get('action_type', 'general')
+                    })
+            except Exception as e:
+                print(f"Error processing advisory: {str(e)}")
+                continue
+        
+        # Remove duplicate messages
+        unique_advisories = []
+        seen_messages = set()
+        
+        for adv in triggered_advisories:
+            message = adv['advisory_message']
+            if message and message not in seen_messages:
+                seen_messages.add(message)
+                unique_advisories.append(adv)
+        
+        print(f"Triggered {len(unique_advisories)} unique advisories for {crop_name}")
+        return unique_advisories
+    
+    def calculate_risk_level(self, advisories):
+        """Calculate overall risk level based on advisories"""
+        if not advisories:
+            return "Low"
+        
+        high_priority_count = sum(1 for adv in advisories if adv.get('priority', '').lower() == 'high')
+        medium_priority_count = sum(1 for adv in advisories if adv.get('priority', '').lower() == 'medium')
+        
+        if high_priority_count >= 2:
+            return "High"
+        elif high_priority_count >= 1 or medium_priority_count >= 3:
+            return "Medium"
+        else:
+            return "Low"
+    
+    def get_available_crops(self):
+        """Get list of all crops available in the advisory database"""
+        if self.advisory_data.empty:
+            return []
+        
+        if 'crop_name' in self.advisory_data.columns:
+            return sorted(self.advisory_data['crop_name'].unique().tolist())
+        return []
+    
+    def get_crop_specific_guidance(self, crop_name, weather_conditions):
+        """
+        Get comprehensive crop-specific guidance organized by activity
+        Returns minimum 5 points per category
+        """
+        advisories = self.get_advisories(crop_name, weather_conditions)
+        
         guidance = {
             'irrigation': [],
+            'sowing': [],
             'spraying': [],
-            'disease_warning': [],
-            'general': [],
-            'risk_level': 'Low'
+            'harvesting': [],
+            'general': []
         }
         
-        high_priority_count = 0
-        
-        for advisory in advisories:
-            action_type = advisory['action_type'].lower()
-            message = advisory['advisory_message']
+        # Group advisories by action type
+        for adv in advisories:
+            action_type = adv.get('action_type', 'general').lower()
+            message = adv.get('advisory_message', '')
             
-            if advisory['priority'].lower() == 'high':
-                high_priority_count += 1
+            if not message:
+                continue
             
-            if 'irrigation' in action_type:
+            if 'irrigation' in action_type or 'water' in action_type:
                 guidance['irrigation'].append(message)
-            elif 'spray' in action_type:
+            elif 'sowing' in action_type or 'planting' in action_type or 'seed' in action_type:
+                guidance['sowing'].append(message)
+            elif 'spray' in action_type or 'pesticide' in action_type or 'disease' in action_type:
                 guidance['spraying'].append(message)
-            elif 'disease' in action_type or 'warning' in action_type:
-                guidance['disease_warning'].append(message)
+            elif 'harvest' in action_type:
+                guidance['harvesting'].append(message)
+            elif 'drainage' in action_type:
+                guidance['irrigation'].append(message)  # Add drainage to irrigation
             else:
                 guidance['general'].append(message)
         
-        # Determine overall risk level
-        if high_priority_count >= 2:
-            guidance['risk_level'] = 'High'
-        elif high_priority_count == 1:
-            guidance['risk_level'] = 'Medium'
-        else:
-            guidance['risk_level'] = 'Low'
+        # Remove duplicates from each category
+        for key in guidance:
+            guidance[key] = list(set(guidance[key]))
+        
+        # Add generic advice if we don't have enough specific points (minimum 3 per category)
+        if len(guidance['irrigation']) < 3:
+            guidance['irrigation'].extend([
+                f"Monitor soil moisture levels regularly for {crop_name}.",
+                f"Adjust irrigation schedule based on crop growth stage and weather conditions.",
+                f"Use drip or sprinkler irrigation for water efficiency in {crop_name} cultivation."
+            ])
+        
+        if len(guidance['sowing']) < 3:
+            guidance['sowing'].extend([
+                f"Choose disease-resistant {crop_name} varieties for your region.",
+                f"Ensure proper seed treatment before sowing {crop_name}.",
+                f"Maintain optimal plant spacing for {crop_name} as per recommended practices."
+            ])
+        
+        if len(guidance['spraying']) < 3:
+            guidance['spraying'].extend([
+                f"Monitor {crop_name} for early signs of pest infestation.",
+                f"Use integrated pest management practices for {crop_name}.",
+                f"Apply pesticides during early morning or late evening for {crop_name}."
+            ])
+        
+        if len(guidance['harvesting']) < 3:
+            guidance['harvesting'].extend([
+                f"Harvest {crop_name} during dry weather conditions for better quality.",
+                f"Check moisture content before harvesting {crop_name}.",
+                f"Ensure proper post-harvest handling of {crop_name} to minimize losses."
+            ])
+        
+        if len(guidance['general']) < 2:
+            guidance['general'].extend([
+                f"Conduct regular field inspections for {crop_name}.",
+                f"Maintain proper farm hygiene and remove diseased plant material from {crop_name} fields."
+            ])
+        
+        # Remove duplicates again after adding generic advice
+        for key in guidance:
+            guidance[key] = list(set(guidance[key]))
         
         return guidance
-    
-    def get_all_crops(self) -> List[str]:
-        """Get list of all crops available in advisory database"""
-        if self.advisories_df is None or len(self.advisories_df) == 0:
-            return []
-        
-        return sorted(self.advisories_df['crop_name'].unique().tolist())
-    
-    def get_weather_alerts(self, weather_data: Dict) -> List[Dict]:
-        """
-        Generate weather alerts based on current conditions
-        
-        Args:
-            weather_data: Current weather data
-        
-        Returns:
-            List of weather alerts
-        """
-        alerts = []
-        
-        # Temperature alerts
-        temp = weather_data.get('temperature', 0)
-        if temp > 35:
-            alerts.append({
-                'type': 'heat',
-                'title': 'Heat Stress Alert',
-                'description': f'High temperature detected ({temp}°C). Increase irrigation frequency and provide shade if needed.',
-                'severity': 'high' if temp > 40 else 'medium',
-                'icon': 'thermometer',
-                'color': 'orange'
-            })
-        elif temp < 10:
-            alerts.append({
-                'type': 'cold',
-                'title': 'Cold Weather Alert',
-                'description': f'Low temperature detected ({temp}°C). Protect sensitive crops from frost damage.',
-                'severity': 'medium',
-                'icon': 'thermometer',
-                'color': 'blue'
-            })
-        
-        # Rainfall alerts
-        rainfall = weather_data.get('rainfall', 0)
-        if rainfall > 50:
-            alerts.append({
-                'type': 'rainfall',
-                'title': 'Heavy Rain Warning',
-                'description': f'Heavy rainfall detected ({rainfall}mm). Delay pesticide spraying and ensure proper drainage.',
-                'severity': 'high',
-                'icon': 'droplets',
-                'color': 'red'
-            })
-        
-        # Humidity alerts
-        humidity = weather_data.get('humidity', 0)
-        if humidity > 85:
-            alerts.append({
-                'type': 'humidity',
-                'title': 'High Humidity Alert',
-                'description': f'High humidity detected ({humidity}%). Ideal conditions for fungal diseases. Apply preventive fungicide treatment.',
-                'severity': 'high' if humidity > 90 else 'medium',
-                'icon': 'cloud',
-                'color': 'yellow'
-            })
-        
-        # Wind speed alerts
-        wind_speed = weather_data.get('wind_speed', 0)
-        if wind_speed > 15:
-            alerts.append({
-                'type': 'wind',
-                'title': 'Strong Wind Alert',
-                'description': f'Strong winds detected ({wind_speed} km/h). Do not conduct spraying operations. Avoid mechanical operations.',
-                'severity': 'high' if wind_speed > 25 else 'medium',
-                'icon': 'wind',
-                'color': 'blue'
-            })
-        
-        # If no alerts, add favorable condition message
-        if len(alerts) == 0:
-            alerts.append({
-                'type': 'favorable',
-                'title': 'Favorable Conditions',
-                'description': 'Current weather conditions are suitable for farming operations.',
-                'severity': 'info',
-                'icon': 'check-circle',
-                'color': 'green'
-            })
-        
-        return alerts

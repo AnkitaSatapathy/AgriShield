@@ -120,62 +120,61 @@ const Weather = () => {
 
   const weatherAlerts = currentWeather ? generateAlerts() : [];
 
-  // Format advisory data from API
-  const formatAdvisoryData = () => {
-    if (!cropAdvisory || !cropAdvisory.advisories) {
-      return null;
-    }
-
+// Format advisory data from API
+const formatAdvisoryData = () => {
+  if (!cropAdvisory || !cropAdvisory.guidance) {
+    // Fallback: Process advisories list
     const advisories = cropAdvisory.advisories;
     const riskLevel = cropAdvisory.risk_level || "Low";
 
-    // If advisories is already an object with categorized data (from get_crop_specific_guidance)
-    if (typeof advisories === 'object' && !Array.isArray(advisories)) {
-      return {
-        risk: riskLevel,
-        advisory: advisories.general?.join(' ') || advisories.disease_warning?.join(' ') || "Monitor weather conditions and follow standard agronomic practices.",
-        irrigation: advisories.irrigation?.join(' ') || "Follow local agricultural guidelines for irrigation.",
-        sowing: "Follow recommended sowing schedule for your region.",
-        spraying: advisories.spraying?.join(' ') || "Always follow pesticide label instructions.",
-        harvesting: "Harvest at optimal maturity stage for quality."
-      };
-    }
-
-    // Legacy format: array of advisory objects
-    const groupedAdvisories = {
-      irrigation: [],
-      sowing: [],
-      spraying: [],
-      harvesting: [],
-      general: []
+    const grouped = {
+      irrigation: new Set(),
+      sowing: new Set(),
+      spraying: new Set(),
+      harvesting: new Set(),
+      general: new Set()
     };
 
     advisories.forEach(adv => {
       const actionType = adv.action_type || 'general';
       const message = adv.advisory_message || adv.message || '';
       
-      if (actionType.includes('irrigation')) {
-        groupedAdvisories.irrigation.push(message);
-      } else if (actionType.includes('sowing')) {
-        groupedAdvisories.sowing.push(message);
-      } else if (actionType.includes('spray')) {
-        groupedAdvisories.spraying.push(message);
+      if (!message) return; // Skip empty messages
+      
+      if (actionType.includes('irrigation') || actionType.includes('water')) {
+        grouped.irrigation.add(message);
+      } else if (actionType.includes('sowing') || actionType.includes('planting')) {
+        grouped.sowing.add(message);
+      } else if (actionType.includes('spray') || actionType.includes('pesticide')) {
+        grouped.spraying.add(message);
       } else if (actionType.includes('harvest')) {
-        groupedAdvisories.harvesting.push(message);
+        grouped.harvesting.add(message);
       } else {
-        groupedAdvisories.general.push(message);
+        grouped.general.add(message);
       }
     });
 
     return {
       risk: riskLevel,
-      advisory: groupedAdvisories.general.join(' ') || "Monitor weather conditions and follow standard agronomic practices.",
-      irrigation: groupedAdvisories.irrigation.join(' ') || "Follow local agricultural guidelines for irrigation.",
-      sowing: groupedAdvisories.sowing.join(' ') || "Follow recommended sowing schedule for your region.",
-      spraying: groupedAdvisories.spraying.join(' ') || "Always follow pesticide label instructions.",
-      harvesting: groupedAdvisories.harvesting.join(' ') || "Harvest at optimal maturity stage for quality."
+      advisory: Array.from(grouped.general).join(' ') || `Monitor ${crop} regularly for weather-related stress.`,
+      irrigation: Array.from(grouped.irrigation).join(' ') || `Adjust irrigation schedule for ${crop} based on rainfall and soil moisture.`,
+      sowing: Array.from(grouped.sowing).join(' ') || `Follow optimal planting time for ${crop} in your region.`,
+      spraying: Array.from(grouped.spraying).join(' ') || `Apply crop protection chemicals during favorable weather conditions.`,
+      harvesting: Array.from(grouped.harvesting).join(' ') || `Harvest ${crop} at proper maturity stage.`
     };
+  }
+
+  const guidance = cropAdvisory.guidance;
+  
+  return {
+    risk: cropAdvisory.risk_level || "Low",
+    advisory: guidance.general || [],
+    irrigation: guidance.irrigation || [],
+    sowing: guidance.sowing || [],
+    spraying: guidance.spraying || [],
+    harvesting: guidance.harvesting || []
   };
+};
 
   const formattedAdvisory = cropAdvisory ? formatAdvisoryData() : null;
 
@@ -466,25 +465,36 @@ const Weather = () => {
 
                 {/* Advisory Cards */}
                 <div className="grid md:grid-cols-2 gap-4 mb-6">
-                  {[
-                    { title: "💧 Irrigation", content: formattedAdvisory.irrigation, color: "blue" },
-                    { title: "🌱 Sowing", content: formattedAdvisory.sowing, color: "green" },
-                    { title: "🚜 Spraying", content: formattedAdvisory.spraying, color: "yellow" },
-                    { title: "🎯 Harvesting", content: formattedAdvisory.harvesting, color: "purple" }
-                  ].map((adv, idx) => (
-                    <div key={idx} className={`bg-gradient-to-br rounded-2xl p-5 border-2`}
-                      style={{
-                        background: adv.color === 'blue' ? 'linear-gradient(to right, rgb(239, 246, 255), rgb(224, 242, 254))' :
-                                   adv.color === 'green' ? 'linear-gradient(to right, rgb(240, 253, 244), rgb(220, 252, 231))' :
-                                   adv.color === 'yellow' ? 'linear-gradient(to right, rgb(254, 252, 231), rgb(254, 248, 199))' :
-                                   'linear-gradient(to right, rgb(243, 232, 255), rgb(233, 213, 255))',
-                        borderColor: adv.color === 'blue' ? '#3b82f6' : adv.color === 'green' ? '#22c55e' : adv.color === 'yellow' ? '#eab308' : '#a855f7'
-                      }}>
-                      <h4 className="font-bold text-gray-900 mb-2">{adv.title}</h4>
+                {[
+                  { title: "💧 Irrigation", content: formattedAdvisory.irrigation, color: "blue" },
+                  { title: "🌱 Sowing", content: formattedAdvisory.sowing, color: "green" },
+                  { title: "🚜 Spraying", content: formattedAdvisory.spraying, color: "yellow" },
+                  { title: "🎯 Harvesting", content: formattedAdvisory.harvesting, color: "purple" }
+                ].map((adv, idx) => (
+                  <div key={idx} className={`bg-gradient-to-br rounded-2xl p-5 border-2`}
+                    style={{
+                      background: adv.color === 'blue' ? 'linear-gradient(to right, rgb(239, 246, 255), rgb(224, 242, 254))' :
+                                adv.color === 'green' ? 'linear-gradient(to right, rgb(240, 253, 244), rgb(220, 252, 231))' :
+                                adv.color === 'yellow' ? 'linear-gradient(to right, rgb(254, 252, 231), rgb(254, 248, 199))' :
+                                'linear-gradient(to right, rgb(243, 232, 255), rgb(233, 213, 255))',
+                      borderColor: adv.color === 'blue' ? '#3b82f6' : adv.color === 'green' ? '#22c55e' : adv.color === 'yellow' ? '#eab308' : '#a855f7'
+                    }}>
+                    <h4 className="font-bold text-gray-900 mb-3 text-lg">{adv.title}</h4>
+                    {Array.isArray(adv.content) ? (
+                      <ul className="space-y-2">
+                        {adv.content.map((point, i) => (
+                          <li key={i} className="flex items-start space-x-2">
+                            <span className="text-gray-600 mt-1">•</span>
+                            <span className="text-sm text-gray-700 leading-relaxed flex-1">{point}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
                       <p className="text-sm text-gray-700 leading-relaxed">{adv.content}</p>
-                    </div>
-                  ))}
-                </div>
+                    )}
+                  </div>
+                ))}
+              </div>
 
                 {/* Recommended Actions */}
                 <div className="bg-gradient-to-r from-green-100 to-emerald-100 rounded-2xl p-6 border-l-4 border-green-600">
