@@ -149,6 +149,9 @@ class WeatherService:
             forecast_list = []
             all_sorted_dates = sorted(daily_forecasts.keys())
             
+            # Get today's date to skip it (forecast should start from tomorrow)
+            today = datetime.now().strftime("%Y-%m-%d")
+            
             # Icon map for emoji conversion
             icon_map = {
                 "01": "☀️",  # Clear
@@ -163,6 +166,10 @@ class WeatherService:
             }
             
             for idx, date_key in enumerate(all_sorted_dates):
+                # Skip today - forecast should start from tomorrow
+                if date_key == today:
+                    continue
+                    
                 day_data = daily_forecasts[date_key]
                 
                 # Get most common condition and icon
