@@ -210,22 +210,33 @@ def health_check():
 
 
 @app.get("/api/crops", tags=["Data"])
-def get_crops():
-    """Get list of available crops"""
-    crops_from_advisory = []
-    if weather_services_available:
+def get_crops(include_advisory: Optional[bool] = False):
+    """Get canonical list of available crops from the trained model.
+
+    By default this returns the canonical `crop_list` used by the ML model
+    (the authoritative 55 crops). Set `include_advisory=true` to merge in
+    advisory-only crops from the advisory service when weather services are available.
+    """
+    # Use canonical model crop list as the single source of truth
+    canonical_crops = crop_list or []
+
+    if include_advisory and weather_services_available:
         try:
-            crops_from_advisory = advisory_service.get_available_crops()
-        except:
+            advisory_crops = advisory_service.get_available_crops()
+            combined = list(set(canonical_crops + advisory_crops))
+            return {
+                "crops": sorted(combined),
+                "count": len(combined),
+                "message": "Canonical crops combined with advisory crops"
+            }
+        except Exception:
+            # Fallback to canonical list if advisory retrieval fails
             pass
-    
-    # Combine both lists and remove duplicates
-    all_crops = list(set(crop_list + crops_from_advisory))
-    
+
     return {
-        "crops": sorted(all_crops),
-        "count": len(all_crops),
-        "message": "Available crops for prediction and advisory"
+        "crops": sorted(canonical_crops),
+        "count": len(canonical_crops),
+        "message": "Canonical crop list from trained model"
     }
 
 
