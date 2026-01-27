@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Cloud, Leaf, AlertTriangle, Droplets, Thermometer, Wind, MapPin, Search, AlertCircle, CheckCircle, Info, Eye, BookOpen, ChevronRight, Sprout, Shield, Activity, Loader2 } from "lucide-react";
 import weatherApi from "./services/weatherApi";
-import { INDIAN_STATES, CROPS_LIST } from "./utils/constants";
+import { INDIAN_STATES, CROPS_LIST, DISTRICTS_BY_STATE } from "./utils/constants";
 
 const Weather = () => {
   const [state, setState] = useState("");
@@ -281,7 +281,10 @@ const formatAdvisoryData = () => {
               </label>
               <select
                 value={state}
-                onChange={(e) => setState(e.target.value)}
+                onChange={(e) => {
+                  setState(e.target.value);
+                  setDistrict(""); // Reset district when state changes
+                }}
                 className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition bg-gray-50 hover:bg-white"
               >
                 <option value="">Choose State...</option>
@@ -297,13 +300,19 @@ const formatAdvisoryData = () => {
                 <MapPin className="w-4 h-4 inline mr-2" />
                 Select District
               </label>
-              <input
-                type="text"
-                placeholder="e.g., Ludhiana, Hisar"
+              <select
                 value={district}
                 onChange={(e) => setDistrict(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition bg-gray-50 hover:bg-white"
-              />
+                disabled={!state}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition bg-gray-50 hover:bg-white disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-500"
+              >
+                <option value="">
+                  {!state ? "Select State First..." : "Choose District..."}
+                </option>
+                {state && DISTRICTS_BY_STATE[state] && DISTRICTS_BY_STATE[state].map((districtName) => (
+                  <option key={districtName} value={districtName}>{districtName}</option>
+                ))}
+              </select>
             </div>
 
             {/* Crop Selection */}
