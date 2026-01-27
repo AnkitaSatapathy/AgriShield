@@ -182,9 +182,9 @@ const formatAdvisoryData = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-50">
       {/* Hero Section */}
       <div 
-        className="relative bg-cover bg-center py-20 px-4"
+        className="relative bg-cover bg-center py-6 px-4"
         style={{
-          backgroundImage: 'linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(https://images.unsplash.com/photo-1495567720989-cebfbe6d6b8d?w=1200&h=400&fit=crop)',
+          backgroundImage: 'linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(https://tribe.article-14.com/uploads/2024/08-August/01-Thu/lg/farm_66aafafdc4b60.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
@@ -195,7 +195,7 @@ const formatAdvisoryData = () => {
               <Cloud className="w-12 h-12 text-white" />
             </div>
             <h1 className="text-5xl md:text-6xl font-bold text-white drop-shadow-lg">
-              Weather Forecast & Agricultural Advisory
+              Weather Forecast & Crop Advisory
             </h1>
           </div>
           <p className="text-xl text-gray-200 max-w-3xl mx-auto">
@@ -206,7 +206,7 @@ const formatAdvisoryData = () => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10">
             {[
               { icon: Thermometer, value: "Real-time", label: "Weather Data", color: "red" },
-              { icon: Sprout, value: "70+", label: "Crop Types", color: "green" },
+              { icon: Sprout, value: "60+", label: "Crop Types", color: "green" },
               { icon: AlertCircle, value: "Smart", label: "Alerts", color: "yellow" },
               { icon: Activity, value: "7-Day", label: "Forecast", color: "blue" }
             ].map((stat, idx) => (
@@ -298,7 +298,7 @@ const formatAdvisoryData = () => {
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-3">
                 <MapPin className="w-4 h-4 inline mr-2" />
-                Select District
+                Select City
               </label>
               <select
                 value={district}
@@ -307,7 +307,7 @@ const formatAdvisoryData = () => {
                 className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none transition bg-gray-50 hover:bg-white disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-500"
               >
                 <option value="">
-                  {!state ? "Select State First..." : "Choose District..."}
+                  {!state ? "Select State First..." : "Choose City..."}
                 </option>
                 {state && DISTRICTS_BY_STATE[state] && DISTRICTS_BY_STATE[state].map((districtName) => (
                   <option key={districtName} value={districtName}>{districtName}</option>
@@ -407,6 +407,39 @@ const formatAdvisoryData = () => {
                 </p>
               </div>
             </div>
+
+            {/* 7-Day Forecast */}
+            {weeklyForecast && weeklyForecast.length > 0 && (
+              <div className="bg-white rounded-3xl shadow-2xl p-8 mb-12 border border-gray-100">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                  <Cloud className="w-6 h-6 mr-3 text-blue-600" />
+                  7-Day Weather Forecast
+                </h2>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                  {weeklyForecast.map((day, idx) => (
+                    <div key={idx} className="bg-gradient-to-br from-sky-50 to-blue-50 border-2 border-sky-200 rounded-2xl p-4 text-center hover:shadow-lg transition transform hover:scale-105">
+                      <h4 className="font-bold text-gray-900 mb-2">{day?.day || 'N/A'}</h4>
+                      <div className="text-3xl mb-3">{day?.icon || '🌤️'}</div>
+                      <p className="text-xs text-gray-600 font-semibold mb-2">{day?.condition || 'N/A'}</p>
+                      <div className="space-y-2">
+                        <div>
+                          <p className="text-xs text-gray-600">High</p>
+                          <p className="font-bold text-lg text-gray-900">{day?.temp_high || 'N/A'}°</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-600">Low</p>
+                          <p className="font-semibold text-gray-700">{day?.temp_low || 'N/A'}°</p>
+                        </div>
+                        <div className="bg-blue-100 rounded-lg px-2 py-1">
+                          <p className="text-xs text-blue-900 font-semibold">💧 {day?.rainfall || 0}mm</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Active Weather Alerts */}
             <div className="bg-white rounded-3xl shadow-2xl p-8 mb-12 border border-gray-100">
@@ -548,50 +581,7 @@ const formatAdvisoryData = () => {
               </div>
             )}
 
-            {/* 7-Day Forecast */}
-            {weeklyForecast && weeklyForecast.length > 0 && (
-              <div className="bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <Cloud className="w-6 h-6 mr-3 text-blue-600" />
-                  7-Day Weather Forecast
-                </h2>
-                
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-                  {weeklyForecast.map((day, idx) => (
-                    <div key={idx} className="bg-gradient-to-br from-sky-50 to-blue-50 border-2 border-sky-200 rounded-2xl p-4 text-center hover:shadow-lg transition transform hover:scale-105">
-                      <h4 className="font-bold text-gray-900 mb-2">{day?.day || 'N/A'}</h4>
-                      <div className="text-3xl mb-3">{day?.icon || '🌤️'}</div>
-                      <p className="text-xs text-gray-600 font-semibold mb-2">{day?.condition || 'N/A'}</p>
-                      <div className="space-y-2">
-                        <div>
-                          <p className="text-xs text-gray-600">High</p>
-                          <p className="font-bold text-lg text-gray-900">{day?.temp_high || 'N/A'}°</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-600">Low</p>
-                          <p className="font-semibold text-gray-700">{day?.temp_low || 'N/A'}°</p>
-                        </div>
-                        <div className="bg-blue-100 rounded-lg px-2 py-1">
-                          <p className="text-xs text-blue-900 font-semibold">💧 {day?.rainfall || 0}mm</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </>
-        )}
-
-        {/* Empty State Message */}
-        {!weatherFetched && !loading && (
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-3xl border-2 border-dashed border-gray-300 p-12 text-center">
-            <Cloud className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-gray-700 mb-2">Get Started</h3>
-            <p className="text-gray-600 max-w-2xl mx-auto">     
-              Select your state, district, and a crop to view current weather conditions, weather alerts, and crop-specific agricultural advisory recommendations.
-            </p>
-          </div>
         )}
       </div>
     </div>
