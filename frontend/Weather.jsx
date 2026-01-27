@@ -204,21 +204,31 @@ const formatAdvisoryData = () => {
 
           {/* Feature Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10">
-            {[
-              { icon: Thermometer, value: "Real-time", label: "Weather Data", color: "red" },
-              { icon: Sprout, value: "60+", label: "Crop Types", color: "green" },
-              { icon: AlertCircle, value: "Smart", label: "Alerts", color: "yellow" },
-              { icon: Activity, value: "7-Day", label: "Forecast", color: "blue" }
-            ].map((stat, idx) => (
-              <div 
-                key={idx} 
-                className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 hover:bg-white/20 transition transform hover:scale-105"
-              >
-                <stat.icon className="w-8 h-8 text-white mx-auto mb-2" />
-                <div className="text-2xl font-bold text-white">{stat.value}</div>
-                <div className="text-sm text-gray-200">{stat.label}</div>
-              </div>
-            ))}
+
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 hover:bg-white/20 transition transform hover:scale-105 text-center">
+              <Thermometer className="w-8 h-8 text-red-300 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-white">Real-time</div>
+              <div className="text-sm text-gray-200">Weather Data</div>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 hover:bg-white/20 transition transform hover:scale-105 text-center">
+              <Sprout className="w-8 h-8 text-green-300 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-white">60+</div>
+              <div className="text-sm text-gray-200">Crop Types</div>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 hover:bg-white/20 transition transform hover:scale-105 text-center">
+              <AlertCircle className="w-8 h-8 text-yellow-300 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-white">Smart</div>
+              <div className="text-sm text-gray-200">Alerts</div>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 hover:bg-white/20 transition transform hover:scale-105 text-center">
+              <Activity className="w-8 h-8 text-blue-300 mx-auto mb-2" />
+              <div className="text-2xl font-bold text-white">7-Day</div>
+              <div className="text-sm text-gray-200">Forecast</div>
+            </div>
+
           </div>
         </div>
       </div>
