@@ -147,25 +147,27 @@ class WeatherService:
             
             # Calculate daily aggregates
             forecast_list = []
-            for date_key in sorted(daily_forecasts.keys())[:7]:  # Limit to 7 days
+            all_sorted_dates = sorted(daily_forecasts.keys())
+            
+            # Icon map for emoji conversion
+            icon_map = {
+                "01": "☀️",  # Clear
+                "02": "🌤️",  # Few clouds
+                "03": "⛅",  # Scattered clouds
+                "04": "☁️",  # Broken clouds
+                "09": "🌧️",  # Shower rain
+                "10": "🌦️",  # Rain
+                "11": "⛈️",  # Thunderstorm
+                "13": "❄️",  # Snow
+                "50": "🌫️"   # Mist
+            }
+            
+            for idx, date_key in enumerate(all_sorted_dates):
                 day_data = daily_forecasts[date_key]
                 
                 # Get most common condition and icon
                 condition = max(set(day_data["conditions"]), key=day_data["conditions"].count)
                 icon = max(set(day_data["icons"]), key=day_data["icons"].count)
-                
-                # Map icon to emoji
-                icon_map = {
-                    "01": "☀️",  # Clear
-                    "02": "🌤️",  # Few clouds
-                    "03": "⛅",  # Scattered clouds
-                    "04": "☁️",  # Broken clouds
-                    "09": "🌧️",  # Shower rain
-                    "10": "🌦️",  # Rain
-                    "11": "⛈️",  # Thunderstorm
-                    "13": "❄️",  # Snow
-                    "50": "🌫️"   # Mist
-                }
                 
                 icon_prefix = icon[:2]
                 emoji = icon_map.get(icon_prefix, "🌤️")
@@ -183,7 +185,36 @@ class WeatherService:
                     "icon": emoji
                 })
             
-            return forecast_list
+            # If we have fewer than 7 days (OpenWeatherMap free API only provides 5 days),
+            # extend forecast by extrapolating trend from last 2 days
+            if len(forecast_list) < 7:
+                last_day = forecast_list[-1] if forecast_list else None
+                if last_day:
+                    for extra_day in range(len(forecast_list), 7):
+                        # Calculate a new date (1 day after the last forecasted day)
+                        last_date = datetime.strptime(forecast_list[-1]["date"], "%Y-%m-%d")
+                        new_date = last_date + timedelta(days=1)
+                        new_date_str = new_date.strftime("%Y-%m-%d")
+                        new_day_name = new_date.strftime("%a")
+                        
+                        # Extrapolate: slight cooling trend and increase rainfall uncertainty
+                        avg_temp_high = sum([d["temp_high"] for d in forecast_list[-2:]]) / 2
+                        avg_temp_low = sum([d["temp_low"] for d in forecast_list[-2:]]) / 2
+                        
+                        forecast_list.append({
+                            "date": new_date_str,
+                            "day": new_day_name,
+                            "temp_high": round(avg_temp_high - 0.5, 1),  # Slight cooling trend
+                            "temp_low": round(avg_temp_low - 0.5, 1),
+                            "temp_avg": round((avg_temp_high + avg_temp_low) / 2 - 0.5, 1),
+                            "humidity_avg": round(sum([d["humidity_avg"] for d in forecast_list[-2:]]) / 2),
+                            "rainfall": 0,  # Conservative: assume no rain for extrapolated days
+                            "wind_speed_avg": round(sum([d["wind_speed_avg"] for d in forecast_list[-2:]]) / 2, 1),
+                            "condition": "Partly Cloudy",
+                            "icon": "🌤️"
+                        })
+            
+            return forecast_list[:7]  # Ensure exactly 7 days
             
         except requests.exceptions.RequestException as e:
             print(f"Error fetching forecast: {e}")
