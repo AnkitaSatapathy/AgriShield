@@ -5,6 +5,7 @@ import DiseaseDetection from './DiseaseDetection';
 import CropRecommendation from './CropRecommendation';
 import Weather from './Weather';
 import FarmingTips from './FarmingTips';
+import SchemeCard from './SchemeCard';
 
 
 const App = () => {
@@ -302,7 +303,7 @@ const App = () => {
           </div>
         </nav>
         
-        <SchemesPage />
+        <SchemeCard onBack={goToHome} />
       </div>
       
     );
