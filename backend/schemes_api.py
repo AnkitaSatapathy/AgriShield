@@ -5,8 +5,20 @@ from schemes_data import SchemeManager
 
 router = APIRouter(prefix="/schemes", tags=["schemes"])
 
-# Initialize scheme manager
-scheme_manager = SchemeManager()
+
+# Initialize scheme manager lazily
+scheme_manager = None
+
+def get_manager():
+    global scheme_manager
+    if scheme_manager is None:
+        try:
+            scheme_manager = SchemeManager()
+        except Exception as e:
+            import traceback
+            print(f"Init failed: {e}")
+            raise e
+    return scheme_manager
 
 
 # Pydantic models
@@ -60,7 +72,8 @@ def get_eligible_schemes(query: SchemeQuery):
     }
     """
     try:
-        schemes = scheme_manager.get_eligible_schemes(
+        manager = get_manager()
+        schemes = manager.get_eligible_schemes(
             state=query.state,
             farmer_category=query.farmer_category,
             crop_type=query.crop_type
@@ -82,7 +95,8 @@ def get_eligible_schemes_get(
     Example: /schemes/eligible?state=Punjab&farmer_category=Small&crop_type=Rice
     """
     try:
-        schemes = scheme_manager.get_eligible_schemes(
+        manager = get_manager()
+        schemes = manager.get_eligible_schemes(
             state=state,
             farmer_category=farmer_category,
             crop_type=crop_type
@@ -92,6 +106,9 @@ def get_eligible_schemes_get(
             "schemes": schemes
         }
     except Exception as e:
+        import traceback
+        with open("debug_error.log", "w") as f:
+            f.write(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -99,7 +116,8 @@ def get_eligible_schemes_get(
 def get_all_schemes():
     """Get all available schemes"""
     try:
-        schemes = scheme_manager.get_all_schemes()
+        manager = get_manager()
+        schemes = manager.get_all_schemes()
         return {
             "count": len(schemes),
             "schemes": schemes
@@ -111,7 +129,8 @@ def get_all_schemes():
 @router.get("/{scheme_id}")
 def get_scheme(scheme_id: str):
     """Get specific scheme by ID"""
-    scheme = scheme_manager.get_scheme_by_id(scheme_id)
+    manager = get_manager()
+    scheme = manager.get_scheme_by_id(scheme_id)
     if scheme is None:
         raise HTTPException(status_code=404, detail="Scheme not found")
     return scheme
@@ -121,14 +140,10 @@ def get_scheme(scheme_id: str):
 def get_states():
     """Get list of available states"""
     try:
-        states = scheme_manager.get_unique_states()
+        manager = get_manager()
+        states = manager.get_unique_states()
         # Add common states if not in schemes
-        common_states = [
-            "Punjab", "Haryana", "Uttar Pradesh", "Bihar", "West Bengal",
-            "Maharashtra", "Karnataka", "Tamil Nadu", "Andhra Pradesh", "Kerala"
-        ]
-        all_states = sorted(list(set(states + common_states)))
-        return {"states": all_states}
+        return {"states": states}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -137,7 +152,8 @@ def get_states():
 def get_crops():
     """Get list of available crop types"""
     try:
-        crops = scheme_manager.get_unique_crops()
+        manager = get_manager()
+        crops = manager.get_unique_crops()
         return {"crops": crops}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -155,7 +171,8 @@ def get_categories():
 def get_scheme_types():
     """Get scheme types"""
     try:
-        types = scheme_manager.get_scheme_types()
+        manager = get_manager()
+        types = manager.get_scheme_types()
         return {"scheme_types": types}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

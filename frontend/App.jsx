@@ -30,6 +30,9 @@ const App = () => {
     else if (window.location.hash === '#/farming-tips') {
       setCurrentPage('farming-tips');
     }
+    else if (window.location.hash === '#/govt-schemes') {
+      setCurrentPage('govt-schemes');
+    }
 
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -106,7 +109,7 @@ const App = () => {
 
   const handleFeatureClick = (link) => {
     if (link === 'risk-prediction') {
-       window.open(window.location.origin + '/#/risk-prediction', '_blank');
+      window.open(window.location.origin + '/#/risk-prediction', '_blank');
     } else if (link === 'crop-recommendation') {
       window.open(window.location.origin + '/#/crop-recommendation', '_blank');
     } else if (link === 'disease-detection') {
@@ -114,7 +117,7 @@ const App = () => {
     } else if (link === 'weather-forecast') {
       window.open(window.location.origin + '/#/weather-forecast', '_blank');
     } else if (link === 'govt-schemes') {
-      setCurrentPage('govt-schemes');
+      window.open(window.location.origin + '/#/govt-schemes', '_blank');
     } else if (link === 'farming-tips') {
       setCurrentPage('farming-tips');
     } else {
@@ -143,7 +146,7 @@ const App = () => {
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button 
+              <button
                 onClick={goToHome}
                 className="flex items-center space-x-2 cursor-pointer"
               >
@@ -154,7 +157,7 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-              
+
               <button
                 onClick={goToHome}
                 className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
@@ -165,7 +168,7 @@ const App = () => {
             </div>
           </div>
         </nav>
-        
+
         <RiskPrediction />
       </div>
     );
@@ -179,7 +182,7 @@ const App = () => {
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button 
+              <button
                 onClick={goToHome}
                 className="flex items-center space-x-2 cursor-pointer"
               >
@@ -190,7 +193,7 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-              
+
               <button
                 onClick={goToHome}
                 className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
@@ -201,7 +204,7 @@ const App = () => {
             </div>
           </div>
         </nav>
-        
+
         <DiseaseDetection />
       </div>
     );
@@ -215,7 +218,7 @@ const App = () => {
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button 
+              <button
                 onClick={goToHome}
                 className="flex items-center space-x-2 cursor-pointer"
               >
@@ -229,7 +232,7 @@ const App = () => {
             </div>
           </div>
         </nav>
-        
+
         <CropRecommendation onBack={goToHome} />
       </div>
     );
@@ -242,7 +245,7 @@ const App = () => {
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button 
+              <button
                 onClick={goToHome}
                 className="flex items-center space-x-2 cursor-pointer"
               >
@@ -253,7 +256,7 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-              
+
               <button
                 onClick={goToHome}
                 className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
@@ -264,7 +267,7 @@ const App = () => {
             </div>
           </div>
         </nav>
-        
+
         <div className="pt-16">
           <Weather />
         </div>
@@ -280,7 +283,7 @@ const App = () => {
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button 
+              <button
                 onClick={goToHome}
                 className="flex items-center space-x-2 cursor-pointer"
               >
@@ -291,7 +294,7 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-              
+
               <button
                 onClick={goToHome}
                 className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
@@ -302,10 +305,10 @@ const App = () => {
             </div>
           </div>
         </nav>
-        
+
         <SchemeCard onBack={goToHome} />
       </div>
-      
+
     );
   }
 
@@ -317,7 +320,7 @@ const App = () => {
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button 
+              <button
                 onClick={goToHome}
                 className="flex items-center space-x-2 cursor-pointer"
               >
@@ -328,7 +331,7 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-              
+
               <button
                 onClick={goToHome}
                 className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
@@ -339,10 +342,10 @@ const App = () => {
             </div>
           </div>
         </nav>
-        
+
         <FarmingTips />
       </div>
-      
+
     );
   }
 
@@ -363,7 +366,7 @@ const App = () => {
                 AgriShield
               </span>
             </div>
-            
+
             <div className="hidden md:flex space-x-8">
               <a href="#home" className="text-gray-700 hover:text-green-600 transition">Home</a>
               <a href="#about" className="text-gray-700 hover:text-green-600 transition">About</a>
@@ -380,7 +383,7 @@ const App = () => {
               </button>
             </div>
 
-            <button 
+            <button
               className="md:hidden"
               onClick={() => setMenuOpen(!menuOpen)}
             >
@@ -433,9 +436,9 @@ const App = () => {
 
             <div className="relative hidden md:block">
               <div className="relative z-10">
-                <img 
-                  src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=600&h=600&fit=crop" 
-                  alt="Smart Farming" 
+                <img
+                  src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=600&h=600&fit=crop"
+                  alt="Smart Farming"
                   className="rounded-2xl shadow-2xl"
                 />
               </div>
@@ -483,9 +486,9 @@ const App = () => {
               </div>
             </div>
             <div className="relative">
-              <img 
-                src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600&h=400&fit=crop" 
-                alt="Agriculture Technology" 
+              <img
+                src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600&h=400&fit=crop"
+                alt="Agriculture Technology"
                 className="rounded-2xl shadow-2xl"
               />
               <div className="absolute -bottom-6 -left-6 bg-gradient-to-r from-green-600 to-emerald-600 p-6 rounded-xl text-white shadow-xl">

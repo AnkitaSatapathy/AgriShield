@@ -13,9 +13,16 @@ import pandas as pd
 from dotenv import load_dotenv
 
 # Import existing routers and functions
-from disease import router as disease_router
+try:
+    from disease import router as disease_router
+    disease_service_available = True
+except Exception as e:
+    disease_service_available = False
+    print(f"⚠️ Disease service unavailable: {e}")
 from crop_recommendation_api import router as crop_recommendation_router    
 from predict import predict_crop_failure, crop_list, state_list, district_list
+from schemes_data import SchemeManager
+from schemes_api import router as schemes_router
 
 # Import NEW weather services
 from weather_service import WeatherService
@@ -23,6 +30,15 @@ from advisory_service import AdvisoryService
 
 # Load environment variables
 load_dotenv()
+
+# Initialize Scheme Manager
+try:
+    scheme_manager = SchemeManager()
+    print("✅ Scheme Manager initialized successfully")
+except Exception as e:
+    print(f"⚠️ Scheme Manager initialization failed: {e}")
+    scheme_manager = None
+
 
 # ============================================================================
 # FASTAPI APP INITIALIZATION
@@ -43,14 +59,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",  # Vite default
-        "http://localhost:3000",  # React default
-        "http://localhost:8000",  # FastAPI default
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:8000",
-        "http://localhost",
-        "http://127.0.0.1",
+        "*", # Allow all origins for development to fix CORS issues with dynamic ports
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
@@ -59,8 +68,10 @@ app.add_middleware(
 )
 
 # Include existing routers
-app.include_router(disease_router)
+if disease_service_available:
+    app.include_router(disease_router)
 app.include_router(crop_recommendation_router)
+app.include_router(schemes_router)
 
 # ============================================================================
 # INITIALIZE WEATHER SERVICES
@@ -648,117 +659,7 @@ def get_api_info():
 # ERROR HANDLERS
 # ============================================================================
 
-# ============================================================================
-# GOVERNMENT SCHEMES ENDPOINTS
-# ============================================================================
 
-@app.get("/schemes/filters/states", tags=["Government Schemes"])
-def get_scheme_states():
-    """Get all states with available schemes"""
-    try:
-        csv_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'processed', 'government_schemes.csv')
-        schemes_df = pd.read_csv(csv_path)
-        states = schemes_df['state_applicability'].unique().tolist()
-        # Flatten state applicability (some have comma-separated values)
-        all_states = []
-        for state in states:
-            if isinstance(state, str):
-                all_states.extend([s.strip() for s in state.split(',')])
-        all_states = list(set(all_states))
-        return {"states": sorted(all_states)}
-    except Exception as e:
-        return {"states": [], "error": str(e)}
-
-
-@app.get("/schemes/filters/crops", tags=["Government Schemes"])
-def get_scheme_crops():
-    """Get all crops covered by schemes"""
-    try:
-        csv_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'processed', 'government_schemes.csv')
-        schemes_df = pd.read_csv(csv_path)
-        crops = schemes_df['crop_types'].unique().tolist()
-        # Flatten crop types (some have comma-separated values)
-        all_crops = []
-        for crop in crops:
-            if isinstance(crop, str):
-                all_crops.extend([c.strip() for c in crop.split(',')])
-        all_crops = list(set(all_crops))
-        return {"crops": sorted(all_crops)}
-    except Exception as e:
-        return {"crops": [], "error": str(e)}
-
-
-@app.get("/schemes/filters/types", tags=["Government Schemes"])
-def get_scheme_types():
-    """Get all scheme types"""
-    try:
-        csv_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'processed', 'government_schemes.csv')
-        schemes_df = pd.read_csv(csv_path)
-        types = schemes_df['scheme_type'].unique().tolist()
-        return {"scheme_types": sorted(types)}
-    except Exception as e:
-        return {"scheme_types": [], "error": str(e)}
-
-
-@app.get("/schemes/eligible", tags=["Government Schemes"])
-def get_eligible_schemes(state: str = None, farmer_category: str = None, crop_type: str = None):
-    """Get eligible schemes based on filters"""
-    try:
-        csv_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'processed', 'government_schemes.csv')
-        schemes_df = pd.read_csv(csv_path)
-        
-        # Start with all schemes
-        filtered = schemes_df.copy()
-        
-        # Filter by state
-        if state:
-            filtered = filtered[filtered['state_applicability'].str.contains(state, case=False, na=False)]
-        
-        # Filter by farmer category
-        if farmer_category:
-            filtered = filtered[filtered['farmer_category'].str.contains(farmer_category, case=False, na=False)]
-        
-        # Filter by crop type
-        if crop_type:
-            filtered = filtered[filtered['crop_types'].str.contains(crop_type, case=False, na=False)]
-        
-        # Convert to list of dictionaries
-        schemes = filtered.to_dict('records')
-        
-        return {
-            "schemes": schemes,
-            "count": len(schemes),
-            "filters_applied": {
-                "state": state,
-                "farmer_category": farmer_category,
-                "crop_type": crop_type
-            }
-        }
-    except Exception as e:
-        return {
-            "schemes": [],
-            "count": 0,
-            "error": str(e)
-        }
-
-
-@app.get("/schemes/all", tags=["Government Schemes"])
-def get_all_schemes():
-    """Get all government schemes"""
-    try:
-        csv_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'processed', 'government_schemes.csv')
-        schemes_df = pd.read_csv(csv_path)
-        schemes = schemes_df.to_dict('records')
-        return {
-            "schemes": schemes,
-            "total": len(schemes)
-        }
-    except Exception as e:
-        return {
-            "schemes": [],
-            "total": 0,
-            "error": str(e)
-        }
 
 
 @app.exception_handler(404)
@@ -814,7 +715,8 @@ async def startup_event():
     print(f"✅ Weather Service: {'Active' if weather_services_available else 'Inactive (check .env)'}")
     print(f"✅ Advisory Service: {'Active' if weather_services_available else 'Inactive'}")
     print(f"✅ Supported Crops: {len(crop_list)}")
-    print(f"✅ Supported States: 29 (All Indian States for Weather)")
+    states_count = len(scheme_manager.get_unique_states()) if scheme_manager else "Unknown"
+    print(f"✅ Supported States: {states_count} (Government Schemes)")
     print(f"✅ Risk Prediction States: 24 (Model trained states)")
     print(f"✅ Supported Districts: {len(district_list)}")
     print(f"\n📖 API Documentation: http://localhost:8000/docs")
@@ -835,4 +737,4 @@ if __name__ == "__main__":
         port=8000,
         reload=True,
         log_level="info"
-    )
+    ) 

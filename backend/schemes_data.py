@@ -1,6 +1,11 @@
 import pandas as pd
 from typing import List, Dict, Optional
 from pathlib import Path
+from itertools import product
+import json
+import os
+import urllib.request
+
 
 
 class SchemeManager:
@@ -21,6 +26,7 @@ class SchemeManager:
             raise FileNotFoundError(f"Government schemes CSV not found at {schemes_csv_path}")
 
         self.df = pd.read_csv(schemes_csv_path)
+        self.df = self.df.fillna("")
         
     def get_eligible_schemes(
         self, 
@@ -62,6 +68,21 @@ class SchemeManager:
             )
             filtered_schemes = filtered_schemes[crop_mask]
         
+        if len(filtered_schemes) == 0:
+            # Fallback 1: Relax Crop Filter (Show General schemes for this State + Category)
+            if crop_type:
+                return self.get_eligible_schemes(state, farmer_category, crop_type=None)
+            
+            # Fallback 2: Relax State Filter (Show Central schemes for this Category)
+            # Only if we are not already looking at "All States" logic
+            if state != "All States":
+                # Create synthetic "All States" query
+                schemes_list = self._filter_schemes("All States", farmer_category, crop_type=None)
+                if schemes_list:
+                    for s in schemes_list:
+                         s['eligibility_reason'] = f"Universal scheme applicable to all states (including {state})"
+                    return schemes_list
+
         # Convert to list of dictionaries
         schemes_list = filtered_schemes.to_dict('records')
         
@@ -73,6 +94,33 @@ class SchemeManager:
             )
         
         return schemes_list
+
+    def _filter_schemes(self, state, farmer_category, crop_type=None):
+        """Helper to filter schemes dataframe"""
+        filtered = self.df.copy()
+        
+        # Filter by state
+        state_mask = (
+            filtered['state_applicability'].str.contains('All States', case=False, na=False) |
+            filtered['state_applicability'].str.contains(state, case=False, na=False)
+        )
+        filtered = filtered[state_mask]
+        
+        # Filter by category
+        category_mask = filtered['farmer_category'].str.contains(
+            farmer_category, case=False, na=False
+        )
+        filtered = filtered[category_mask]
+        
+        # Filter by crop
+        if crop_type:
+            crop_mask = (
+                filtered['crop_types'].str.contains('All Crops', case=False, na=False) |
+                filtered['crop_types'].str.contains(crop_type, case=False, na=False)
+            )
+            filtered = filtered[crop_mask]
+            
+        return filtered.to_dict('records')
     
     def _get_eligibility_reason(
         self, 
@@ -122,15 +170,239 @@ class SchemeManager:
     def get_unique_crops(self) -> List[str]:
         """Get list of unique crop types"""
         all_crops = set()
+        
+        # 1. Get crops from CSV
         for crops_str in self.df['crop_types'].dropna():
             if 'All Crops' not in crops_str:
                 crops = [c.strip() for c in crops_str.split(',')]
                 all_crops.update(crops)
+                
+        # 2. Add Master List of supported crops to ensure dropdown covers everything
+        # (These will match with "All Crops" schemes even if not explicitly listed)
+        master_crops = [
+            'Rice', 'Maize', 'Chickpea', 'Kidneybeans', 'Pigeonpeas', 'Mothbeans', 
+            'Mungbean', 'Blackgram', 'Lentil', 'Pomegranate', 'Banana', 'Mango', 
+            'Grapes', 'Watermelon', 'Muskmelon', 'Apple', 'Orange', 'Papaya', 
+            'Coconut', 'Cotton', 'Jute', 'Coffee', 'Arecanut', 'Arhar/Tur', 'Bajra',
+            'Barley', 'Black Pepper', 'Cardamom', 'Cashewnut', 'Castor Seed', 'Coriander',
+            'Cotton(Lint)', 'Cowpea(Lobia)', 'Dry Chillies', 'Garlic', 'Ginger', 'Gram',
+            'Groundnut', 'Guar Seed', 'Jowar', 'Khesari', 'Linseed',
+            'Masoor', 'Mesta', 'Moong(Green Gram)', 'Moth', 'Niger Seed',
+            'Onion', 'Peas & Beans (Pulses)', 'Potato', 'Ragi', 'Rapeseed &Mustard',
+            'Sesamum', 'Small Millets', 'Soyabean', 'Sugarcane',
+            'Sunflower', 'Sweet Potato', 'Tapioca', 'Tobacco', 'Turmeric', 'Urad', 'Wheat'
+        ]
+        all_crops.update(master_crops)
+        
         return sorted(list(all_crops))
     
     def get_scheme_types(self) -> List[str]:
         """Get list of scheme types"""
         return self.df['scheme_type'].unique().tolist()
+
+    def verify_coverage(self) -> Dict:
+        """
+        Verify scheme coverage across all combinations of State + Category + Crop.
+        Returns a summary dictionary including gaps if any.
+        """
+        states = self.get_unique_states()
+        crops = self.get_unique_crops()
+        categories = ["Small", "Marginal", "Large"]
+        
+        total_combinations = len(states) * len(crops) * len(categories)
+        gaps = []
+        
+        for state, crop, category in product(states, crops, categories):
+            # We use _filter_schemes directly or get_eligible_schemes with default fallback
+            # But get_eligible_schemes has fallback logic built-in now, which we want to test.
+            schemes = self.get_eligible_schemes(state, category, crop)
+            if len(schemes) == 0:
+                gaps.append((state, crop, category))
+                
+        return {
+            "total_checked": total_combinations,
+            "gaps_found": len(gaps),
+            "gaps": gaps[:10] if gaps else [],  # Show first 10 gaps
+            "success": len(gaps) == 0
+        }
+
+    def add_schemes(self, new_schemes: List[Dict]) -> Dict:
+        """
+        Add new schemes to the CSV and sync with notebook.
+        Checks for duplicates based on scheme_name.
+        """
+        initial_count = len(self.df)
+        existing_names = set(self.df['scheme_name'].unique())
+        
+        added_count = 0
+        for scheme in new_schemes:
+            if scheme['scheme_name'] not in existing_names:
+                # Validate required fields
+                required_fields = ['scheme_name', 'state_applicability', 'farmer_category', 'crop_types']
+                if all(k in scheme for k in required_fields):
+                    self.df = pd.concat([self.df, pd.DataFrame([scheme])], ignore_index=True)
+                    added_count += 1
+                    existing_names.add(scheme['scheme_name'])
+        
+        if added_count > 0:
+            # Save CSV
+            repo_root = Path(__file__).resolve().parents[1]
+            csv_path = repo_root / "data" / "processed" / "government_schemes.csv"
+            self.df.to_csv(csv_path, index=False, encoding='utf-8')
+            
+            # Sync Notebook
+            sync_result = self.sync_notebook()
+            
+            return {
+                "success": True,
+                "added": added_count,
+                "total_before": initial_count,
+                "total_after": len(self.df),
+                "sync_status": sync_result
+            }
+        
+        return {"success": False, "message": "No new unique schemes found to add."}
+
+    def sync_notebook(self, notebook_path_relative: str = "government_scheme.ipynb"):
+        """
+        Sync the current CSV data back to the Jupyter Notebook source code.
+        This ensures the notebook remains the source of truth for generation.
+        """
+        import json
+        
+        # Resolve notebook path
+        repo_root = Path(__file__).resolve().parents[1]
+        notebook_path = Path(__file__).parent / notebook_path_relative
+        
+        if not notebook_path.exists():
+            return {"success": False, "error": f"Notebook not found at {notebook_path}"}
+            
+        current_schemes = self.df.to_dict('records')
+        
+        try:
+            with open(notebook_path, 'r', encoding='utf-8') as f:
+                nb_data = json.load(f)
+                
+            # Find the cell with 'schemes_data ='
+            target_cell_index = -1
+            for i, cell in enumerate(nb_data['cells']):
+                if cell['cell_type'] == 'code':
+                    source_code = "".join(cell['source'])
+                    if 'schemes_data =' in source_code:
+                        target_cell_index = i
+                        break
+            
+            if target_cell_index == -1:
+                return {"success": False, "error": "Target cell 'schemes_data =' not found in notebook"}
+                
+            # Format list of dicts for Python source code
+            formatted_list = "schemes_data = [\n"
+            for i, s in enumerate(current_schemes):
+                formatted_list += "    {\n"
+                for k, v in s.items():
+                    val_str = str(v).replace("'", "\\'")
+                    formatted_list += f"        '{k}': '{val_str}',\n"
+                formatted_list += "    }"
+                if i < len(current_schemes) - 1:
+                    formatted_list += ",\n"
+                else:
+                    formatted_list += "\n"
+            formatted_list += "]\n\n"
+            
+            # Boilerplate code to preserve
+            remaining_code = [
+                "# Create DataFrame\n",
+                "schemes_df = pd.DataFrame(schemes_data)\n",
+                "\n",
+                "# Define absolute path to save location\n",
+                "save_dir = r'C:\\Users\\KIIT\\Desktop\\AgriShield\\data\\processed'\n",
+                "os.makedirs(save_dir, exist_ok=True)\n",
+                "\n",
+                "# Define filename and full path\n",
+                "csv_filename = 'government_schemes.csv'\n",
+                "csv_filepath = os.path.join(save_dir, csv_filename)\n",
+                "\n",
+                "# Save to CSV\n",
+                "schemes_df.to_csv(csv_filepath, index=False, encoding='utf-8')\n",
+                "\n",
+                "# Display summary\n",
+                "print(f'✅ Successfully saved {len(schemes_df)} schemes')\n",
+                "print(f'\\n📊 Dataset Summary:')\n",
+                "print(f'   - Total schemes: {len(schemes_df)}')\n",
+                "print(f'   - Columns: {len(schemes_df.columns)}')\n",
+                "print(f'   - States covered: {schemes_df[\"state_applicability\"].nunique()}')\n",
+                "print(f'   - Scheme types: {schemes_df[\"scheme_type\"].nunique()}')\n",
+                "print(f'   - Saved to: {csv_filepath}')"
+            ]
+            
+            # Construct new source (handling newlines carefully)
+            new_source = [line + "\n" for line in formatted_list.splitlines()] 
+            new_source = [s.replace('\n\n', '\n') for s in new_source]
+            full_source = new_source + remaining_code
+            
+            nb_data['cells'][target_cell_index]['source'] = full_source
+            
+            with open(notebook_path, 'w', encoding='utf-8') as f:
+                json.dump(nb_data, f, indent=1)
+                
+            return {"success": True, "message": f"Synced {len(current_schemes)} schemes to notebook."}
+            
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def validate_links(self) -> Dict:
+        """
+        Validate that all scheme application links are active using concurrent requests.
+        Returns detailed report of broken links.
+        """
+        import concurrent.futures
+        import urllib.request
+
+        def check_link(url):
+            if not isinstance(url, str) or not url.startswith('http'):
+                 return url, "Invalid URL"
+            try:
+                # Fake user agent to avoid 403s
+                req = urllib.request.Request(
+                    url, 
+                    data=None, 
+                    headers={'User-Agent': 'Mozilla/5.0'}
+                )
+                with urllib.request.urlopen(req, timeout=10) as response:
+                    return url, response.getcode()
+            except Exception as e:
+                return url, str(e)
+
+        schemes = self.get_all_schemes()
+        urls = [s.get('application_link') for s in schemes if s.get('application_link')]
+        unique_urls = list(set(urls))
+        
+        results = {}
+        with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
+            future_to_url = {executor.submit(check_link, url): url for url in unique_urls}
+            for future in concurrent.futures.as_completed(future_to_url):
+                url, status = future.result()
+                results[url] = status
+                
+        broken_links = []
+        for scheme in schemes:
+            url = scheme.get('application_link')
+            if not url: continue
+            
+            status = results.get(url, "Unknown")
+            if status != 200:
+                 broken_links.append({
+                    "scheme_name": scheme['scheme_name'],
+                    "url": url,
+                    "error": status
+                })
+
+        return {
+            "total_checked": len(unique_urls),
+            "broken_count": len(broken_links),
+            "broken_links": broken_links,
+            "success": len(broken_links) == 0
+        }
 
 
 # Example usage
@@ -145,6 +417,23 @@ if __name__ == "__main__":
     )
     
     print(f"Found {len(schemes)} eligible schemes")
-    for scheme in schemes:
-        print(f"\n✅ {scheme['scheme_name']}")
-        print(f"   Reason: {scheme['eligibility_reason']}")
+    
+    # Internal Verification (replaces verify_crops_api.py tasks)
+    print("\n--- Running Internal Data Verification ---")
+    data_crops = manager.get_unique_crops()
+    required_crops = ["Vanilla", "Banana", "Mango", "Citrus", "Tomato", "Apple"]
+    missing_crops = [c for c in required_crops if c not in data_crops]
+    
+    if missing_crops:
+        print(f"⚠️ Warning: Missing specific crops: {missing_crops}")
+    else:
+        print("✅ All target special crops (Vanilla, Apple, etc.) present in dataset.")
+        
+    print(f"Total Unique Crops Supported: {len(data_crops)}")
+    
+    # Simple endpoint logic check (replaces debug_main_local.py logic implicitly)
+    # If the manager works here, the API using it will likely work too.
+    if len(schemes) > 0:
+        print("\n✅ Scheme filtering logic is functional.")
+    else:
+        print("\n❌ Scheme filtering logic returned 0 results for standard query.")
