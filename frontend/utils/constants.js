@@ -127,26 +127,61 @@ export const RISK_PREDICTION_DISTRICTS_BY_STATE = {
 
 // Comprehensive crop list (matches your Weather.jsx)
 export const CROPS_LIST = [
-  // Cereals
-  "Rice", "Wheat", "Maize", "Barley", "Oats", "Sorghum",
-  // Millets
-  "Pearl Millet", "Finger Millet", "Foxtail Millet", "Little Millet", "Kodo Millet", "Barnyard Millet",
-  // Cash Crops
-  "Cotton", "Sugarcane", "Jute",
-  // Oilseeds
-  "Groundnut", "Soybean", "Sunflower", "Mustard", "Sesame", "Linseed", "Castor",
-  // Pulses
-  "Chickpea", "Pigeon Pea", "Green Gram", "Black Gram", "Lentil", "Field Pea",
-  // Vegetables
-  "Potato", "Onion", "Tomato", "Brinjal", "Chilli", "Capsicum", "Cabbage", 
-  "Cauliflower", "Okra", "Carrot", "Radish", "Spinach",
-  // Fruits
-  "Banana", "Mango", "Apple", "Grapes", "Orange", "Papaya", "Pineapple", "Coconut",
-  // Beverages & Others
-  "Tea", "Coffee", "Rubber",
-  // Spices
-  "Turmeric", "Ginger", "Garlic", "Coriander", "Cumin", "Fenugreek", "Clove", 
-  "Cardamom", "Arecanut"
+  "Arecanut",
+  "Arhar/Tur",
+  "Bajra",
+  "Banana",
+  "Barley",
+  "Black Pepper",
+  "Cardamom",
+  "Cashewnut",
+  "Castor Seed",
+  "Coconut",
+  "Coriander",
+  "Cotton(Lint)",
+  "Cowpea(Lobia)",
+  "Dry Chillies",
+  "Garlic",
+  "Ginger",
+  "Gram",
+  "Groundnut",
+  "Guar Seed",
+  "Horse-Gram",
+  "Jowar",
+  "Jute",
+  "Khesari",
+  "Linseed",
+  "Maize",
+  "Masoor",
+  "Mesta",
+  "Moong(Green Gram)",
+  "Moth",
+  "Niger Seed",
+  "Oilseeds Total",
+  "Onion",
+  "Other  Rabi Pulses",
+  "Other Cereals",
+  "Other Kharif Pulses",
+  "Other Oilseeds",
+  "Other Summer Pulses",
+  "Peas & Beans (Pulses)",
+  "Potato",
+  "Ragi",
+  "Rapeseed &Mustard",
+  "Rice",
+  "Safflower",
+  "Sannhamp",
+  "Sesamum",
+  "Small Millets",
+  "Soyabean",
+  "Sugarcane",
+  "Sunflower",
+  "Sweet Potato",
+  "Tapioca",
+  "Tobacco",
+  "Turmeric",
+  "Urad",
+  "Wheat"
 ];
 
 // Weather condition thresholds
