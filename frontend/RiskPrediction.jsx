@@ -4,6 +4,7 @@ import {
   MapPin, Calendar, Activity, Info, CheckCircle, XCircle,
   TrendingUp, Database, Sprout, Sun
 } from 'lucide-react';
+import { RISK_PREDICTION_STATES, RISK_PREDICTION_DISTRICTS_BY_STATE, CROPS_LIST } from './utils/constants';
 
 const RiskPrediction = () => {
   // Form state
@@ -30,31 +31,22 @@ const RiskPrediction = () => {
   const [showCropsList, setShowCropsList] = useState(false);
   const [showStatesList, setShowStatesList] = useState(false);
 
-  // Fetch data on mount
+  // Initialize data on mount
   useEffect(() => {
-    fetchAvailableData();
+    setCrops(CROPS_LIST);
+    setStates(RISK_PREDICTION_STATES);
   }, []);
 
-  const fetchAvailableData = async () => {
-    try {
-      // Fetch crops
-      const cropsRes = await fetch('http://localhost:8000/api/crops');
-      const cropsData = await cropsRes.json();
-      setCrops(cropsData.crops || []);
-
-      // Fetch states (only risk prediction supported states)
-      const statesRes = await fetch('http://localhost:8000/api/risk-prediction/states');
-      const statesData = await statesRes.json();
-      setStates(statesData.states || []);
-
-      // Fetch districts
-      const districtsRes = await fetch('http://localhost:8000/api/districts');
-      const districtsData = await districtsRes.json();
-      setDistricts(districtsData.districts || []);
-    } catch (err) {
-      console.error('Error fetching data:', err);
+  // Update districts when state changes
+  useEffect(() => {
+    if (formData.state && RISK_PREDICTION_DISTRICTS_BY_STATE[formData.state]) {
+      setDistricts(RISK_PREDICTION_DISTRICTS_BY_STATE[formData.state]);
+      // Reset district when state changes
+      setFormData({ ...formData, district: '' });
+    } else {
+      setDistricts([]);
     }
-  };
+  }, [formData.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -404,18 +396,24 @@ const RiskPrediction = () => {
             {/* District */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                District *
+                <MapPin className="w-4 h-4 inline mr-2" />
+                Select District *
               </label>
-              <input
-                type="text"
+              <select
                 name="district"
                 value={formData.district}
                 onChange={handleChange}
-                placeholder="Enter district name"
-                className="w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                disabled={!formData.state}
+                className="w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition bg-gray-50 hover:bg-white disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-500"
                 required
-              />
-              <p className="text-xs text-gray-500 mt-1">Tip: Use the same name as state if unsure</p>
+              >
+                <option value="">
+                  {!formData.state ? "Select State First..." : "Choose District..."}
+                </option>
+                {formData.state && RISK_PREDICTION_DISTRICTS_BY_STATE[formData.state] && RISK_PREDICTION_DISTRICTS_BY_STATE[formData.state].map((districtName) => (
+                  <option key={districtName} value={districtName}>{districtName}</option>
+                ))}
+              </select>
             </div>
 
             {/* Season */}

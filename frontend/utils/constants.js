@@ -69,7 +69,7 @@ export const DISTRICTS_BY_STATE = {
   "Jammu and Kashmir": ["Srinagar", "Jammu", "Leh", "Kargil", "Samba", "Kathua", "Udhampur", "Reasi", "Ramban", "Kishtwar", "Anantnag", "Pulwama", "Shopian", "Shupiyan", "Kulgam", "Ganderbal", "Budgam", "Srinagar", "Baramulla", "Kupwara", "Bandipora"]
 };
 
-// States supported for risk prediction (24 states from model training)
+// States supported for risk prediction (from merged_dataset.csv)
 export const RISK_PREDICTION_STATES = [
   "Andhra Pradesh",
   "Arunachal Pradesh",
@@ -96,6 +96,34 @@ export const RISK_PREDICTION_STATES = [
   "Uttar Pradesh",
   "West Bengal"
 ];
+
+// Districts by State for Risk Prediction (uses corresponding actual cities/districts)
+export const RISK_PREDICTION_DISTRICTS_BY_STATE = {
+  "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Tirupati", "Kadapa", "Chittoor", "Nellore", "Prakasam", "West Godavari", "East Godavari", "Anantapur"],
+  "Arunachal Pradesh": ["Itanagar", "Naharlagun", "Aalo", "Bomdila", "Tezu", "Ziro", "Changlang", "Lohit", "Papum Pare", "Upper Subansiri", "West Kameng", "Dibang Valley"],
+  "Assam": ["Guwahati", "Silchar", "Barpeta", "Bongaigaon", "Cachar", "Darang", "Dhemaji", "Dhubri", "Dibrugarh", "Golaghat", "Hailakandi", "Jorhat", "Kamrup", "Karbi Anglong", "Kokrajhar", "Lakhimpur", "Morigaon", "Nagaon", "Nalbari", "North Cachar Hills", "Sibsagar", "Sonitpur", "Tinsukia"],
+  "Bihar": ["Patna", "Gaya", "Bhagalpur", "Munger", "Darbhanga", "Madhubani", "Samastipur", "Sitamarhi", "Muzaffarpur", "East Champaran", "West Champaran", "Saran", "Siwan", "Gopalganj", "Jehanabad", "Nalanda", "Aurangabad", "Arwal", "Buxar", "Kaimur", "Lakhisarai", "Sheikhpura", "Jamui", "Khagaria", "Purnea", "Supaul", "Araria", "Katihar"],
+  "Delhi": ["Central Delhi", "East Delhi", "New Delhi", "North Delhi", "North East Delhi", "North West Delhi", "South Delhi", "South East Delhi", "South West Delhi", "West Delhi"],
+  "Goa": ["North Goa", "South Goa"],
+  "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Junagadh", "Jamnagar", "Bhavnagar", "Anand", "Kheda", "Panchmahal", "Sabarkantha", "Gandhinagar", "Banaskantha", "Narmada", "Bharuch", "Valsad", "Navsari", "Tapi", "Kutch", "Botad", "Morbi", "Chhota Udaipur", "Devbhumi Dwarka", "Gir Somnath", "Mahisagar", "Porbandar"],
+  "Haryana": ["Faridabad", "Gurgaon", "Hisar", "Rohtak", "Panipat", "Ambala", "Yamunanagar", "Karnal", "Kaithal", "Kurukshetra", "Sonipat", "Bhiwani", "Mahendragarh", "Rewari", "Nuh", "Palwal", "Charkhi Dadri", "Fatehabad", "Jind"],
+  "Jammu And Kashmir": ["Srinagar", "Jammu", "Leh", "Kargil", "Samba", "Kathua", "Udhampur", "Reasi", "Ramban", "Kishtwar", "Anantnag", "Pulwama", "Shopian", "Kulgam", "Ganderbal", "Budgam", "Baramulla", "Kupwara", "Bandipora"],
+  "Jharkhand": ["Ranchi", "Dhanbad", "Jamshedpur", "Giridih", "Hazaribagh", "Bokaro", "Deoghar", "Godda", "Koderma", "Lohardaga", "Dumka", "Pakur", "Jamtara", "Sahibganj", "Ramgarh", "Khunti", "Saraikela Kharsawan", "West Singhbhum", "East Singhbhum"],
+  "Karnataka": ["Bangalore", "Mysore", "Mangalore", "Belgaum", "Hubli", "Davangere", "Bellary", "Tumkur", "Kolar", "Chitradurga", "Chikmagalur", "Hassan", "Kodagu", "Udupi", "Uttara Kannada", "Raichur", "Bijapur", "Bagalkot", "Mandya", "Vikarabad"],
+  "Kerala": ["Thiruvananthapuram", "Kollam", "Pathanamthitta", "Alappuzha", "Kottayam", "Idukki", "Ernakulam", "Thrissur", "Palakkad", "Malappuram", "Kozhikode", "Wayanad", "Kannur", "Kasaragod"],
+  "Madhya Pradesh": ["Bhopal", "Indore", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Rewa", "Satna", "Seoni", "Chhindwara", "Betul", "Hoshangabad", "Dindori", "Mandla", "Balaghat", "Raisen", "Sehore", "Vidisha", "Damoh", "Panna", "Tikamgarh", "Chhatarpur", "Morena", "Guna", "Ashoknagar", "Neemuch", "Mandsaur", "Ratlam", "Shajapur", "Dewas", "Dhar", "Khargone", "Khandwa", "Burhanpur", "Sheopur", "Shivpuri", "Rajgarh", "Alirajpur"],
+  "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Aurangabad", "Nashik", "Akola", "Amravati", "Beed", "Bid", "Buldhana", "Chandrapur", "Dhule", "Gadchiroli", "Gondia", "Hingoli", "Jalgaon", "Jalna", "Kolhapur", "Latur", "Nanded", "Nandurbar", "Parbhani", "Ratnagiri", "Sangli", "Satara", "Sindhudurg", "Solapur", "Thane", "Wardha", "Washim", "Yavatmal", "Ahmednagar"],
+  "Manipur": ["Imphal", "Imphal West", "Imphal East", "Bishnupur", "Thoubal", "Ukhrul", "Senapati", "Tamenglong", "Churachandpur", "Chandel"],
+  "Meghalaya": ["Shillong", "Tura", "Baghmara", "East Khasi Hills", "West Khasi Hills", "South Garo Hills", "North Garo Hills", "East Garo Hills", "Ri Bhoi", "Jaintia Hills", "Sohra"],
+  "Mizoram": ["Aizawl", "Saiha", "Kolasib", "Lunglei", "Mamit", "Serchhip", "Lawngtlai", "Champhai"],
+  "Nagaland": ["Kohima", "Dimapur", "Mokokchung", "Longleng", "Zunheboto", "Wokha", "Tuensang", "Mon", "Peren", "Phek"],
+  "Punjab": ["Amritsar", "Ludhiana", "Jalandhar", "Patiala", "Hoshiarpur", "Sangrur", "Bathinda", "Firozpur", "Faridkot", "Gurdaspur", "Mansa", "Kapurthala", "Mohali", "Ropar", "Fatehgarh Sahib", "Barnala"],
+  "Sikkim": ["Gangtok", "East Sikkim", "West Sikkim", "North Sikkim", "South Sikkim"],
+  "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Salem", "Tirunelveli", "Kanyakumari", "Thanjavur", "Erode", "Dindigul", "Tiruppur", "Villupuram", "Vellore", "Ranipet", "Tiruvannamalai", "Chengalpattu", "Kanchipuram", "Cuddalore", "Kallakurichi", "Nagercoil", "Srivilliputhur", "Sivakasi", "Tenkasi", "Paramakudi", "Ramanathapuram", "Pudukkottai", "Karur", "Ariyalur", "Perambalur", "Namakkal"],
+  "Tripura": ["Agartala", "Udaipur", "Dharmanagar", "Ambassa", "Kailashahar", "Khowai", "Belonia", "Sabroom", "Gomati"],
+  "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad", "Varanasi", "Agra", "Meerut", "Allahabad", "Bareilly", "Aligarh", "Moradabad", "Saharanpur", "Mathura", "Firozabad", "Mainpuri", "Etawah", "Jalaun", "Jhansi", "Lalitpur", "Chitrakoot", "Banda", "Mahoba", "Hamirpur", "Fatehpur", "Raebareli", "Sultanpur", "Ambedkar Nagar", "Azamgarh", "Mau", "Ballia", "Ghazipur", "Chandauli", "Jaunpur", "Kushinagar", "Deoria", "Gorakhpur", "Maharajganj", "Siddharthnagar", "Basti", "Faizabad", "Pratapgarh", "Sitapur", "Lakhimpur Kheri", "Hardoi", "Barabanki", "Unnao", "Kanpur Dehat", "Kanpur Nagar"],
+  "West Bengal": ["Kolkata", "Darjeeling", "Jalpaiguri", "Cooch Behar", "Alipurduar", "Kalimpong", "North Dinajpur", "South Dinajpur", "Malda", "Murshidabad", "Nadia", "North 24 Parganas", "South 24 Parganas", "East Midnapore", "West Midnapore", "Bankura", "Birbhum", "Bardhaman", "Hooghly", "Howrah", "Purba Bardhaman", "Paschim Bardhaman", "Purulia"]
+};
 
 // Comprehensive crop list (matches your Weather.jsx)
 export const CROPS_LIST = [
