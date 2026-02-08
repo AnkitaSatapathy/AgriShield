@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Cloud, Leaf, AlertTriangle, Droplets, Thermometer, Wind, MapPin, Search, AlertCircle, CheckCircle, Info, Eye, BookOpen, ChevronRight, Sprout, Shield, Activity, Loader2 } from "lucide-react";
 import weatherApi from "./services/weatherApi";
-import { INDIAN_STATES, CROPS_LIST, DISTRICTS_BY_STATE } from "./utils/constants";
+import { INDIAN_STATES, CROPS_LIST, DISTRICTS_BY_STATE, WEATHER_THRESHOLDS, RISK_LEVELS, ALERT_TYPES, WEATHER_ICONS, DAYS_OF_WEEK, API_CONFIG, ERROR_MESSAGES, SUCCESS_MESSAGES } from "./utils/weatherConstants";
 
 const Weather = () => {
   const [state, setState] = useState("");
