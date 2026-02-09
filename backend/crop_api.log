@@ -1,0 +1,964 @@
+2026-02-09 13:52:27,634 - INFO - ================================================================================
+2026-02-09 13:52:27,653 - INFO - ================================================================================
+2026-02-09 13:52:27,656 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 13:52:27,656 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 13:52:27,658 - INFO - 
+1/4 Loading crop_model.pkl...
+2026-02-09 13:52:27,948 - ERROR - ================================================================================
+2026-02-09 13:52:27,954 - ERROR - ================================================================================
+2026-02-09 13:52:27,954 - ERROR - Error: Failed to load crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 13:52:27,963 - ERROR - ================================================================================
+2026-02-09 13:52:27,975 - WARNING - ================================================================================
+2026-02-09 13:52:27,979 - WARNING - ================================================================================
+2026-02-09 13:52:27,979 - WARNING - Please run the training script: python backend/crop_rec.py
+2026-02-09 13:52:27,979 - WARNING - ================================================================================
+2026-02-09 14:18:46,098 - INFO - ================================================================================
+2026-02-09 14:18:46,116 - INFO - ================================================================================
+2026-02-09 14:18:46,116 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:18:46,116 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:18:46,116 - INFO - 
+1/4 Loading crop_model.pkl...
+2026-02-09 14:18:46,492 - ERROR - ================================================================================
+2026-02-09 14:18:46,492 - ERROR - ================================================================================
+2026-02-09 14:18:46,492 - ERROR - Error: Failed to load crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 14:18:46,492 - ERROR - ================================================================================
+2026-02-09 14:18:46,508 - WARNING - ================================================================================
+2026-02-09 14:18:46,517 - WARNING - ================================================================================
+2026-02-09 14:18:46,519 - WARNING - Please run the training script: python backend/crop_rec.py
+2026-02-09 14:18:46,519 - WARNING - ================================================================================
+2026-02-09 14:18:55,498 - INFO - ================================================================================
+2026-02-09 14:18:55,514 - INFO - ================================================================================
+2026-02-09 14:18:55,517 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:18:55,518 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:18:55,518 - INFO - 
+1/4 Loading crop_model.pkl...
+2026-02-09 14:18:55,766 - ERROR - ================================================================================
+2026-02-09 14:18:55,766 - ERROR - ================================================================================
+2026-02-09 14:18:55,766 - ERROR - Error: Failed to load crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 14:18:55,766 - ERROR - ================================================================================
+2026-02-09 14:18:55,800 - WARNING - ================================================================================
+2026-02-09 14:18:55,814 - WARNING - ================================================================================
+2026-02-09 14:18:55,816 - WARNING - Please run the training script: python backend/crop_rec.py
+2026-02-09 14:18:55,816 - WARNING - ================================================================================
+2026-02-09 14:19:15,409 - INFO - ================================================================================
+2026-02-09 14:19:15,419 - INFO - ================================================================================
+2026-02-09 14:19:15,419 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:19:15,423 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:19:15,424 - INFO - 
+1/4 Loading crop_model.pkl...
+2026-02-09 14:19:15,694 - ERROR - ================================================================================
+2026-02-09 14:19:15,701 - ERROR - ================================================================================
+2026-02-09 14:19:15,701 - ERROR - Error: Failed to load crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 14:19:15,701 - ERROR - ================================================================================
+2026-02-09 14:19:15,709 - WARNING - ================================================================================
+2026-02-09 14:19:15,716 - WARNING - ================================================================================
+2026-02-09 14:19:15,716 - WARNING - Please run the training script: python backend/crop_rec.py
+2026-02-09 14:19:15,716 - WARNING - ================================================================================
+2026-02-09 14:32:14,095 - INFO - ================================================================================
+2026-02-09 14:32:14,095 - INFO - CROP RECOMMENDATION API V6.0 - INITIALIZING
+2026-02-09 14:32:14,095 - INFO - ================================================================================
+2026-02-09 14:32:14,095 - INFO - ================================================================================
+2026-02-09 14:32:14,095 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 14:32:14,095 - INFO - ================================================================================
+2026-02-09 14:32:14,095 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:32:14,095 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:32:14,095 - INFO - 
+2026-02-09 14:32:14,095 - INFO - Step 1/4: Loading crop_model.pkl...
+2026-02-09 14:32:14,103 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 14:32:14,950 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 14:32:15,035 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 14:32:15,035 - INFO - SUCCESS: Model loaded
+2026-02-09 14:32:15,035 - INFO - 
+2026-02-09 14:32:15,035 - INFO - Step 2/4: Loading scaler2.pkl...
+2026-02-09 14:32:15,035 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 14:32:15,077 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 14:32:15,079 - INFO - SUCCESS: Scaler loaded
+2026-02-09 14:32:15,079 - INFO - 
+2026-02-09 14:32:15,079 - INFO - Step 3/4: Loading label_encoder.pkl...
+2026-02-09 14:32:15,079 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-09 14:32:15,116 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-09 14:32:15,116 - INFO - SUCCESS: Label encoder loaded
+2026-02-09 14:32:15,116 - ERROR - FAILED: Could not load label encoder - 'numpy.ndarray' object has no attribute 'classes_'
+2026-02-09 14:32:15,116 - WARNING - ================================================================================
+2026-02-09 14:32:15,116 - WARNING - WARNING: MODEL NOT LOADED - API ENDPOINTS WILL FAIL
+2026-02-09 14:32:15,116 - WARNING - ================================================================================
+2026-02-09 14:32:15,116 - WARNING - Please run the training script: python backend/crop_rec.py
+2026-02-09 14:32:15,116 - WARNING - ================================================================================
+2026-02-09 14:32:43,366 - INFO - ================================================================================
+2026-02-09 14:32:43,374 - INFO - CROP RECOMMENDATION API V6.0 - INITIALIZING
+2026-02-09 14:32:43,374 - INFO - ================================================================================
+2026-02-09 14:32:43,374 - INFO - ================================================================================
+2026-02-09 14:32:43,374 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 14:32:43,374 - INFO - ================================================================================
+2026-02-09 14:32:43,374 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:32:43,374 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:32:43,374 - INFO - 
+2026-02-09 14:32:43,374 - INFO - Step 1/4: Loading crop_model.pkl...
+2026-02-09 14:32:43,374 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 14:32:43,638 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 14:32:43,667 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 14:32:43,667 - INFO - SUCCESS: Model loaded
+2026-02-09 14:32:43,667 - INFO - 
+2026-02-09 14:32:43,667 - INFO - Step 2/4: Loading scaler2.pkl...
+2026-02-09 14:32:43,667 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 14:32:43,671 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 14:32:43,671 - INFO - SUCCESS: Scaler loaded
+2026-02-09 14:32:43,671 - INFO - 
+2026-02-09 14:32:43,671 - INFO - Step 3/4: Loading label_encoder.pkl...
+2026-02-09 14:32:43,671 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-09 14:32:43,671 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-09 14:32:43,671 - INFO - SUCCESS: Label encoder loaded
+2026-02-09 14:32:43,671 - ERROR - FAILED: Could not load label encoder - 'numpy.ndarray' object has no attribute 'classes_'
+2026-02-09 14:32:43,671 - WARNING - ================================================================================
+2026-02-09 14:32:43,671 - WARNING - WARNING: MODEL NOT LOADED - API ENDPOINTS WILL FAIL
+2026-02-09 14:32:43,671 - WARNING - ================================================================================
+2026-02-09 14:32:43,671 - WARNING - Please run the training script: python backend/crop_rec.py
+2026-02-09 14:32:43,671 - WARNING - ================================================================================
+2026-02-09 14:33:28,655 - ERROR - PREDICTION ERROR: None
+Traceback (most recent call last):
+  File "C:\Users\KIIT\AppData\Roaming\Python\Python312\site-packages\pandas\core\indexes\base.py", line 3790, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: None
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 816, in recommend_crop
+    result = predict_top_k_crops(
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 576, in predict_top_k_crops
+    X = pd.DataFrame([features_dict])[feature_cols]
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\AppData\Roaming\Python\Python312\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\AppData\Roaming\Python\Python312\site-packages\pandas\core\indexes\base.py", line 3797, in get_loc
+    raise KeyError(key) from err
+KeyError: None
+2026-02-09 14:33:37,036 - ERROR - PREDICTION ERROR: None
+Traceback (most recent call last):
+  File "C:\Users\KIIT\AppData\Roaming\Python\Python312\site-packages\pandas\core\indexes\base.py", line 3790, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "index.pyx", line 152, in pandas._libs.index.IndexEngine.get_loc
+  File "index.pyx", line 181, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7080, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas\_libs\hashtable_class_helper.pxi", line 7088, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: None
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 816, in recommend_crop
+    result = predict_top_k_crops(
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 576, in predict_top_k_crops
+    X = pd.DataFrame([features_dict])[feature_cols]
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\AppData\Roaming\Python\Python312\site-packages\pandas\core\frame.py", line 3893, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\AppData\Roaming\Python\Python312\site-packages\pandas\core\indexes\base.py", line 3797, in get_loc
+    raise KeyError(key) from err
+KeyError: None
+2026-02-09 14:42:45,400 - INFO - ================================================================================
+2026-02-09 14:42:45,400 - INFO - CROP RECOMMENDATION API V6.0 - FIXED VERSION - INITIALIZING
+2026-02-09 14:42:45,400 - INFO - ================================================================================
+2026-02-09 14:42:45,400 - INFO - ================================================================================
+2026-02-09 14:42:45,400 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 14:42:45,400 - INFO - ================================================================================
+2026-02-09 14:42:45,400 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:42:45,400 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:42:45,400 - INFO - 
+2026-02-09 14:42:45,400 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 14:42:45,400 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 14:42:45,977 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 14:42:46,080 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 14:42:46,080 - INFO - SUCCESS: Model loaded
+2026-02-09 14:42:46,080 - INFO - 
+2026-02-09 14:42:46,080 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 14:42:46,084 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 14:42:46,087 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 14:42:46,087 - INFO - SUCCESS: Scaler loaded
+2026-02-09 14:42:46,087 - INFO - 
+2026-02-09 14:42:46,087 - INFO - Step 3/5: Loading label_encoder.pkl...
+2026-02-09 14:42:46,091 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-09 14:42:46,091 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-09 14:42:46,093 - INFO - SUCCESS: Label encoder loaded (array format)
+2026-02-09 14:42:46,093 - INFO - Crops available: 22
+2026-02-09 14:42:46,095 - INFO - 
+2026-02-09 14:42:46,095 - INFO - Step 4/5: Loading model_info.json...
+2026-02-09 14:42:46,142 - INFO - SUCCESS: Model info loaded
+2026-02-09 14:42:46,142 - INFO - 
+2026-02-09 14:42:46,142 - INFO - Step 5/5: Loading/recovering feature columns...
+2026-02-09 14:42:46,142 - INFO - SUCCESS: Features loaded from model_info.json: 32
+2026-02-09 14:42:46,150 - INFO - 
+2026-02-09 14:42:46,150 - INFO - ================================================================================
+2026-02-09 14:42:46,150 - INFO - MODEL LOADING COMPLETE
+2026-02-09 14:42:46,150 - INFO - ================================================================================
+2026-02-09 14:42:46,150 - INFO - Model type: Random Forest Classifier
+2026-02-09 14:42:46,150 - INFO - Version: v5.3-COMPLETE-FIXED
+2026-02-09 14:42:46,150 - INFO - Features: 32
+2026-02-09 14:42:46,150 - INFO - Crops: 22
+2026-02-09 14:42:46,150 - INFO - Balanced: True
+2026-02-09 14:42:46,150 - INFO - ================================================================================
+2026-02-09 14:42:46,150 - INFO - ================================================================================
+2026-02-09 14:42:46,150 - INFO - CROP RECOMMENDATION API V6.0 READY - FIXED VERSION
+2026-02-09 14:42:46,150 - INFO - ================================================================================
+2026-02-09 14:42:46,150 - INFO - Mode: TESTING (Reduced penalties)
+2026-02-09 14:42:46,158 - INFO - Model: Random Forest Classifier
+2026-02-09 14:42:46,158 - INFO - Version: v5.3-COMPLETE-FIXED
+2026-02-09 14:42:46,158 - INFO - Features: 32
+2026-02-09 14:42:46,158 - INFO - Crops: 22
+2026-02-09 14:42:46,158 - INFO - Balanced: True
+2026-02-09 14:42:46,158 - INFO - FIXES APPLIED:
+2026-02-09 14:42:46,158 - INFO -   - Feature columns auto-recovery from scaler
+2026-02-09 14:42:46,158 - INFO -   - Robust label encoder handling
+2026-02-09 14:42:46,158 - INFO -   - Added safety checks before prediction
+2026-02-09 14:42:46,158 - INFO - ================================================================================
+2026-02-09 14:43:04,993 - INFO - ================================================================================
+2026-02-09 14:43:04,993 - INFO - CROP RECOMMENDATION API V6.0 - FIXED VERSION - INITIALIZING
+2026-02-09 14:43:04,993 - INFO - ================================================================================
+2026-02-09 14:43:04,993 - INFO - ================================================================================
+2026-02-09 14:43:04,993 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 14:43:04,993 - INFO - ================================================================================
+2026-02-09 14:43:04,993 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:43:04,993 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:43:04,993 - INFO - 
+2026-02-09 14:43:04,993 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 14:43:05,001 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 14:43:05,716 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 14:43:05,804 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 14:43:05,806 - INFO - SUCCESS: Model loaded
+2026-02-09 14:43:05,806 - INFO - 
+2026-02-09 14:43:05,806 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 14:43:05,806 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 14:43:05,809 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 14:43:05,810 - INFO - SUCCESS: Scaler loaded
+2026-02-09 14:43:05,810 - INFO - 
+2026-02-09 14:43:05,810 - INFO - Step 3/5: Loading label_encoder.pkl...
+2026-02-09 14:43:05,811 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-09 14:43:05,811 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-09 14:43:05,811 - INFO - SUCCESS: Label encoder loaded (array format)
+2026-02-09 14:43:05,815 - INFO - Crops available: 22
+2026-02-09 14:43:05,815 - INFO - 
+2026-02-09 14:43:05,815 - INFO - Step 4/5: Loading model_info.json...
+2026-02-09 14:43:05,815 - INFO - SUCCESS: Model info loaded
+2026-02-09 14:43:05,819 - INFO - 
+2026-02-09 14:43:05,822 - INFO - Step 5/5: Loading/recovering feature columns...
+2026-02-09 14:43:05,823 - INFO - SUCCESS: Features loaded from model_info.json: 32
+2026-02-09 14:43:05,824 - INFO - 
+2026-02-09 14:43:05,824 - INFO - ================================================================================
+2026-02-09 14:43:05,824 - INFO - MODEL LOADING COMPLETE
+2026-02-09 14:43:05,824 - INFO - ================================================================================
+2026-02-09 14:43:05,824 - INFO - Model type: Random Forest Classifier
+2026-02-09 14:43:05,824 - INFO - Version: v5.3-COMPLETE-FIXED
+2026-02-09 14:43:05,824 - INFO - Features: 32
+2026-02-09 14:43:05,824 - INFO - Crops: 22
+2026-02-09 14:43:05,824 - INFO - Balanced: True
+2026-02-09 14:43:05,824 - INFO - ================================================================================
+2026-02-09 14:43:05,824 - INFO - ================================================================================
+2026-02-09 14:43:05,824 - INFO - CROP RECOMMENDATION API V6.0 READY - FIXED VERSION
+2026-02-09 14:43:05,827 - INFO - ================================================================================
+2026-02-09 14:43:05,827 - INFO - Mode: TESTING (Reduced penalties)
+2026-02-09 14:43:05,827 - INFO - Model: Random Forest Classifier
+2026-02-09 14:43:05,827 - INFO - Version: v5.3-COMPLETE-FIXED
+2026-02-09 14:43:05,827 - INFO - Features: 32
+2026-02-09 14:43:05,831 - INFO - Crops: 22
+2026-02-09 14:43:05,832 - INFO - Balanced: True
+2026-02-09 14:43:05,832 - INFO - FIXES APPLIED:
+2026-02-09 14:43:05,835 - INFO -   - Feature columns auto-recovery from scaler
+2026-02-09 14:43:05,835 - INFO -   - Robust label encoder handling
+2026-02-09 14:43:05,838 - INFO -   - Added safety checks before prediction
+2026-02-09 14:43:05,838 - INFO - ================================================================================
+2026-02-09 14:44:54,249 - INFO - ================================================================================
+2026-02-09 14:44:54,249 - INFO - CROP RECOMMENDATION API V6.0 - FIXED VERSION - INITIALIZING
+2026-02-09 14:44:54,249 - INFO - ================================================================================
+2026-02-09 14:44:54,249 - INFO - ================================================================================
+2026-02-09 14:44:54,249 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 14:44:54,249 - INFO - ================================================================================
+2026-02-09 14:44:54,249 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:44:54,249 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:44:54,249 - INFO - 
+2026-02-09 14:44:54,249 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 14:44:54,249 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 14:44:54,504 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 14:44:54,530 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 14:44:54,530 - INFO - SUCCESS: Model loaded
+2026-02-09 14:44:54,530 - INFO - 
+2026-02-09 14:44:54,530 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 14:44:54,530 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 14:44:54,530 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 14:44:54,530 - INFO - SUCCESS: Scaler loaded
+2026-02-09 14:44:54,530 - INFO - 
+2026-02-09 14:44:54,530 - INFO - Step 3/5: Loading label_encoder.pkl...
+2026-02-09 14:44:54,530 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-09 14:44:54,530 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-09 14:44:54,530 - INFO - SUCCESS: Label encoder loaded (array format)
+2026-02-09 14:44:54,530 - INFO - Crops available: 22
+2026-02-09 14:44:54,530 - INFO - 
+2026-02-09 14:44:54,530 - INFO - Step 4/5: Loading model_info.json...
+2026-02-09 14:44:54,530 - INFO - SUCCESS: Model info loaded
+2026-02-09 14:44:54,530 - INFO - 
+2026-02-09 14:44:54,530 - INFO - Step 5/5: Loading/recovering feature columns...
+2026-02-09 14:44:54,530 - INFO - SUCCESS: Features loaded from model_info.json: 32
+2026-02-09 14:44:54,530 - INFO - 
+2026-02-09 14:44:54,530 - INFO - ================================================================================
+2026-02-09 14:44:54,530 - INFO - MODEL LOADING COMPLETE
+2026-02-09 14:44:54,530 - INFO - ================================================================================
+2026-02-09 14:44:54,530 - INFO - Model type: Random Forest Classifier
+2026-02-09 14:44:54,530 - INFO - Version: v5.3-COMPLETE-FIXED
+2026-02-09 14:44:54,530 - INFO - Features: 32
+2026-02-09 14:44:54,543 - INFO - Crops: 22
+2026-02-09 14:44:54,543 - INFO - Balanced: True
+2026-02-09 14:44:54,543 - INFO - ================================================================================
+2026-02-09 14:44:54,543 - INFO - ================================================================================
+2026-02-09 14:44:54,543 - INFO - CROP RECOMMENDATION API V6.0 READY - FIXED VERSION
+2026-02-09 14:44:54,543 - INFO - ================================================================================
+2026-02-09 14:44:54,543 - INFO - Mode: TESTING (Reduced penalties)
+2026-02-09 14:44:54,543 - INFO - Model: Random Forest Classifier
+2026-02-09 14:44:54,543 - INFO - Version: v5.3-COMPLETE-FIXED
+2026-02-09 14:44:54,543 - INFO - Features: 32
+2026-02-09 14:44:54,543 - INFO - Crops: 22
+2026-02-09 14:44:54,543 - INFO - Balanced: True
+2026-02-09 14:44:54,546 - INFO - FIXES APPLIED:
+2026-02-09 14:44:54,546 - INFO -   - Feature columns auto-recovery from scaler
+2026-02-09 14:44:54,546 - INFO -   - Robust label encoder handling
+2026-02-09 14:44:54,547 - INFO -   - Added safety checks before prediction
+2026-02-09 14:44:54,547 - INFO - ================================================================================
+2026-02-09 14:45:37,993 - ERROR - PREDICTION ERROR: "['n', 'p', 'k', 'npk_total', 'n_to_p_ratio', 'n_to_k_ratio', 'p_to_k_ratio', 'npk_balance', 'moisture_index', 'heat_stress', 'gdd_proxy', 'is_low_rainfall', 'is_high_rainfall', 'is_very_high_rainfall', 'is_cool', 'is_hot', 'is_very_hot', 'temperature_squared', 'rainfall_squared', 'ph_deviation', 'is_acidic', 'is_alkaline', 'is_very_acidic', 'is_very_alkaline', 'is_extreme_acidic', 'ph_deviation_squared', 'ph_n_interaction', 'ph_p_interaction'] not in index"
+Traceback (most recent call last):
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 857, in recommend_crop
+    result = predict_top_k_crops(
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 637, in predict_top_k_crops
+    X = pd.DataFrame([features_dict])[feature_cols]
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\AppData\Roaming\Python\Python312\site-packages\pandas\core\frame.py", line 3899, in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\AppData\Roaming\Python\Python312\site-packages\pandas\core\indexes\base.py", line 6114, in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+  File "C:\Users\KIIT\AppData\Roaming\Python\Python312\site-packages\pandas\core\indexes\base.py", line 6178, in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+KeyError: "['n', 'p', 'k', 'npk_total', 'n_to_p_ratio', 'n_to_k_ratio', 'p_to_k_ratio', 'npk_balance', 'moisture_index', 'heat_stress', 'gdd_proxy', 'is_low_rainfall', 'is_high_rainfall', 'is_very_high_rainfall', 'is_cool', 'is_hot', 'is_very_hot', 'temperature_squared', 'rainfall_squared', 'ph_deviation', 'is_acidic', 'is_alkaline', 'is_very_acidic', 'is_very_alkaline', 'is_extreme_acidic', 'ph_deviation_squared', 'ph_n_interaction', 'ph_p_interaction'] not in index"
+2026-02-09 14:54:10,701 - INFO - ================================================================================
+2026-02-09 14:54:10,701 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-09 14:54:10,702 - INFO - ================================================================================
+2026-02-09 14:54:10,703 - INFO - ================================================================================
+2026-02-09 14:54:10,703 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 14:54:10,703 - INFO - ================================================================================
+2026-02-09 14:54:10,703 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:54:10,703 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 14:54:10,703 - INFO - 
+2026-02-09 14:54:10,703 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 14:54:10,703 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 14:54:11,016 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 14:54:11,053 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 14:54:11,053 - INFO - SUCCESS: Model loaded
+2026-02-09 14:54:11,053 - INFO - 
+2026-02-09 14:54:11,053 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 14:54:11,053 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 14:54:11,053 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 14:54:11,053 - INFO - SUCCESS: Scaler loaded
+2026-02-09 14:54:11,053 - INFO - 
+2026-02-09 14:54:11,053 - INFO - Step 3/5: Loading label_encoder.pkl...
+2026-02-09 14:54:11,053 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-09 14:54:11,053 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-09 14:54:11,053 - INFO - SUCCESS: Label encoder loaded (array format)
+2026-02-09 14:54:11,053 - INFO - Crops available: 22
+2026-02-09 14:54:11,053 - INFO - 
+2026-02-09 14:54:11,053 - INFO - Step 4/5: Loading model_info.json...
+2026-02-09 14:54:11,064 - INFO - SUCCESS: Model info loaded
+2026-02-09 14:54:11,064 - INFO - 
+2026-02-09 14:54:11,064 - INFO - Step 5/5: Loading/recovering feature columns...
+2026-02-09 14:54:11,064 - INFO - SUCCESS: Features loaded from model_info.json: 32
+2026-02-09 14:54:11,064 - INFO - 
+2026-02-09 14:54:11,064 - INFO - ================================================================================
+2026-02-09 14:54:11,064 - INFO - MODEL LOADING COMPLETE
+2026-02-09 14:54:11,064 - INFO - ================================================================================
+2026-02-09 14:54:11,064 - INFO - Model type: Random Forest Classifier
+2026-02-09 14:54:11,066 - INFO - Version: v5.3-COMPLETE-FIXED
+2026-02-09 14:54:11,066 - INFO - Features: 32
+2026-02-09 14:54:11,066 - INFO - Crops: 22
+2026-02-09 14:54:11,066 - INFO - Balanced: True
+2026-02-09 14:54:11,066 - INFO - ================================================================================
+2026-02-09 14:54:11,066 - INFO - ================================================================================
+2026-02-09 14:54:11,066 - INFO - CROP RECOMMENDATION API V6.0 READY - FULLY FIXED VERSION
+2026-02-09 14:54:11,066 - INFO - ================================================================================
+2026-02-09 14:54:11,066 - INFO - Mode: TESTING (Reduced penalties)
+2026-02-09 14:54:11,066 - INFO - Model: Random Forest Classifier
+2026-02-09 14:54:11,066 - INFO - Version: v5.3-COMPLETE-FIXED
+2026-02-09 14:54:11,069 - INFO - Features: 32
+2026-02-09 14:54:11,069 - INFO - Crops: 22
+2026-02-09 14:54:11,069 - INFO - Balanced: True
+2026-02-09 14:54:11,069 - INFO - FIXES APPLIED:
+2026-02-09 14:54:11,069 - INFO -   - Feature columns auto-recovery from scaler
+2026-02-09 14:54:11,069 - INFO -   - Robust label encoder handling
+2026-02-09 14:54:11,069 - INFO -   - Added safety checks before prediction
+2026-02-09 14:54:11,069 - INFO -   - Complete 32-feature engineering pipeline
+2026-02-09 14:54:11,069 - INFO - ================================================================================
+2026-02-09 14:55:01,305 - INFO - Engineering features from inputs: N=78.0, P=45.0, K=45.0, temp=24.0, humidity=78.0, ph=6.6, rainfall=1700.0
+2026-02-09 14:55:01,356 - INFO - Engineered features count: 32
+2026-02-09 14:55:01,356 - INFO - Engineered features: ['n', 'p', 'k', 'temperature', 'humidity', 'ph', 'rainfall', 'npk_total', 'n_to_p_ratio', 'n_to_k_ratio', 'p_to_k_ratio', 'npk_balance', 'moisture_index', 'heat_stress', 'gdd_proxy', 'is_low_rainfall', 'is_high_rainfall', 'is_very_high_rainfall', 'is_cool', 'is_hot', 'is_very_hot', 'temperature_squared', 'rainfall_squared', 'ph_deviation', 'is_acidic', 'is_alkaline', 'is_very_acidic', 'is_very_alkaline', 'is_extreme_acidic', 'ph_deviation_squared', 'ph_n_interaction', 'ph_p_interaction']
+2026-02-09 14:55:01,369 - INFO - Features selected for prediction: 32 features
+2026-02-09 14:55:01,369 - ERROR - PREDICTION ERROR: 'numpy.ndarray' object has no attribute 'transform'
+Traceback (most recent call last):
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 954, in recommend_crop
+    result = predict_top_k_crops(
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 737, in predict_top_k_crops
+    X_scaled = scaler.transform(X)
+               ^^^^^^^^^^^^^^^^
+AttributeError: 'numpy.ndarray' object has no attribute 'transform'. Did you mean: 'transpose'?
+2026-02-09 15:01:39,834 - INFO - ================================================================================
+2026-02-09 15:01:39,834 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-09 15:01:39,834 - INFO - ================================================================================
+2026-02-09 15:01:39,834 - INFO - ================================================================================
+2026-02-09 15:01:39,834 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 15:01:39,834 - INFO - ================================================================================
+2026-02-09 15:01:39,834 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:01:39,834 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:01:39,834 - INFO - 
+2026-02-09 15:01:39,834 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 15:01:39,837 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 15:01:40,134 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 15:01:40,163 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 15:01:40,163 - INFO - SUCCESS: Model loaded
+2026-02-09 15:01:40,163 - INFO - 
+2026-02-09 15:01:40,163 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 15:01:40,163 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 15:01:40,172 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 15:01:40,172 - INFO - SUCCESS: Scaler loaded
+2026-02-09 15:01:40,172 - INFO - 
+2026-02-09 15:01:40,172 - INFO - Step 3/5: Loading label_encoder.pkl...
+2026-02-09 15:01:40,174 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-09 15:01:40,174 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-09 15:01:40,174 - INFO - SUCCESS: Label encoder loaded (array format)
+2026-02-09 15:01:40,174 - INFO - Crops available: 22
+2026-02-09 15:01:40,174 - INFO - 
+2026-02-09 15:01:40,174 - INFO - Step 4/5: Loading model_info.json...
+2026-02-09 15:01:40,174 - INFO - SUCCESS: Model info loaded
+2026-02-09 15:01:40,174 - INFO - 
+2026-02-09 15:01:40,174 - INFO - Step 5/5: Loading/recovering feature columns...
+2026-02-09 15:01:40,179 - INFO - SUCCESS: Features loaded from model_info.json: 32
+2026-02-09 15:01:40,179 - INFO - 
+2026-02-09 15:01:40,179 - INFO - ================================================================================
+2026-02-09 15:01:40,179 - INFO - MODEL LOADING COMPLETE
+2026-02-09 15:01:40,181 - INFO - ================================================================================
+2026-02-09 15:01:40,181 - INFO - Model type: Random Forest Classifier
+2026-02-09 15:01:40,181 - INFO - Version: v5.3-COMPLETE-FIXED
+2026-02-09 15:01:40,181 - INFO - Features: 32
+2026-02-09 15:01:40,181 - INFO - Crops: 22
+2026-02-09 15:01:40,181 - INFO - Balanced: True
+2026-02-09 15:01:40,181 - INFO - ================================================================================
+2026-02-09 15:01:40,181 - INFO - ================================================================================
+2026-02-09 15:01:40,181 - INFO - CROP RECOMMENDATION API V6.0 READY - FULLY FIXED VERSION
+2026-02-09 15:01:40,181 - INFO - ================================================================================
+2026-02-09 15:01:40,181 - INFO - Mode: TESTING (Reduced penalties)
+2026-02-09 15:01:40,181 - INFO - Model: Random Forest Classifier
+2026-02-09 15:01:40,181 - INFO - Version: v5.3-COMPLETE-FIXED
+2026-02-09 15:01:40,181 - INFO - Features: 32
+2026-02-09 15:01:40,181 - INFO - Crops: 22
+2026-02-09 15:01:40,181 - INFO - Balanced: True
+2026-02-09 15:01:40,181 - INFO - FIXES APPLIED:
+2026-02-09 15:01:40,181 - INFO -   - Feature columns auto-recovery from scaler
+2026-02-09 15:01:40,181 - INFO -   - Robust label encoder handling
+2026-02-09 15:01:40,181 - INFO -   - Added safety checks before prediction
+2026-02-09 15:01:40,181 - INFO -   - Complete 32-feature engineering pipeline
+2026-02-09 15:01:40,181 - INFO - ================================================================================
+2026-02-09 15:02:11,974 - INFO - ================================================================================
+2026-02-09 15:02:11,974 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-09 15:02:11,974 - INFO - ================================================================================
+2026-02-09 15:02:11,974 - INFO - ================================================================================
+2026-02-09 15:02:11,974 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 15:02:11,974 - INFO - ================================================================================
+2026-02-09 15:02:11,974 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:02:11,974 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:02:11,974 - INFO - 
+2026-02-09 15:02:11,974 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 15:02:11,974 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 15:02:12,290 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 15:02:12,320 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 15:02:12,320 - INFO - SUCCESS: Model loaded
+2026-02-09 15:02:12,320 - INFO - 
+2026-02-09 15:02:12,320 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 15:02:12,320 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 15:02:12,320 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 15:02:12,320 - INFO - SUCCESS: Scaler loaded
+2026-02-09 15:02:12,320 - INFO - 
+2026-02-09 15:02:12,320 - INFO - Step 3/5: Loading label_encoder.pkl...
+2026-02-09 15:02:12,320 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-09 15:02:12,326 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-09 15:02:12,326 - INFO - SUCCESS: Label encoder loaded (array format)
+2026-02-09 15:02:12,326 - INFO - Crops available: 22
+2026-02-09 15:02:12,326 - INFO - 
+2026-02-09 15:02:12,326 - INFO - Step 4/5: Loading model_info.json...
+2026-02-09 15:02:12,363 - INFO - SUCCESS: Model info loaded
+2026-02-09 15:02:12,363 - INFO - 
+2026-02-09 15:02:12,363 - INFO - Step 5/5: Loading/recovering feature columns...
+2026-02-09 15:02:12,363 - INFO - SUCCESS: Features loaded from model_info.json: 32
+2026-02-09 15:02:12,363 - INFO - 
+2026-02-09 15:02:12,363 - INFO - ================================================================================
+2026-02-09 15:02:12,363 - INFO - MODEL LOADING COMPLETE
+2026-02-09 15:02:12,363 - INFO - ================================================================================
+2026-02-09 15:02:12,363 - INFO - Model type: Random Forest Classifier
+2026-02-09 15:02:12,363 - INFO - Version: v6.0-COMPLETE-FIXED
+2026-02-09 15:02:12,363 - INFO - Features: 32
+2026-02-09 15:02:12,363 - INFO - Crops: 22
+2026-02-09 15:02:12,363 - INFO - Balanced: True
+2026-02-09 15:02:12,363 - INFO - ================================================================================
+2026-02-09 15:02:12,363 - INFO - ================================================================================
+2026-02-09 15:02:12,363 - INFO - CROP RECOMMENDATION API V6.0 READY - FULLY FIXED VERSION
+2026-02-09 15:02:12,363 - INFO - ================================================================================
+2026-02-09 15:02:12,363 - INFO - Mode: TESTING (Reduced penalties)
+2026-02-09 15:02:12,363 - INFO - Model: Random Forest Classifier
+2026-02-09 15:02:12,363 - INFO - Version: v6.0-COMPLETE-FIXED
+2026-02-09 15:02:12,363 - INFO - Features: 32
+2026-02-09 15:02:12,363 - INFO - Crops: 22
+2026-02-09 15:02:12,363 - INFO - Balanced: True
+2026-02-09 15:02:12,363 - INFO - FIXES APPLIED:
+2026-02-09 15:02:12,370 - INFO -   - Feature columns auto-recovery from scaler
+2026-02-09 15:02:12,370 - INFO -   - Robust label encoder handling
+2026-02-09 15:02:12,370 - INFO -   - Added safety checks before prediction
+2026-02-09 15:02:12,370 - INFO -   - Complete 32-feature engineering pipeline
+2026-02-09 15:02:12,370 - INFO - ================================================================================
+2026-02-09 15:05:04,246 - INFO - Engineering features from inputs: N=90.0, P=45.0, K=45.0, temp=25.0, humidity=80.0, ph=6.5, rainfall=1700.0
+2026-02-09 15:05:04,289 - INFO - Engineered features count: 32
+2026-02-09 15:05:04,290 - INFO - Engineered features: ['n', 'p', 'k', 'temperature', 'humidity', 'ph', 'rainfall', 'npk_total', 'n_to_p_ratio', 'n_to_k_ratio', 'p_to_k_ratio', 'npk_balance', 'moisture_index', 'heat_stress', 'gdd_proxy', 'is_low_rainfall', 'is_high_rainfall', 'is_very_high_rainfall', 'is_cool', 'is_hot', 'is_very_hot', 'temperature_squared', 'rainfall_squared', 'ph_deviation', 'is_acidic', 'is_alkaline', 'is_very_acidic', 'is_very_alkaline', 'is_extreme_acidic', 'ph_deviation_squared', 'ph_n_interaction', 'ph_p_interaction']
+2026-02-09 15:05:04,296 - INFO - Features selected for prediction: 32 features
+2026-02-09 15:05:04,296 - ERROR - PREDICTION ERROR: 'numpy.ndarray' object has no attribute 'transform'
+Traceback (most recent call last):
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 954, in recommend_crop
+    result = predict_top_k_crops(
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 737, in predict_top_k_crops
+    X_scaled = scaler.transform(X)
+               ^^^^^^^^^^^^^^^^
+AttributeError: 'numpy.ndarray' object has no attribute 'transform'. Did you mean: 'transpose'?
+2026-02-09 15:05:33,675 - INFO - ================================================================================
+2026-02-09 15:05:33,675 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-09 15:05:33,675 - INFO - ================================================================================
+2026-02-09 15:05:33,675 - INFO - ================================================================================
+2026-02-09 15:05:33,675 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 15:05:33,675 - INFO - ================================================================================
+2026-02-09 15:05:33,681 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:05:33,681 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:05:33,681 - INFO - 
+2026-02-09 15:05:33,681 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 15:05:33,681 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 15:05:33,995 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 15:05:34,027 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 15:05:34,027 - INFO - SUCCESS: Model loaded
+2026-02-09 15:05:34,027 - INFO - 
+2026-02-09 15:05:34,027 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 15:05:34,027 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 15:05:34,027 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 15:05:34,027 - INFO - SUCCESS: Scaler loaded
+2026-02-09 15:05:34,027 - INFO - 
+2026-02-09 15:05:34,027 - INFO - Step 3/5: Loading label_encoder.pkl...
+2026-02-09 15:05:34,027 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-09 15:05:34,037 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-09 15:05:34,037 - INFO - SUCCESS: Label encoder loaded (array format)
+2026-02-09 15:05:34,037 - INFO - Crops available: 22
+2026-02-09 15:05:34,037 - INFO - 
+2026-02-09 15:05:34,039 - INFO - Step 4/5: Loading model_info.json...
+2026-02-09 15:05:34,065 - INFO - SUCCESS: Model info loaded
+2026-02-09 15:05:34,073 - INFO - 
+2026-02-09 15:05:34,074 - INFO - Step 5/5: Loading/recovering feature columns...
+2026-02-09 15:05:34,076 - INFO - SUCCESS: Features loaded from model_info.json: 32
+2026-02-09 15:05:34,076 - INFO - 
+2026-02-09 15:05:34,076 - INFO - ================================================================================
+2026-02-09 15:05:34,076 - INFO - MODEL LOADING COMPLETE
+2026-02-09 15:05:34,076 - INFO - ================================================================================
+2026-02-09 15:05:34,076 - INFO - Model type: Random Forest Classifier
+2026-02-09 15:05:34,076 - INFO - Version: v6.0-COMPLETE-FIXED
+2026-02-09 15:05:34,076 - INFO - Features: 32
+2026-02-09 15:05:34,079 - INFO - Crops: 22
+2026-02-09 15:05:34,079 - INFO - Balanced: True
+2026-02-09 15:05:34,079 - INFO - ================================================================================
+2026-02-09 15:05:34,079 - INFO - ================================================================================
+2026-02-09 15:05:34,079 - INFO - CROP RECOMMENDATION API V6.0 READY - FULLY FIXED VERSION
+2026-02-09 15:05:34,079 - INFO - ================================================================================
+2026-02-09 15:05:34,079 - INFO - Mode: TESTING (Reduced penalties)
+2026-02-09 15:05:34,079 - INFO - Model: Random Forest Classifier
+2026-02-09 15:05:34,079 - INFO - Version: v6.0-COMPLETE-FIXED
+2026-02-09 15:05:34,079 - INFO - Features: 32
+2026-02-09 15:05:34,079 - INFO - Crops: 22
+2026-02-09 15:05:34,079 - INFO - Balanced: True
+2026-02-09 15:05:34,079 - INFO - FIXES APPLIED:
+2026-02-09 15:05:34,083 - INFO -   - Feature columns auto-recovery from scaler
+2026-02-09 15:05:34,083 - INFO -   - Robust label encoder handling
+2026-02-09 15:05:34,083 - INFO -   - Added safety checks before prediction
+2026-02-09 15:05:34,083 - INFO -   - Complete 32-feature engineering pipeline
+2026-02-09 15:05:34,083 - INFO - ================================================================================
+2026-02-09 15:06:39,478 - INFO - Engineering features from inputs: N=67.0, P=45.0, K=45.0, temp=25.0, humidity=78.0, ph=6.6, rainfall=1700.0
+2026-02-09 15:06:39,520 - INFO - Engineered features count: 32
+2026-02-09 15:06:39,522 - INFO - Engineered features: ['n', 'p', 'k', 'temperature', 'humidity', 'ph', 'rainfall', 'npk_total', 'n_to_p_ratio', 'n_to_k_ratio', 'p_to_k_ratio', 'npk_balance', 'moisture_index', 'heat_stress', 'gdd_proxy', 'is_low_rainfall', 'is_high_rainfall', 'is_very_high_rainfall', 'is_cool', 'is_hot', 'is_very_hot', 'temperature_squared', 'rainfall_squared', 'ph_deviation', 'is_acidic', 'is_alkaline', 'is_very_acidic', 'is_very_alkaline', 'is_extreme_acidic', 'ph_deviation_squared', 'ph_n_interaction', 'ph_p_interaction']
+2026-02-09 15:06:39,523 - INFO - Features selected for prediction: 32 features
+2026-02-09 15:06:39,523 - ERROR - PREDICTION ERROR: 'numpy.ndarray' object has no attribute 'transform'
+Traceback (most recent call last):
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 954, in recommend_crop
+    result = predict_top_k_crops(
+             ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\KIIT\Documents\AgriShield\backend\crop_recommendation_api.py", line 737, in predict_top_k_crops
+    X_scaled = scaler.transform(X)
+               ^^^^^^^^^^^^^^^^
+AttributeError: 'numpy.ndarray' object has no attribute 'transform'. Did you mean: 'transpose'?
+2026-02-09 15:33:48,013 - INFO - ================================================================================
+2026-02-09 15:33:48,013 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-09 15:33:48,015 - INFO - ================================================================================
+2026-02-09 15:33:48,015 - INFO - ================================================================================
+2026-02-09 15:33:48,015 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 15:33:48,015 - INFO - ================================================================================
+2026-02-09 15:33:48,015 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:33:48,015 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:33:48,015 - INFO - 
+2026-02-09 15:33:48,023 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 15:33:48,024 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 15:33:48,694 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 15:33:48,779 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 15:33:48,779 - INFO - SUCCESS: Model loaded
+2026-02-09 15:33:48,779 - INFO - 
+2026-02-09 15:33:48,779 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 15:33:48,779 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 15:33:48,792 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 15:33:48,795 - ERROR - ================================================================================
+2026-02-09 15:33:48,795 - ERROR - CRITICAL ERROR: scaler2.pkl contains a numpy array, not a StandardScaler!
+2026-02-09 15:33:48,795 - ERROR - ================================================================================
+2026-02-09 15:33:48,795 - ERROR - Loaded object type: <class 'numpy.ndarray'>
+2026-02-09 15:33:48,795 - ERROR - Array shape: (32,)
+2026-02-09 15:33:48,795 - ERROR - 
+2026-02-09 15:33:48,795 - ERROR - ROOT CAUSE:
+2026-02-09 15:33:48,800 - ERROR -   The scaler2.pkl file was saved incorrectly during training.
+2026-02-09 15:33:48,800 - ERROR -   It contains the scaled data (numpy array) instead of the
+2026-02-09 15:33:48,800 - ERROR -   StandardScaler object itself.
+2026-02-09 15:33:48,800 - ERROR - 
+2026-02-09 15:33:48,803 - ERROR - SOLUTION:
+2026-02-09 15:33:48,803 - ERROR -   1. Delete models/scaler2.pkl
+2026-02-09 15:33:48,805 - ERROR -   2. Re-run your training script: python crop_rec.py
+2026-02-09 15:33:48,805 - ERROR -   3. Verify the training code saves 'scaler' not 'X_scaled':
+2026-02-09 15:33:48,805 - ERROR -      
+2026-02-09 15:33:48,805 - ERROR -      # CORRECT:
+2026-02-09 15:33:48,805 - ERROR -      scaler = StandardScaler()
+2026-02-09 15:33:48,805 - ERROR -      X_scaled = scaler.fit_transform(X_train)
+2026-02-09 15:33:48,808 - ERROR -      joblib.dump(scaler, 'scaler2.pkl')  # Save scaler object!
+2026-02-09 15:33:48,808 - ERROR - 
+2026-02-09 15:33:48,808 - ERROR -   4. Restart the API server
+2026-02-09 15:33:48,808 - ERROR - ================================================================================
+2026-02-09 15:33:48,808 - WARNING - ================================================================================
+2026-02-09 15:33:48,808 - WARNING - WARNING: MODEL NOT LOADED - API ENDPOINTS WILL FAIL
+2026-02-09 15:33:48,808 - WARNING - ================================================================================
+2026-02-09 15:33:48,808 - WARNING - Please run the training script: python backend/crop_rec.py
+2026-02-09 15:33:48,808 - WARNING - ================================================================================
+2026-02-09 15:36:56,534 - INFO - ================================================================================
+2026-02-09 15:36:56,534 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-09 15:36:56,534 - INFO - ================================================================================
+2026-02-09 15:36:56,534 - INFO - ================================================================================
+2026-02-09 15:36:56,534 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 15:36:56,534 - INFO - ================================================================================
+2026-02-09 15:36:56,534 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:36:56,534 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:36:56,534 - INFO - 
+2026-02-09 15:36:56,534 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 15:36:56,534 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 15:36:56,893 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 15:36:56,928 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 15:36:56,928 - INFO - SUCCESS: Model loaded
+2026-02-09 15:36:56,928 - INFO - 
+2026-02-09 15:36:56,928 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 15:36:56,928 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 15:36:56,931 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 15:36:56,931 - ERROR - ================================================================================
+2026-02-09 15:36:56,931 - ERROR - CRITICAL ERROR: scaler2.pkl contains a numpy array, not a StandardScaler!
+2026-02-09 15:36:56,931 - ERROR - ================================================================================
+2026-02-09 15:36:56,931 - ERROR - Loaded object type: <class 'numpy.ndarray'>
+2026-02-09 15:36:56,931 - ERROR - Array shape: (32,)
+2026-02-09 15:36:56,931 - ERROR - 
+2026-02-09 15:36:56,931 - ERROR - ROOT CAUSE:
+2026-02-09 15:36:56,931 - ERROR -   The scaler2.pkl file was saved incorrectly during training.
+2026-02-09 15:36:56,931 - ERROR -   It contains the scaled data (numpy array) instead of the
+2026-02-09 15:36:56,931 - ERROR -   StandardScaler object itself.
+2026-02-09 15:36:56,931 - ERROR - 
+2026-02-09 15:36:56,931 - ERROR - SOLUTION:
+2026-02-09 15:36:56,931 - ERROR -   1. Delete models/scaler2.pkl
+2026-02-09 15:36:56,931 - ERROR -   2. Re-run your training script: python crop_rec.py
+2026-02-09 15:36:56,931 - ERROR -   3. Verify the training code saves 'scaler' not 'X_scaled':
+2026-02-09 15:36:56,931 - ERROR -      
+2026-02-09 15:36:56,931 - ERROR -      # CORRECT:
+2026-02-09 15:36:56,931 - ERROR -      scaler = StandardScaler()
+2026-02-09 15:36:56,931 - ERROR -      X_scaled = scaler.fit_transform(X_train)
+2026-02-09 15:36:56,931 - ERROR -      joblib.dump(scaler, 'scaler2.pkl')  # Save scaler object!
+2026-02-09 15:36:56,931 - ERROR - 
+2026-02-09 15:36:56,931 - ERROR -   4. Restart the API server
+2026-02-09 15:36:56,931 - ERROR - ================================================================================
+2026-02-09 15:36:56,931 - WARNING - ================================================================================
+2026-02-09 15:36:56,931 - WARNING - WARNING: MODEL NOT LOADED - API ENDPOINTS WILL FAIL
+2026-02-09 15:36:56,931 - WARNING - ================================================================================
+2026-02-09 15:36:56,931 - WARNING - Please run the training script: python backend/crop_rec.py
+2026-02-09 15:36:56,931 - WARNING - ================================================================================
+2026-02-09 15:56:19,999 - INFO - ================================================================================
+2026-02-09 15:56:19,999 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-09 15:56:19,999 - INFO - ================================================================================
+2026-02-09 15:56:19,999 - INFO - ================================================================================
+2026-02-09 15:56:19,999 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 15:56:19,999 - INFO - ================================================================================
+2026-02-09 15:56:19,999 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:56:19,999 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:56:19,999 - INFO - 
+2026-02-09 15:56:19,999 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 15:56:19,999 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 15:56:20,281 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 15:56:20,318 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 15:56:20,318 - INFO - SUCCESS: Model loaded
+2026-02-09 15:56:20,318 - INFO - 
+2026-02-09 15:56:20,318 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 15:56:20,318 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 15:56:20,318 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 15:56:20,318 - ERROR - ================================================================================
+2026-02-09 15:56:20,323 - ERROR - CRITICAL ERROR: scaler2.pkl contains a numpy array, not a StandardScaler!
+2026-02-09 15:56:20,323 - ERROR - ================================================================================
+2026-02-09 15:56:20,323 - ERROR - Loaded object type: <class 'numpy.ndarray'>
+2026-02-09 15:56:20,323 - ERROR - Array shape: (32,)
+2026-02-09 15:56:20,323 - ERROR - 
+2026-02-09 15:56:20,323 - ERROR - ROOT CAUSE:
+2026-02-09 15:56:20,323 - ERROR -   The scaler2.pkl file was saved incorrectly during training.
+2026-02-09 15:56:20,323 - ERROR -   It contains the scaled data (numpy array) instead of the
+2026-02-09 15:56:20,323 - ERROR -   StandardScaler object itself.
+2026-02-09 15:56:20,323 - ERROR - 
+2026-02-09 15:56:20,323 - ERROR - SOLUTION:
+2026-02-09 15:56:20,323 - ERROR -   1. Delete models/scaler2.pkl
+2026-02-09 15:56:20,323 - ERROR -   2. Re-run your training script: python crop_rec.py
+2026-02-09 15:56:20,323 - ERROR -   3. Verify the training code saves 'scaler' not 'X_scaled':
+2026-02-09 15:56:20,323 - ERROR -      
+2026-02-09 15:56:20,323 - ERROR -      # CORRECT:
+2026-02-09 15:56:20,328 - ERROR -      scaler = StandardScaler()
+2026-02-09 15:56:20,328 - ERROR -      X_scaled = scaler.fit_transform(X_train)
+2026-02-09 15:56:20,328 - ERROR -      joblib.dump(scaler, 'scaler2.pkl')  # Save scaler object!
+2026-02-09 15:56:20,328 - ERROR - 
+2026-02-09 15:56:20,329 - ERROR -   4. Restart the API server
+2026-02-09 15:56:20,329 - ERROR - ================================================================================
+2026-02-09 15:56:20,329 - WARNING - ================================================================================
+2026-02-09 15:56:20,329 - WARNING - WARNING: MODEL NOT LOADED - API ENDPOINTS WILL FAIL
+2026-02-09 15:56:20,329 - WARNING - ================================================================================
+2026-02-09 15:56:20,329 - WARNING - Please run the training script: python backend/crop_rec.py
+2026-02-09 15:56:20,329 - WARNING - ================================================================================
+2026-02-09 15:58:28,589 - INFO - ================================================================================
+2026-02-09 15:58:28,589 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-09 15:58:28,589 - INFO - ================================================================================
+2026-02-09 15:58:28,589 - INFO - ================================================================================
+2026-02-09 15:58:28,589 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 15:58:28,589 - INFO - ================================================================================
+2026-02-09 15:58:28,589 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:58:28,589 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 15:58:28,589 - INFO - 
+2026-02-09 15:58:28,589 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 15:58:28,589 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 15:58:28,916 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 15:58:28,940 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 15:58:28,940 - INFO - SUCCESS: Model loaded
+2026-02-09 15:58:28,940 - INFO - 
+2026-02-09 15:58:28,940 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 15:58:28,940 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 15:58:28,954 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 15:58:28,954 - ERROR - ================================================================================
+2026-02-09 15:58:28,954 - ERROR - CRITICAL ERROR: scaler2.pkl contains a numpy array, not a StandardScaler!
+2026-02-09 15:58:28,954 - ERROR - ================================================================================
+2026-02-09 15:58:28,954 - ERROR - Loaded object type: <class 'numpy.ndarray'>
+2026-02-09 15:58:28,954 - ERROR - Array shape: (32,)
+2026-02-09 15:58:28,954 - ERROR - 
+2026-02-09 15:58:28,954 - ERROR - ROOT CAUSE:
+2026-02-09 15:58:28,958 - ERROR -   The scaler2.pkl file was saved incorrectly during training.
+2026-02-09 15:58:28,958 - ERROR -   It contains the scaled data (numpy array) instead of the
+2026-02-09 15:58:28,959 - ERROR -   StandardScaler object itself.
+2026-02-09 15:58:28,959 - ERROR - 
+2026-02-09 15:58:28,959 - ERROR - SOLUTION:
+2026-02-09 15:58:28,959 - ERROR -   1. Delete models/scaler2.pkl
+2026-02-09 15:58:28,959 - ERROR -   2. Re-run your training script: python crop_rec.py
+2026-02-09 15:58:28,959 - ERROR -   3. Verify the training code saves 'scaler' not 'X_scaled':
+2026-02-09 15:58:28,959 - ERROR -      
+2026-02-09 15:58:28,959 - ERROR -      # CORRECT:
+2026-02-09 15:58:28,959 - ERROR -      scaler = StandardScaler()
+2026-02-09 15:58:28,959 - ERROR -      X_scaled = scaler.fit_transform(X_train)
+2026-02-09 15:58:28,959 - ERROR -      joblib.dump(scaler, 'scaler2.pkl')  # Save scaler object!
+2026-02-09 15:58:28,959 - ERROR - 
+2026-02-09 15:58:28,962 - ERROR -   4. Restart the API server
+2026-02-09 15:58:28,962 - ERROR - ================================================================================
+2026-02-09 15:58:28,962 - WARNING - ================================================================================
+2026-02-09 15:58:28,962 - WARNING - WARNING: MODEL NOT LOADED - API ENDPOINTS WILL FAIL
+2026-02-09 15:58:28,962 - WARNING - ================================================================================
+2026-02-09 15:58:28,962 - WARNING - Please run the training script: python backend/crop_rec.py
+2026-02-09 15:58:28,962 - WARNING - ================================================================================
+2026-02-09 16:08:59,031 - INFO - ================================================================================
+2026-02-09 16:08:59,031 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-09 16:08:59,031 - INFO - ================================================================================
+2026-02-09 16:08:59,031 - INFO - ================================================================================
+2026-02-09 16:08:59,031 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 16:08:59,031 - INFO - ================================================================================
+2026-02-09 16:08:59,031 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 16:08:59,031 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 16:08:59,031 - INFO - 
+2026-02-09 16:08:59,031 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 16:08:59,031 - INFO - Loading crop_model.pkl (3149.3 KB)...
+2026-02-09 16:08:59,337 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 16:08:59,373 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 16:08:59,373 - INFO - SUCCESS: Model loaded
+2026-02-09 16:08:59,376 - INFO - 
+2026-02-09 16:08:59,376 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 16:08:59,377 - INFO - Loading scaler2.pkl (2.2 KB)...
+2026-02-09 16:08:59,379 - INFO - SUCCESS: Loaded scaler2.pkl using pickle
+2026-02-09 16:08:59,379 - ERROR - ================================================================================
+2026-02-09 16:08:59,379 - ERROR - CRITICAL ERROR: scaler2.pkl contains a numpy array, not a StandardScaler!
+2026-02-09 16:08:59,379 - ERROR - ================================================================================
+2026-02-09 16:08:59,379 - ERROR - Loaded object type: <class 'numpy.ndarray'>
+2026-02-09 16:08:59,379 - ERROR - Array shape: (32,)
+2026-02-09 16:08:59,379 - ERROR - 
+2026-02-09 16:08:59,382 - ERROR - ROOT CAUSE:
+2026-02-09 16:08:59,382 - ERROR -   The scaler2.pkl file was saved incorrectly during training.
+2026-02-09 16:08:59,382 - ERROR -   It contains the scaled data (numpy array) instead of the
+2026-02-09 16:08:59,382 - ERROR -   StandardScaler object itself.
+2026-02-09 16:08:59,382 - ERROR - 
+2026-02-09 16:08:59,382 - ERROR - SOLUTION:
+2026-02-09 16:08:59,382 - ERROR -   1. Delete models/scaler2.pkl
+2026-02-09 16:08:59,382 - ERROR -   2. Re-run your training script: python crop_rec.py
+2026-02-09 16:08:59,382 - ERROR -   3. Verify the training code saves 'scaler' not 'X_scaled':
+2026-02-09 16:08:59,382 - ERROR -      
+2026-02-09 16:08:59,382 - ERROR -      # CORRECT:
+2026-02-09 16:08:59,382 - ERROR -      scaler = StandardScaler()
+2026-02-09 16:08:59,382 - ERROR -      X_scaled = scaler.fit_transform(X_train)
+2026-02-09 16:08:59,382 - ERROR -      joblib.dump(scaler, 'scaler2.pkl')  # Save scaler object!
+2026-02-09 16:08:59,382 - ERROR - 
+2026-02-09 16:08:59,382 - ERROR -   4. Restart the API server
+2026-02-09 16:08:59,382 - ERROR - ================================================================================
+2026-02-09 16:08:59,382 - WARNING - ================================================================================
+2026-02-09 16:08:59,384 - WARNING - WARNING: MODEL NOT LOADED - API ENDPOINTS WILL FAIL
+2026-02-09 16:08:59,384 - WARNING - ================================================================================
+2026-02-09 16:08:59,384 - WARNING - Please run the training script: python backend/crop_rec.py
+2026-02-09 16:08:59,384 - WARNING - ================================================================================
+2026-02-09 16:09:36,291 - INFO - ================================================================================
+2026-02-09 16:09:36,291 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-09 16:09:36,291 - INFO - ================================================================================
+2026-02-09 16:09:36,291 - INFO - ================================================================================
+2026-02-09 16:09:36,291 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 16:09:36,291 - INFO - ================================================================================
+2026-02-09 16:09:36,291 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 16:09:36,291 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 16:09:36,291 - INFO - 
+2026-02-09 16:09:36,291 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 16:09:36,291 - INFO - Loading crop_model.pkl (3330.7 KB)...
+2026-02-09 16:09:36,590 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 16:09:36,628 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 16:09:36,628 - INFO - SUCCESS: Model loaded
+2026-02-09 16:09:36,628 - INFO - 
+2026-02-09 16:09:36,628 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 16:09:36,628 - INFO - Loading scaler2.pkl (1.6 KB)...
+2026-02-09 16:09:36,628 - WARNING - Pickle failed for scaler2.pkl: invalid load key, 'x'.
+2026-02-09 16:09:36,628 - INFO - SUCCESS: Loaded scaler2.pkl using joblib
+2026-02-09 16:09:36,632 - INFO - Scaler type: StandardScaler
+2026-02-09 16:09:36,632 - INFO - Expected features: 32
+2026-02-09 16:09:36,632 - INFO - Feature names available: 32 features
+2026-02-09 16:09:36,632 - INFO - 
+2026-02-09 16:09:36,632 - INFO - Step 3/5: Loading label_encoder.pkl...
+2026-02-09 16:09:36,632 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-09 16:09:36,635 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-09 16:09:36,635 - INFO - SUCCESS: Label encoder loaded (array format)
+2026-02-09 16:09:36,635 - INFO - Crops available: 22
+2026-02-09 16:09:36,635 - INFO - 
+2026-02-09 16:09:36,635 - INFO - Step 4/5: Loading model_info.json...
+2026-02-09 16:09:36,664 - INFO - SUCCESS: Model info loaded
+2026-02-09 16:09:36,665 - INFO - 
+2026-02-09 16:09:36,665 - INFO - Step 5/5: Loading/recovering feature columns...
+2026-02-09 16:09:36,667 - INFO - SUCCESS: Features loaded from model_info.json: 32
+2026-02-09 16:09:36,667 - INFO - 
+2026-02-09 16:09:36,667 - INFO - ================================================================================
+2026-02-09 16:09:36,668 - INFO - MODEL LOADING COMPLETE
+2026-02-09 16:09:36,668 - INFO - ================================================================================
+2026-02-09 16:09:36,668 - INFO - Model type: Random Forest Classifier
+2026-02-09 16:09:36,668 - INFO - Version: v7.0-ABSOLUTE-FIX
+2026-02-09 16:09:36,668 - INFO - Features: 32
+2026-02-09 16:09:36,668 - INFO - Crops: 22
+2026-02-09 16:09:36,668 - INFO - Balanced: True
+2026-02-09 16:09:36,668 - INFO - ================================================================================
+2026-02-09 16:09:36,668 - INFO - ================================================================================
+2026-02-09 16:09:36,668 - INFO - CROP RECOMMENDATION API V6.0 READY - FULLY FIXED VERSION
+2026-02-09 16:09:36,671 - INFO - ================================================================================
+2026-02-09 16:09:36,671 - INFO - Mode: TESTING (Reduced penalties)
+2026-02-09 16:09:36,671 - INFO - Model: Random Forest Classifier
+2026-02-09 16:09:36,672 - INFO - Version: v7.0-ABSOLUTE-FIX
+2026-02-09 16:09:36,672 - INFO - Features: 32
+2026-02-09 16:09:36,672 - INFO - Crops: 22
+2026-02-09 16:09:36,672 - INFO - Balanced: True
+2026-02-09 16:09:36,672 - INFO - FIXES APPLIED:
+2026-02-09 16:09:36,672 - INFO -   - Feature columns auto-recovery from scaler
+2026-02-09 16:09:36,672 - INFO -   - Robust label encoder handling
+2026-02-09 16:09:36,672 - INFO -   - Added safety checks before prediction
+2026-02-09 16:09:36,672 - INFO -   - Complete 32-feature engineering pipeline
+2026-02-09 16:09:36,672 - INFO - ================================================================================
+2026-02-09 16:11:14,461 - INFO - Engineering features from inputs: N=90.0, P=50.0, K=50.0, temp=25.0, humidity=70.0, ph=4.6, rainfall=1800.0
+2026-02-09 16:11:14,493 - INFO - Engineered features count: 32
+2026-02-09 16:11:14,493 - INFO - Engineered features: ['n', 'p', 'k', 'temperature', 'humidity', 'ph', 'rainfall', 'npk_total', 'n_to_p_ratio', 'n_to_k_ratio', 'p_to_k_ratio', 'npk_balance', 'moisture_index', 'heat_stress', 'gdd_proxy', 'is_low_rainfall', 'is_high_rainfall', 'is_very_high_rainfall', 'is_cool', 'is_hot', 'is_very_hot', 'temperature_squared', 'rainfall_squared', 'ph_deviation', 'is_acidic', 'is_alkaline', 'is_very_acidic', 'is_very_alkaline', 'is_extreme_acidic', 'ph_deviation_squared', 'ph_n_interaction', 'ph_p_interaction']
+2026-02-09 16:11:14,493 - INFO - Features selected for prediction: 32 features
+2026-02-09 16:46:21,434 - INFO - ================================================================================
+2026-02-09 16:46:21,434 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-09 16:46:21,434 - INFO - ================================================================================
+2026-02-09 16:46:21,434 - INFO - ================================================================================
+2026-02-09 16:46:21,434 - INFO - LOADING MODEL ARTIFACTS
+2026-02-09 16:46:21,434 - INFO - ================================================================================
+2026-02-09 16:46:21,434 - INFO - Model directory: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 16:46:21,450 - INFO - Absolute path: C:\Users\KIIT\Documents\AgriShield\models
+2026-02-09 16:46:21,450 - INFO - 
+2026-02-09 16:46:21,450 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-09 16:46:21,450 - INFO - Loading crop_model.pkl (3330.7 KB)...
+2026-02-09 16:46:21,687 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-09 16:46:21,709 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-09 16:46:21,709 - INFO - SUCCESS: Model loaded
+2026-02-09 16:46:21,709 - INFO - 
+2026-02-09 16:46:21,709 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-09 16:46:21,709 - INFO - Loading scaler2.pkl (1.6 KB)...
+2026-02-09 16:46:21,709 - WARNING - Pickle failed for scaler2.pkl: invalid load key, 'x'.
+2026-02-09 16:46:21,709 - INFO - SUCCESS: Loaded scaler2.pkl using joblib
+2026-02-09 16:46:21,709 - INFO - Scaler type: StandardScaler
+2026-02-09 16:46:21,709 - INFO - Expected features: 32
+2026-02-09 16:46:21,709 - INFO - Feature names available: 32 features
+2026-02-09 16:46:21,709 - INFO - 
+2026-02-09 16:46:21,709 - INFO - Step 3/5: Loading label_encoder.pkl...
+2026-02-09 16:46:21,709 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-09 16:46:21,720 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-09 16:46:21,720 - INFO - SUCCESS: Label encoder loaded (array format)
+2026-02-09 16:46:21,720 - INFO - Crops available: 22
+2026-02-09 16:46:21,720 - INFO - 
+2026-02-09 16:46:21,720 - INFO - Step 4/5: Loading model_info.json...
+2026-02-09 16:46:21,721 - INFO - SUCCESS: Model info loaded
+2026-02-09 16:46:21,721 - INFO - 
+2026-02-09 16:46:21,721 - INFO - Step 5/5: Loading/recovering feature columns...
+2026-02-09 16:46:21,722 - INFO - SUCCESS: Features loaded from model_info.json: 32
+2026-02-09 16:46:21,722 - INFO - 
+2026-02-09 16:46:21,722 - INFO - ================================================================================
+2026-02-09 16:46:21,722 - INFO - MODEL LOADING COMPLETE
+2026-02-09 16:46:21,722 - INFO - ================================================================================
+2026-02-09 16:46:21,722 - INFO - Model type: Random Forest Classifier
+2026-02-09 16:46:21,722 - INFO - Version: v7.0-ABSOLUTE-FIX
+2026-02-09 16:46:21,722 - INFO - Features: 32
+2026-02-09 16:46:21,722 - INFO - Crops: 22
+2026-02-09 16:46:21,722 - INFO - Balanced: True
+2026-02-09 16:46:21,724 - INFO - ================================================================================
+2026-02-09 16:46:21,724 - INFO - ================================================================================
+2026-02-09 16:46:21,724 - INFO - CROP RECOMMENDATION API V6.0 READY - FULLY FIXED VERSION
+2026-02-09 16:46:21,725 - INFO - ================================================================================
+2026-02-09 16:46:21,725 - INFO - Mode: TESTING (Reduced penalties)
+2026-02-09 16:46:21,725 - INFO - Model: Random Forest Classifier
+2026-02-09 16:46:21,725 - INFO - Version: v7.0-ABSOLUTE-FIX
+2026-02-09 16:46:21,725 - INFO - Features: 32
+2026-02-09 16:46:21,725 - INFO - Crops: 22
+2026-02-09 16:46:21,725 - INFO - Balanced: True
+2026-02-09 16:46:21,725 - INFO - FIXES APPLIED:
+2026-02-09 16:46:21,726 - INFO -   - Feature columns auto-recovery from scaler
+2026-02-09 16:46:21,726 - INFO -   - Robust label encoder handling
+2026-02-09 16:46:21,726 - INFO -   - Added safety checks before prediction
+2026-02-09 16:46:21,726 - INFO -   - Complete 32-feature engineering pipeline
+2026-02-09 16:46:21,727 - INFO - ================================================================================
