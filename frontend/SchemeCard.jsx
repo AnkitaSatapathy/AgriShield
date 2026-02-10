@@ -1089,12 +1089,18 @@ const SchemeCard = ({ onBack }) => {
                                   const nameLower = (scheme.scheme_name || '').toLowerCase();
 
                                   // App Logic
-                                  if (
-                                    linkLower.includes('play.google.com') ||
-                                    linkLower.includes('apps.apple.com') ||
-                                    nameLower.includes('app') ||
-                                    nameLower.includes('mobile')
-                                  ) {
+                                  // Check for Play Store / App Store links
+                                  const isStoreLink = linkLower.includes('play.google.com') || linkLower.includes('apps.apple.com');
+
+                                  // Check for specific keywords in name (avoiding "Apple" matching "app")
+                                  // We look for " App" (space before), "Mobile App", or name ending in "App"
+                                  const isAppByName =
+                                    /\bapp\b/i.test(nameLower) ||
+                                    nameLower.includes('mobile app') ||
+                                    nameLower.includes('android') ||
+                                    nameLower.includes('ios');
+
+                                  if (isStoreLink || isAppByName) {
                                     btnText = 'Download App';
                                     BtnIcon = Smartphone;
                                     btnClass = 'bg-indigo-600 hover:bg-indigo-700';

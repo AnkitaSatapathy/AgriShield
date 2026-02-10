@@ -405,35 +405,103 @@ class SchemeManager:
         }
 
 
+
+    def fix_placeholder_states(self) -> Dict:
+        """
+        Replace generic state placeholders with specific state lists in the dataset.
+        Incorporated from maintenance scripts.
+        """
+        updates_made = False
+        
+        # Define mappings
+        mappings = {
+            'TMC_001': "Punjab, Haryana, Rajasthan, Madhya Pradesh, Gujarat, Maharashtra, Telangana, Andhra Pradesh, Karnataka, Tamil Nadu, Odisha", # Cotton
+            'JUTE_TECH_001': "West Bengal, Bihar, Assam, Odisha, Andhra Pradesh, Tripura, Meghalaya", # Jute
+            'MOVCD_001': "Arunachal Pradesh, Assam, Manipur, Meghalaya, Mizoram, Nagaland, Sikkim, Tripura", # NE States
+            'RKVY_MUSH_001': "All States" # Multiple States
+        }
+        
+        for scheme_id, states in mappings.items():
+            if scheme_id in self.df['scheme_id'].values:
+                current_val = self.df.loc[self.df['scheme_id'] == scheme_id, 'state_applicability'].values[0]
+                # Update if current value is the old placeholder or just different (simple check)
+                # We specifically check for the placeholders to avoid overwriting manual changes if any
+                is_placeholder = any(p in current_val for p in ["Cotton", "Jute", "North East", "Multiple"])
+                if is_placeholder:
+                    self.df.loc[self.df['scheme_id'] == scheme_id, 'state_applicability'] = states
+                    updates_made = True
+        
+        if updates_made:
+            repo_root = Path(__file__).resolve().parents[1]
+            csv_path = repo_root / "data" / "processed" / "government_schemes.csv"
+            self.df.to_csv(csv_path, index=False, encoding='utf-8')
+            self.sync_notebook()
+            return {"success": True, "message": "Placeholder states updated and synced."}
+        
+        return {"success": True, "message": "No placeholder updates needed."}
+
+    def ensure_goa_scheme(self) -> Dict:
+        """
+        Ensure Goa specific scheme exists to populate state dropdown.
+        Incorporated from maintenance scripts.
+        """
+        if 'GOA_HORT_001' not in self.df['scheme_id'].values:
+            new_scheme = {
+                "scheme_id": "GOA_HORT_001",
+                "scheme_name": "Goa State Horticulture Assistance",
+                "description": "Financial assistance for cashew and coconut plantation maintenance in Goa.",
+                "benefits": "Subsidy for inputs, technical support",
+                "eligibility_criteria": "Farmers with documented land ownership in Goa",
+                "documents_required": "Krishi Card, Aadhaar, Land documents",
+                "application_link": "https://agri.goa.gov.in/",
+                "state_applicability": "Goa",
+                "crop_types": "Cashew, Coconut",
+                "farmer_category": "Small,Marginal,Large",
+                "scheme_type": "Financial Support",
+                "required_documents": "Krishi Card, Aadhaar, Land docs"
+            }
+            return self.add_schemes([new_scheme])
+        return {"success": True, "message": "Goa scheme requirement is met."}
+
+    def verify_state_integrity(self) -> Dict:
+        """
+        Check for any remaining placeholder state names or invalid entries.
+        Incorporated from verification scripts.
+        """
+        states = self.get_unique_states()
+        invalid_entries = ["Cotton Growing States", "Jute Growing States", "North East States", "Multiple States"]
+        found_invalid = [s for s in states if s in invalid_entries]
+        
+        return {
+            "valid": len(found_invalid) == 0,
+            "invalid_entries": found_invalid,
+            "total_states": len(states),
+            "states_sample": states[:5]
+        }
+
 # Example usage
 if __name__ == "__main__":
     manager = SchemeManager()
     
-    # Test eligibility matching
+    print("--- Running Maintenance Tasks ---")
+    
+    # 1. Fix Placeholders
+    print(manager.fix_placeholder_states())
+    
+    # 2. Add Missing Schemes (Goa)
+    print(manager.ensure_goa_scheme())
+    
+    # 3. Verify Data Integrity
+    verification = manager.verify_state_integrity()
+    if verification['valid']:
+        print("✅ State List Integrity Verified: Clean.")
+    else:
+        print(f"❌ State List Verification Failed. Invalid entries: {verification['invalid_entries']}")
+    
+    # 4. Standard Tests
     schemes = manager.get_eligible_schemes(
         state="Punjab",
         farmer_category="Small",
         crop_type="Rice"
     )
-    
-    print(f"Found {len(schemes)} eligible schemes")
-    
-    # Internal Verification (replaces verify_crops_api.py tasks)
-    print("\n--- Running Internal Data Verification ---")
-    data_crops = manager.get_unique_crops()
-    required_crops = ["Vanilla", "Banana", "Mango", "Citrus", "Tomato", "Apple"]
-    missing_crops = [c for c in required_crops if c not in data_crops]
-    
-    if missing_crops:
-        print(f"⚠️ Warning: Missing specific crops: {missing_crops}")
-    else:
-        print("✅ All target special crops (Vanilla, Apple, etc.) present in dataset.")
-        
-    print(f"Total Unique Crops Supported: {len(data_crops)}")
-    
-    # Simple endpoint logic check (replaces debug_main_local.py logic implicitly)
-    # If the manager works here, the API using it will likely work too.
-    if len(schemes) > 0:
-        print("\n✅ Scheme filtering logic is functional.")
-    else:
-        print("\n❌ Scheme filtering logic returned 0 results for standard query.")
+    print(f"\nFound {len(schemes)} eligible schemes for standard query.")
