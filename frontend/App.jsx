@@ -6,6 +6,7 @@ import CropRecommendation from './CropRecommendation';
 import Weather from './Weather';
 import FarmingTips from './FarmingTips';
 import SchemeCard from './SchemeCard';
+import FertilizerPesticideShop from './FertilizerPesticideShop';  
 
 
 const App = () => {
@@ -32,6 +33,9 @@ const App = () => {
     }
     else if (window.location.hash === '#/govt-schemes') {
       setCurrentPage('govt-schemes');
+    }
+    else if (window.location.hash === '#/marketplace') {
+      setCurrentPage('marketplace');
     }
 
     const handleScroll = () => {
@@ -87,7 +91,7 @@ const App = () => {
     {
       icon: <ShoppingCart className="w-10 h-10" />,
       title: "Marketplace",
-      description: "Buy and sell agricultural products directly with other farmers",
+      description: "Buy premium fertilizers and pesticides directly with best prices",
       gradient: "from-indigo-500 to-blue-500",
       link: "marketplace"
     },
@@ -120,8 +124,10 @@ const App = () => {
       window.open(window.location.origin + '/#/govt-schemes', '_blank');
     } else if (link === 'farming-tips') {
       setCurrentPage('farming-tips');
+    } else if (link === 'marketplace') {
+      window.open(window.location.origin + '/#/marketplace', '_blank');
     } else {
-      alert(`${link} page coming soon!\n(Currently only Risk Prediction, Crop Recommendation, Disease Detection, Weather Forecast,Farming Tips and Govt Schemes are implemented)`);
+      alert(`${link} page coming soon!\n(Currently only Risk Prediction, Crop Recommendation, Disease Detection, Weather Forecast, Farming Tips, Govt Schemes, and Marketplace are implemented)`);
     }
   };
 
@@ -349,9 +355,43 @@ const App = () => {
     );
   }
 
+  // If on Marketplace page, show only that component
+  if (currentPage === 'marketplace') {
+    return (
+      <div>
+        {/* Navigation for Marketplace Page */}
+        <nav className="fixed w-full z-50 bg-white shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <button
+                onClick={goToHome}
+                className="flex items-center space-x-2 cursor-pointer"
+              >
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
+                  <Leaf className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  AgriShield
+                </span>
+              </button>
+
+              <button
+                onClick={goToHome}
+                className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
+              >
+                <ArrowRight className="w-4 h-4 rotate-180" />
+                <span>Back to Home</span>
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        <FertilizerPesticideShop />
+      </div>
+    );
+  }
+
   // Main Home Page
-
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50">
       {/* Navigation */}
