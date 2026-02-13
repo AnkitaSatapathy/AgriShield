@@ -7,7 +7,7 @@ function FarmingTips() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTip, setSelectedTip] = useState(null);
 
-  // Scroll to top when component mounts - FIXED
+  // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -599,7 +599,7 @@ function FarmingTips() {
     }
   ];
 
-  // CHANGED: Always show only 6 crops unless searching
+  // Always show only 6 crops unless searching
   const displayedTips = searchQuery
     ? farmingTipsData.filter((tip) =>
         tip.crop.toLowerCase().includes(searchQuery.toLowerCase())
@@ -610,16 +610,14 @@ function FarmingTips() {
 
   // Navigate to shop with product filter
   const goToShop = (productId) => {
-    // Store the product ID in sessionStorage so the shop can highlight it
     sessionStorage.setItem('highlightProductId', productId);
-    // Navigate to marketplace page
     window.location.hash = '#/marketplace';
     window.location.reload();
   };
 
   return (
     <div className="farming-tips-container">
-      {/* Hero Section - UPDATED WITH ICON BESIDE TITLE */}
+      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">
@@ -751,7 +749,7 @@ function FarmingTips() {
                 ))}
               </ul>
 
-              {/* ADDED: Fertilizer Recommendations Section */}
+              {/* Fertilizer Recommendations Section */}
               <div className="fertilizer-section">
                 <h3 className="fertilizer-heading">
                   <span className="fertilizer-icon">🌿</span>
@@ -791,7 +789,7 @@ function FarmingTips() {
         </div>
       )}
 
-      {/* Chatbot Section */}
+      {/* Chatbot Trigger Button */}
       {!isOpen && (
         <div
           style={{
@@ -852,27 +850,7 @@ function FarmingTips() {
         </div>
       )}
 
-      {isOpen && (
-        <div className="chatbot-container">
-          <div className="chatbot-header">
-            <div className="chatbot-header-content">
-              <span className="chatbot-header-icon">🤖</span>
-              <div className="chatbot-header-text">
-                <h3>Farming Assistant</h3>
-                <p>Ask me anything about farming!</p>
-              </div>
-            </div>
-            <button className="chatbot-close-btn" onClick={() => setIsOpen(false)}>
-              ✕
-            </button>
-          </div>
-          
-          {/* Chatbot component wrapped with custom styling */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <Chatbot onClose={() => setIsOpen(false)} />
-          </div>
-        </div>
-      )}
+      {isOpen && <Chatbot onClose={() => setIsOpen(false)} />}
 
       <style>
         {`
@@ -890,16 +868,14 @@ function FarmingTips() {
   );
 }
 
-const farmingTipsStyles =`
-
-
+const farmingTipsStyles = `
 /* Farming Tips Container */
 .farming-tips-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #f9f9f1 0%, #efed6c 25%, #f4f3dc 50%, #e7eef5 75%, #fffdf5 100%);
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
-  padding-bottom: 100px;
+  padding-bottom: 80px;
   position: relative;
   overflow-x: hidden;
 }
@@ -923,16 +899,16 @@ const farmingTipsStyles =`
   100% { background-position: 0% 50%; }
 }
 
-/* Hero Section - UPDATED WITH ICON BESIDE TITLE */
+/* Hero Section */
 .hero-section {
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920') center/cover;
-  padding: 80px 20px 100px;
+  padding: 50px 20px 60px;
   text-align: center;
   color: white;
   position: relative;
   overflow: hidden;
-  min-height: 500px;
+  min-height: 400px;
 }
 
 .hero-content {
@@ -943,49 +919,50 @@ const farmingTipsStyles =`
 }
 
 .hero-title {
-  font-size: 3.5rem;
-  font-weight: 900;
-  margin: 0 0 20px 0;
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin: 0 0 15px 0;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   animation: fadeInUp 0.8s ease 0.1s both;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 15px;
 }
 
 .hero-title .hero-icon {
-  font-size: 3.5rem;
+  font-size: 2.8rem;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
+  width: 65px;
+  height: 65px;
+  border-radius: 15px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 30px rgba(74, 222, 128, 0.5);
+  box-shadow: 0 8px 20px rgba(74, 222, 128, 0.4);
 }
 
 .hero-subtitle {
-  font-size: 1.3rem;
-  margin: 0 0 50px 0;
+  font-size: 1.05rem;
+  margin: 0 0 35px 0;
   opacity: 0.95;
   font-weight: 400;
   animation: fadeInUp 0.8s ease 0.2s both;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
-  max-width: 900px;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.5;
 }
 
 /* Statistics Cards */
 .stats-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  max-width: 1000px;
   margin: 0 auto;
   animation: fadeInUp 0.8s ease 0.4s both;
 }
@@ -994,8 +971,8 @@ const farmingTipsStyles =`
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  padding: 30px 20px;
+  border-radius: 15px;
+  padding: 18px 15px;
   transition: all 0.4s ease;
   cursor: default;
 }
@@ -1008,30 +985,30 @@ const farmingTipsStyles =`
 }
 
 .stat-icon {
-  font-size: 2.5rem;
-  margin-bottom: 15px;
+  font-size: 2rem;
+  margin-bottom: 10px;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .stat-number {
-  font-size: 2.5rem;
-  font-weight: 900;
-  margin-bottom: 8px;
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin-bottom: 5px;
   color: #fff;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .stat-label {
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: rgba(255, 255, 255, 0.95);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* Search Section */
 .search-section {
-  padding: 50px 20px;
-  max-width: 900px;
+  padding: 30px 20px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
@@ -1042,16 +1019,16 @@ const farmingTipsStyles =`
 
 .search-input {
   width: 100%;
-  padding: 22px 60px 22px 28px;
-  font-size: 1.15rem;
+  padding: 16px 50px 16px 20px;
+  font-size: 0.95rem;
   border: 3px solid transparent;
-  border-radius: 60px;
+  border-radius: 50px;
   outline: none;
   transition: all 0.4s ease;
   background: linear-gradient(white, white) padding-box,
               linear-gradient(135deg, #667eea, #764ba2) border-box;
   box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 6px 18px rgba(0, 0, 0, 0.12),
     inset 0 2px 4px rgba(0, 0, 0, 0.05);
   font-weight: 500;
 }
@@ -1107,41 +1084,40 @@ const farmingTipsStyles =`
 
 .tips-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 35px;
   animation: fadeInUp 0.8s ease;
 }
 
 .section-title {
-  font-size: 3rem;
-  font-weight: 800;
+  font-size: 2.2rem;
+  font-weight: 600;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin: 0 0 15px 0;
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 0 12px 0;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 .section-subtitle {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #1e1e1e;
   margin: 0;
   font-weight: 500;
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 /* Tips Grid */
 .tips-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 35px;
-  margin-bottom: 50px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  margin-bottom: 35px;
 }
 
-/* UPDATED: Uniform card colors with transparent gradient */
 .tip-card {
-  border-radius: 25px;
-  padding: 35px;
+  border-radius: 18px;
+  padding: 20px;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.3) 100%) !important;
   backdrop-filter: blur(15px);
   box-shadow: 
@@ -1181,49 +1157,49 @@ const farmingTipsStyles =`
 }
 
 .tip-icon {
-  font-size: 5rem;
-  margin-bottom: 20px;
+  font-size: 3.2rem;
+  margin-bottom: 12px;
   text-align: center;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18));
   animation: float 3s ease-in-out infinite;
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-8px); }
 }
 
 .tip-crop {
-  font-size: 1.8rem;
-  font-weight: 800;
+  font-size: 1.35rem;
+  font-weight: 600;
   color: #2c3e50;
-  margin: 0 0 18px 0;
+  margin: 0 0 9px 0;
   text-align: center;
   text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
 }
 
 .tip-basic {
-  font-size: 1.05rem;
+  font-size: 0.9rem;
   color: #34495e;
-  line-height: 1.7;
-  margin: 0 0 25px 0;
+  line-height: 1.5;
+  margin: 0 0 14px 0;
   text-align: center;
   font-weight: 500;
 }
 
 .view-details-btn {
   width: 100%;
-  padding: 14px 28px;
+  padding: 10px 18px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 50px;
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 0.88rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-  letter-spacing: 0.5px;
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+  letter-spacing: 0.3px;
 }
 
 .view-details-btn:hover {
@@ -1390,75 +1366,66 @@ const farmingTipsStyles =`
 }
 
 .modal-body {
-  padding: 45px;
+  padding: 32px;
 }
 
 .basic-tip-highlight {
   background: linear-gradient(135deg, #e8f5ff 0%, #fff5e8 100%);
-  padding: 25px 30px;
-  border-radius: 20px;
-  margin-bottom: 35px;
-  border-left: 6px solid;
+  padding: 18px 20px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  border-left: 5px solid;
   border-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%) 1;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
   position: relative;
   overflow: hidden;
 }
 
-.basic-tip-highlight::before {
-  content: '💡';
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 2.5rem;
-  opacity: 0.2;
-}
-
 .basic-tip-highlight h3 {
-  font-size: 1.4rem;
+  font-size: 1.15rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin: 0 0 12px 0;
-  font-weight: 800;
+  margin: 0 0 8px 0;
+  font-weight: 700;
 }
 
 .basic-tip-highlight p {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   color: #2c3e50;
   margin: 0;
-  line-height: 1.7;
+  line-height: 1.6;
   font-weight: 500;
 }
 
 .detailed-tips-heading {
-  font-size: 1.7rem;
+  font-size: 1.35rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin: 0 0 25px 0;
-  font-weight: 800;
+  margin: 0 0 16px 0;
+  font-weight: 700;
 }
 
 .detailed-tips-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 40px 0;
+  margin: 0 0 28px 0;
 }
 
 .detailed-tip-item {
   display: flex;
   align-items: flex-start;
-  gap: 18px;
-  margin-bottom: 20px;
-  padding: 20px;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 14px;
   background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  border-radius: 16px;
+  border-radius: 12px;
   transition: all 0.3s ease;
   border: 2px solid transparent;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
 }
 
 .detailed-tip-item:hover {
@@ -1471,44 +1438,44 @@ const farmingTipsStyles =`
 .tip-number {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  min-width: 38px;
-  height: 38px;
+  min-width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  font-size: 1rem;
+  font-weight: 700;
+  font-size: 0.8rem;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
 }
 
 .tip-text {
-  font-size: 1.08rem;
+  font-size: 0.9rem;
   color: #2c3e50;
-  line-height: 1.7;
+  line-height: 1.5;
   flex: 1;
   font-weight: 500;
 }
 
-/* ADDED: Fertilizer Section Styles */
+/* Fertilizer Section Styles */
 .fertilizer-section {
-  margin-top: 40px;
-  padding-top: 40px;
+  margin-top: 28px;
+  padding-top: 28px;
   border-top: 3px dashed rgba(102, 126, 234, 0.3);
 }
 
 .fertilizer-heading {
-  font-size: 1.9rem;
+  font-size: 1.5rem;
   background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin: 0 0 30px 0;
-  font-weight: 800;
+  margin: 0 0 18px 0;
+  font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .fertilizer-icon {
@@ -1518,17 +1485,17 @@ const farmingTipsStyles =`
 
 .fertilizer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
 }
 
 .fertilizer-card {
   background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
   border: 2px solid #86efac;
-  border-radius: 18px;
-  padding: 24px;
+  border-radius: 14px;
+  padding: 16px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.1);
+  box-shadow: 0 3px 10px rgba(34, 197, 94, 0.08);
 }
 
 .fertilizer-card:hover {
@@ -1538,168 +1505,65 @@ const farmingTipsStyles =`
 }
 
 .fertilizer-header {
-  margin-bottom: 18px;
-  padding-bottom: 15px;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
   border-bottom: 2px solid rgba(34, 197, 94, 0.2);
 }
 
 .fertilizer-name {
-  font-size: 1.3rem;
-  font-weight: 800;
+  font-size: 1.05rem;
+  font-weight: 700;
   color: #166534;
   margin: 0;
 }
 
 .fertilizer-details {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .fertilizer-detail-row {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 12px;
-  font-size: 0.95rem;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
 }
 
 .detail-label {
   font-weight: 700;
   color: #15803d;
-  min-width: 85px;
+  min-width: 70px;
   flex-shrink: 0;
 }
 
 .detail-value {
   color: #166534;
-  line-height: 1.5;
+  line-height: 1.4;
   font-weight: 500;
 }
 
 .get-fertilizer-btn {
   width: 100%;
-  padding: 14px 24px;
+  padding: 9px 14px;
   background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
   color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 1.05rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 3px 10px rgba(34, 197, 94, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .get-fertilizer-btn:hover {
   background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
   transform: scale(1.05);
   box-shadow: 0 6px 18px rgba(34, 197, 94, 0.5);
-}
-
-/* CHATBOT CONTAINER STYLES */
-.chatbot-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 50vw;
-  height: 90vh;
-  max-width: 75vw;
-  max-height: 90vh;
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  border-radius: 30px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 1001;
-  animation: chatbotSlideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 3px solid rgba(76, 175, 80, 0.3);
-}
-
-@keyframes chatbotSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(100px) scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.chatbot-header {
-  background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%);
-  color: white;
-  padding: 25px 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 3px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  position: relative;
-}
-
-.chatbot-header-content {
-  display: flex;
-  align-items: center;
-  gap: 0px;
-  width: 100%;
-
-}
-
-.chatbot-header-text {
-  flex: 1;
-  text-align: center;
-}
-
-.chatbot-header-text h3 {
-  margin: 0 0 5px 0;
-  font-size: 1.8rem;
-  font-weight: 500;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.chatbot-header-text p {
-  margin: 0;
-  font-size: 1rem;
-  opacity: 0.9;
-  font-weight: 500;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-}
-
-.chatbot-header-icon {
-  font-size: 3rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-  animation: bounce 2s ease infinite;
-  align-self: center;
-}
-
-.chatbot-close-btn {
-  position: absolute;
-  right: 30px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  color: white;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 1.8rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.chatbot-close-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.15) rotate(90deg);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
 /* Animations */
@@ -1716,17 +1580,6 @@ const farmingTipsStyles =`
   from {
     opacity: 0;
     transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
   }
   to {
     opacity: 1;
@@ -1811,25 +1664,6 @@ const farmingTipsStyles =`
   .search-input {
     font-size: 1rem;
   }
-
-  .chatbot-container {
-    width: 90vw;
-    height: 80vh;
-    bottom: 10px;
-    right: 10px;
-  }
-
-  .chatbot-header-icon {
-    font-size: 2.5rem;
-  }
-
-  .chatbot-header-text h3 {
-    font-size: 1.5rem;
-  }
-
-  .chatbot-header-text p {
-    font-size: 1rem;
-  }
 }
 
 @media (max-width: 480px) {
@@ -1853,29 +1687,6 @@ const farmingTipsStyles =`
 
   .modal-icon {
     font-size: 4rem;
-  }
-
-  .chatbot-container {
-    width: 95vw;
-    height: 85vh;
-    bottom: 5px;
-    right: 5px;
-  }
-
-  .chatbot-header {
-    padding: 20px;
-  }
-
-  .chatbot-header-icon {
-    font-size: 2rem;
-  }
-
-  .chatbot-header-text h3 {
-    font-size: 1.3rem;
-  }
-
-  .chatbot-header-text p {
-    font-size: 0.9rem;
   }
 }
 

@@ -5,11 +5,13 @@ Crop Failure Risk Prediction + Weather Advisory API
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from typing import Optional
 import pickle
 import os
 import pandas as pd
+from fastapi import Request
 from dotenv import load_dotenv
 
 # Import existing routers and functions
@@ -19,6 +21,7 @@ try:
 except Exception as e:
     disease_service_available = False
     print(f"⚠️ Disease service unavailable: {e}")
+from chatbot_router import chatbot_router
 from crop_recommendation_api import router as crop_recommendation_router    
 from predict import predict_crop_failure, crop_list, state_list, district_list
 from schemes_data import SchemeManager
@@ -72,6 +75,7 @@ if disease_service_available:
     app.include_router(disease_router)
 app.include_router(crop_recommendation_router)
 app.include_router(schemes_router)
+app.include_router(chatbot_router)
 
 # ============================================================================
 # INITIALIZE WEATHER SERVICES
@@ -662,41 +666,51 @@ def get_api_info():
 
 
 
-@app.exception_handler(404)
-def not_found_handler(request, exc):
-    """Custom 404 handler"""
-    return {
-        "error": "Endpoint not found",
-        "message": f"The endpoint {request.url.path} does not exist",
-        "available_endpoints": [
-            "/",
-            "/api/health",
-            "/api/predict-risk",
-            "/api/weather",
-            "/api/weather/forecast",
-            "/api/weather/complete",
-            "/api/advisory",
-            "/api/crops",
-            "/api/states",
-            "/api/districts",
-            "/schemes/eligible",
-            "/schemes/all",
-            "/schemes/filters/states",
-            "/schemes/filters/crops",
-            "/schemes/filters/types",
-            "/docs"
-        ]
-    }
+@app.exception_handler(HTTPException)
+async def custom_http_exception_handler(request: Request, exc: HTTPException):
+    if exc.status_code == 404:
+        return JSONResponse(
+            status_code=404,
+            content={
+                "error": "Endpoint not found",
+                "message": f"The endpoint {request.url.path} does not exist",
+                "available_endpoints": [
+                    "/",
+                    "/api/health",
+                    "/api/predict-risk",
+                    "/api/weather",
+                    "/api/weather/forecast",
+                    "/api/weather/complete",
+                    "/api/advisory",
+                    "/api/crops",
+                    "/api/states",
+                    "/api/districts",
+                    "/schemes/eligible",
+                    "/schemes/all",
+                    "/schemes/filters/states",
+                    "/schemes/filters/crops",
+                    "/schemes/filters/types",
+                    "/docs"
+                ]
+            }
+        )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail}
+    )
 
 
 @app.exception_handler(500)
 async def internal_error_handler(request, exc):
     """Custom 500 handler"""
-    return {
-        "error": "Internal server error",
-        "message": "An unexpected error occurred. Please try again later.",
-        "contact": "support@agrishield.com"
-    }
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Internal server error",
+            "message": "An unexpected error occurred. Please try again later.",
+            "contact": "support@agrishield.com"
+        }
+    )
 
 
 # ============================================================================
