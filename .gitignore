@@ -14,3 +14,4 @@ backend/*.pyc
 # OS
 .DS_Store
 Thumbs.db
+backend/crop_api.log
