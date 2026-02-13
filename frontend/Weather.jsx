@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Cloud, Leaf, AlertTriangle, Droplets, Thermometer, Wind, MapPin, Search, AlertCircle, CheckCircle, Info, Eye, BookOpen, ChevronRight, Sprout, Shield, Activity, Loader2 } from "lucide-react";
+import { Cloud, Leaf, AlertTriangle, Droplets, Thermometer, Wind, MapPin, Search, AlertCircle, CheckCircle, Info, Eye, BookOpen, ChevronRight, Sprout, Shield, Activity, Loader2, TrendingUp, TrendingDown, BarChart2, Calendar, History, Zap } from "lucide-react";
 import weatherApi from "./services/weatherApi";
 import { INDIAN_STATES, CROPS_LIST, DISTRICTS_BY_STATE, WEATHER_THRESHOLDS, RISK_LEVELS, ALERT_TYPES, WEATHER_ICONS, DAYS_OF_WEEK, API_CONFIG, ERROR_MESSAGES, SUCCESS_MESSAGES } from "./utils/weatherConstants";
 
@@ -10,11 +10,17 @@ const Weather = () => {
   const [weatherFetched, setWeatherFetched] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("weather"); // "weather" | "seasonal"
 
-  // State for API data
+  // State for current weather API data
   const [currentWeather, setCurrentWeather] = useState(null);
   const [weeklyForecast, setWeeklyForecast] = useState([]);
   const [cropAdvisory, setCropAdvisory] = useState(null);
+
+  // State for seasonal analysis data
+  const [seasonalData, setSeasonalData] = useState(null);
+  const [seasonalLoading, setSeasonalLoading] = useState(false);
+  const [seasonalError, setSeasonalError] = useState(null);
 
   const handleSearch = async () => {
     if (!state || !district) {
@@ -26,24 +32,18 @@ const Weather = () => {
     setError(null);
 
     try {
-      // Call the complete weather API
       const response = await weatherApi.getCompleteWeather(state, district, crop || null);
       
       if (response.success) {
-        // Set current weather
         setCurrentWeather(response.data?.current_weather || null);
-        
-        // Set forecast
         setWeeklyForecast(response.data?.forecast || []);
-        
-        // Set advisory if crop is selected
         if (crop && response.data?.advisory) {
           setCropAdvisory(response.data.advisory);
         } else {
           setCropAdvisory(null);
         }
-        
         setWeatherFetched(true);
+        setActiveTab("weather");
       } else {
         setError("Failed to fetch weather data. Please try again.");
       }
@@ -52,12 +52,41 @@ const Weather = () => {
       const errorMessage = err?.message || err?.response?.data?.detail || "Unable to fetch weather data. Please check if backend is running.";
       setError(errorMessage);
       setWeatherFetched(false);
-      // Reset data on error
       setCurrentWeather(null);
       setWeeklyForecast([]);
       setCropAdvisory(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSeasonalAnalysis = async () => {
+    if (!state || !district || !crop) {
+      alert("Please select State, District, AND Crop to run Seasonal Analysis.");
+      return;
+    }
+    setSeasonalLoading(true);
+    setSeasonalError(null);
+    setSeasonalData(null);
+    setActiveTab("seasonal");
+
+    try {
+      const response = await fetch("http://localhost:8000/api/seasonal-analysis", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state, district, crop }),
+      });
+      const json = await response.json();
+      if (json.success) {
+        setSeasonalData(json.data);
+      } else {
+        setSeasonalError(json.detail || json.error || "Seasonal analysis failed.");
+      }
+    } catch (err) {
+      console.error("Seasonal analysis error:", err);
+      setSeasonalError("Could not connect to backend. Ensure the server is running on http://localhost:8000");
+    } finally {
+      setSeasonalLoading(false);
     }
   };
 
@@ -343,12 +372,12 @@ const formatAdvisoryData = () => {
               </select>
             </div>
 
-            {/* Search Button */}
-            <div className="flex items-end">
+            {/* Action Buttons */}
+            <div className="flex items-end gap-2">
               <button 
                 onClick={handleSearch}
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 px-4 rounded-xl hover:from-blue-700 hover:to-cyan-700 transition font-semibold shadow-lg transform hover:scale-105 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 px-3 rounded-xl hover:from-blue-700 hover:to-cyan-700 transition font-semibold shadow-lg transform hover:scale-105 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>
@@ -357,8 +386,26 @@ const formatAdvisoryData = () => {
                   </>
                 ) : (
                   <>
-                    <Search className="w-5 h-5" />
-                    <span>Get Weather</span>
+                    <Search className="w-4 h-4" />
+                    <span>Weather</span>
+                  </>
+                )}
+              </button>
+              <button
+                onClick={handleSeasonalAnalysis}
+                disabled={seasonalLoading}
+                title="Get seasonal suitability analysis using 20-year historical data"
+                className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 px-3 rounded-xl hover:from-emerald-700 hover:to-teal-700 transition font-semibold shadow-lg transform hover:scale-105 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {seasonalLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Analysing...</span>
+                  </>
+                ) : (
+                  <>
+                    <History className="w-4 h-4" />
+                    <span>Season Analysis</span>
                   </>
                 )}
               </button>
@@ -380,8 +427,323 @@ const formatAdvisoryData = () => {
           )}
         </div>
 
-        {/* Output Section - Current Weather */}
-        {weatherFetched && currentWeather && (
+        {/* ── TAB SWITCHER ─────────────────────────────────────────── */}
+        {(weatherFetched || seasonalData || seasonalLoading || seasonalError) && (
+          <div className="flex gap-3 mb-8">
+            <button
+              onClick={() => setActiveTab("weather")}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold transition shadow-md ${activeTab === "weather" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-blue-50"}`}
+            >
+              <Cloud className="w-5 h-5" /> Current Weather & Advisory
+            </button>
+            <button
+              onClick={() => setActiveTab("seasonal")}
+              className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-semibold transition shadow-md ${activeTab === "seasonal" ? "bg-emerald-600 text-white" : "bg-white text-gray-700 hover:bg-emerald-50"}`}
+            >
+              <History className="w-5 h-5" /> Seasonal Suitability Analysis
+              {seasonalData && <span className="ml-1 bg-emerald-400 text-white text-xs px-2 py-0.5 rounded-full">NEW</span>}
+            </button>
+          </div>
+        )}
+
+        {/* ── SEASONAL ANALYSIS PANEL ──────────────────────────────── */}
+        {activeTab === "seasonal" && (
+          <div>
+            {/* Loading */}
+            {seasonalLoading && (
+              <div className="bg-white rounded-3xl shadow-2xl p-12 text-center border border-gray-100 mb-8">
+                <Loader2 className="w-16 h-16 animate-spin text-emerald-600 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Analysing 20 Years of Weather Data…</h3>
+                <p className="text-gray-600">Fetching historical climate records, computing season averages, and scoring crop suitability. This may take 15–30 seconds.</p>
+              </div>
+            )}
+
+            {/* Error */}
+            {seasonalError && !seasonalLoading && (
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-8">
+                <div className="flex items-start space-x-3">
+                  <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-bold text-red-800">Seasonal Analysis Error</h4>
+                    <p className="text-sm text-red-700">{seasonalError}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Data */}
+            {seasonalData && !seasonalLoading && (
+              <>
+                {/* ── SUITABILITY VERDICT CARD ── */}
+                {seasonalData.crop_suitability && (
+                  <div className={`rounded-3xl shadow-2xl p-8 mb-8 border-2 ${
+                    seasonalData.crop_suitability.overall_score >= 75
+                      ? "bg-gradient-to-br from-emerald-50 to-green-100 border-emerald-400"
+                      : seasonalData.crop_suitability.overall_score >= 55
+                      ? "bg-gradient-to-br from-yellow-50 to-amber-100 border-yellow-400"
+                      : seasonalData.crop_suitability.overall_score >= 35
+                      ? "bg-gradient-to-br from-orange-50 to-orange-100 border-orange-400"
+                      : "bg-gradient-to-br from-red-50 to-red-100 border-red-400"
+                  }`}>
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-3">
+                          <Shield className={`w-8 h-8 ${seasonalData.crop_suitability.overall_score >= 55 ? "text-emerald-600" : "text-red-600"}`} />
+                          <h2 className="text-2xl font-bold text-gray-900">Seasonal Suitability Verdict</h2>
+                        </div>
+                        <p className="text-3xl font-black mb-2" style={{color: seasonalData.crop_suitability.overall_score >= 75 ? "#059669" : seasonalData.crop_suitability.overall_score >= 55 ? "#d97706" : "#dc2626"}}>
+                          {seasonalData.crop_suitability.verdict}
+                        </p>
+                        <p className="text-gray-700 leading-relaxed">{seasonalData.crop_suitability.summary}</p>
+                        {seasonalData.crop_suitability.multi_cycle_possible && (
+                          <div className="mt-3 inline-flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-xl font-semibold text-sm">
+                            <Zap className="w-4 h-4" /> Multiple Cultivation Cycles Recommended This Year!
+                          </div>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-center justify-center bg-white rounded-2xl p-6 shadow-inner min-w-[140px]">
+                        <div className="text-6xl font-black mb-1" style={{color: seasonalData.crop_suitability.overall_score >= 75 ? "#059669" : seasonalData.crop_suitability.overall_score >= 55 ? "#d97706" : "#dc2626"}}>
+                          {seasonalData.crop_suitability.overall_score}
+                        </div>
+                        <div className="text-gray-500 font-semibold text-sm">/ 100</div>
+                        <div className="text-xs text-gray-400 mt-1">Suitability Score</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── DISASTER WARNINGS ── */}
+                {seasonalData.disaster_warnings && seasonalData.disaster_warnings.length > 0 && (
+                  <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8 border-l-8 border-red-500">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                      <AlertTriangle className="w-7 h-7 text-red-600" />
+                      ⚠️ Historical Disaster & Hazard Warnings
+                    </h2>
+                    <p className="text-gray-600 mb-5 text-sm">Based on past 10+ years of data, the following recurring events have been detected for <strong>{state}</strong>:</p>
+                    <div className="space-y-4">
+                      {seasonalData.disaster_warnings.map((w, i) => (
+                        <div key={i} className={`rounded-2xl p-5 border-2 ${w.severity === "high" ? "bg-red-50 border-red-300" : "bg-orange-50 border-orange-300"}`}>
+                          <div className="flex items-start gap-4">
+                            <div className={`p-3 rounded-full flex-shrink-0 ${w.severity === "high" ? "bg-red-500" : "bg-orange-400"}`}>
+                              <AlertTriangle className="w-6 h-6 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                <span className="font-bold text-gray-900 text-lg">{w.event_type}</span>
+                                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${w.severity === "high" ? "bg-red-200 text-red-800" : "bg-orange-200 text-orange-800"}`}>{w.frequency.toUpperCase()} FREQUENCY</span>
+                              </div>
+                              <p className="text-gray-700 text-sm mb-2">{w.description}</p>
+                              <div className="flex flex-wrap gap-3 text-xs">
+                                <span className="bg-white rounded-lg px-3 py-1 border border-gray-200">
+                                  📅 <strong>Risk months:</strong> {w.upcoming_risk_months.join(", ")}
+                                </span>
+                                <span className="bg-white rounded-lg px-3 py-1 border border-gray-200">
+                                  📜 <strong>Recent hits:</strong> {w.last_occurrences.slice(0,4).join(", ")}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* ── KEY FACTORS ── */}
+                {seasonalData.crop_suitability?.key_factors?.length > 0 && (
+                  <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8 border border-gray-100">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                      <Activity className="w-6 h-6 text-blue-600" />
+                      Suitability Factor Breakdown
+                    </h2>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {seasonalData.crop_suitability.key_factors.map((f, i) => (
+                        <div key={i} className="bg-gray-50 rounded-2xl p-5 border border-gray-200">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-bold text-gray-900 text-sm">{f.label}</span>
+                            <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                              f.score_impact > 0 ? "bg-green-100 text-green-800" :
+                              f.score_impact < 0 ? "bg-red-100 text-red-800" :
+                              "bg-blue-100 text-blue-800"
+                            }`}>
+                              {f.score_impact > 0 ? `+${f.score_impact}` : f.score_impact === 0 ? "neutral" : `${f.score_impact}`}
+                            </span>
+                          </div>
+                          <div className="text-sm font-semibold mb-1">{f.status}</div>
+                          <p className="text-xs text-gray-600 leading-relaxed">{f.detail}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* ── SEASON vs HISTORY COMPARISON ── */}
+                {seasonalData.season_comparison && !seasonalData.season_comparison.error && (
+                  <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8 border border-gray-100">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+                      <BarChart2 className="w-6 h-6 text-indigo-600" />
+                      Season vs. Historical Comparison
+                    </h2>
+                    <p className="text-gray-500 text-sm mb-6">How does this year's {seasonalData.season_comparison.season_type} season compare to the last decade?</p>
+
+                    {/* Summary stats */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                      {[
+                        { label: "This Year", value: `${seasonalData.season_comparison.current_year_rainfall_mm} mm`, icon: "🌧️", highlight: true },
+                        { label: "10-yr Avg", value: `${seasonalData.season_comparison.historical_avg_rainfall_mm} mm`, icon: "📊" },
+                        { label: "10-yr High", value: `${seasonalData.season_comparison.historical_max_rainfall_mm} mm`, icon: "⬆️" },
+                        { label: "10-yr Low", value: `${seasonalData.season_comparison.historical_min_rainfall_mm} mm`, icon: "⬇️" },
+                      ].map((s, i) => (
+                        <div key={i} className={`rounded-2xl p-4 text-center ${s.highlight ? "bg-indigo-600 text-white" : "bg-indigo-50 text-gray-900"}`}>
+                          <div className="text-2xl mb-1">{s.icon}</div>
+                          <div className={`text-xl font-bold ${s.highlight ? "text-white" : "text-indigo-700"}`}>{s.value}</div>
+                          <div className={`text-xs ${s.highlight ? "text-indigo-200" : "text-gray-500"}`}>{s.label}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Verdict text */}
+                    <div className={`rounded-xl p-4 border-l-4 mb-6 ${
+                      seasonalData.season_comparison.rainfall_comparison === "above_average"
+                        ? "bg-blue-50 border-blue-500"
+                        : seasonalData.season_comparison.rainfall_comparison === "below_average"
+                        ? "bg-orange-50 border-orange-500"
+                        : "bg-green-50 border-green-500"
+                    }`}>
+                      <div className="flex items-center gap-2 mb-1">
+                        {seasonalData.season_comparison.rainfall_comparison === "above_average"
+                          ? <TrendingUp className="w-5 h-5 text-blue-600" />
+                          : seasonalData.season_comparison.rainfall_comparison === "below_average"
+                          ? <TrendingDown className="w-5 h-5 text-orange-600" />
+                          : <CheckCircle className="w-5 h-5 text-green-600" />
+                        }
+                        <span className="font-bold text-gray-900 capitalize">
+                          {seasonalData.season_comparison.rainfall_comparison.replace("_", " ")}
+                        </span>
+                        <span className="text-xs bg-white border border-gray-200 rounded-full px-2 py-0.5">
+                          {seasonalData.season_comparison.percentile_rank}th percentile
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-700">{seasonalData.season_comparison.verdict_text}</p>
+                    </div>
+
+                    {/* Bar chart - year over year */}
+                    {seasonalData.season_comparison.yearly_data?.length > 0 && (
+                      <div>
+                        <h3 className="font-semibold text-gray-700 mb-3 text-sm">Year-by-Year Seasonal Rainfall (mm)</h3>
+                        <div className="flex items-end gap-1.5 h-40 bg-gray-50 rounded-xl p-3 overflow-x-auto">
+                          {seasonalData.season_comparison.yearly_data.map((yr, i) => {
+                            const maxRf = Math.max(...seasonalData.season_comparison.yearly_data.map(y => y.total_rainfall_mm || 0));
+                            const pct = maxRf > 0 ? ((yr.total_rainfall_mm / maxRf) * 100) : 0;
+                            const isCurrent = yr.is_current_year;
+                            return (
+                              <div key={i} className="flex flex-col items-center min-w-[38px]">
+                                <div className="text-[9px] text-gray-600 mb-1 font-semibold">{yr.total_rainfall_mm}mm</div>
+                                <div
+                                  className={`w-7 rounded-t-md transition-all ${isCurrent ? "bg-indigo-600" : "bg-sky-300 hover:bg-sky-400"}`}
+                                  style={{ height: `${Math.max(6, pct)}%`, minHeight: "6px" }}
+                                  title={`${yr.year}: ${yr.total_rainfall_mm}mm`}
+                                />
+                                <div className={`text-[9px] mt-1 font-bold ${isCurrent ? "text-indigo-700" : "text-gray-500"}`}>
+                                  {isCurrent ? "NOW" : yr.year}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* ── 12-MONTH FORECAST TABLE ── */}
+                {seasonalData.monthly_forecast?.length > 0 && (
+                  <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8 border border-gray-100">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+                      <Calendar className="w-6 h-6 text-teal-600" />
+                      12-Month Weather Outlook
+                    </h2>
+                    <p className="text-gray-500 text-sm mb-6">Projected monthly conditions based on 16-day forecast + 20-year climate normals with current-season anomaly adjustment.</p>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm border-collapse">
+                        <thead>
+                          <tr className="bg-teal-50">
+                            <th className="text-left p-3 rounded-tl-xl font-semibold text-teal-900">Month</th>
+                            <th className="text-right p-3 font-semibold text-teal-900">Avg Temp (°C)</th>
+                            <th className="text-right p-3 font-semibold text-teal-900">Rainfall (mm)</th>
+                            <th className="text-right p-3 font-semibold text-teal-900">Hist. Avg Rain</th>
+                            <th className="text-right p-3 font-semibold text-teal-900">Humidity (%)</th>
+                            <th className="text-center p-3 rounded-tr-xl font-semibold text-teal-900">Source</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {seasonalData.monthly_forecast.map((m, i) => {
+                            const isHighRain = m.precipitation_mm > (m.historical_avg_precip || 0) * 1.2;
+                            const isLowRain = m.precipitation_mm < (m.historical_avg_precip || 0) * 0.8;
+                            const isCropSowMonth = (seasonalData.crop_suitability?.sowing_window_months || []).includes(m.month_name);
+                            return (
+                              <tr key={i} className={`border-t border-gray-100 transition ${isCropSowMonth ? "bg-emerald-50 font-semibold" : "hover:bg-gray-50"}`}>
+                                <td className="p-3 font-medium">
+                                  {m.month_name}
+                                  {isCropSowMonth && <span className="ml-2 text-xs bg-emerald-500 text-white px-1.5 py-0.5 rounded-full">Sow</span>}
+                                </td>
+                                <td className="text-right p-3">{m.temp_mean ?? "–"}</td>
+                                <td className={`text-right p-3 font-semibold ${isHighRain ? "text-blue-700" : isLowRain ? "text-orange-600" : "text-gray-800"}`}>
+                                  {m.precipitation_mm ?? "–"}
+                                  {isHighRain && " 🌧️"}
+                                  {isLowRain && " 🏜️"}
+                                </td>
+                                <td className="text-right p-3 text-gray-400">{m.historical_avg_precip ?? "–"}</td>
+                                <td className="text-right p-3">{m.humidity ?? "–"}</td>
+                                <td className="text-center p-3">
+                                  <span className={`text-xs px-2 py-0.5 rounded-full ${
+                                    m.data_source === "forecast" ? "bg-blue-100 text-blue-800" :
+                                    m.data_source === "projected_from_normals" ? "bg-gray-100 text-gray-600" :
+                                    "bg-green-100 text-green-700"
+                                  }`}>
+                                    {m.data_source === "forecast" ? "🔵 Forecast" :
+                                     m.data_source === "projected_from_normals" ? "⚫ Projected" :
+                                     "🟢 Actual"}
+                                  </span>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-3">
+                      🔵 Based on 16-day meteorological forecast &nbsp;|&nbsp; ⚫ Projected from 20-yr climate normals with seasonal anomaly &nbsp;|&nbsp; 🟢 Actual observed data
+                    </p>
+                  </div>
+                )}
+
+                {/* ── RECOMMENDATIONS ── */}
+                {seasonalData.crop_suitability?.recommendations?.length > 0 && (
+                  <div className="bg-white rounded-3xl shadow-2xl p-8 mb-8 border border-gray-100">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                      <Sprout className="w-6 h-6 text-green-600" />
+                      Crop-Specific Recommendations
+                    </h2>
+                    <div className="space-y-3">
+                      {seasonalData.crop_suitability.recommendations.map((r, i) => (
+                        <div key={i} className="flex items-start gap-3 bg-green-50 rounded-xl p-4 border border-green-200">
+                          <ChevronRight className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                          <p className="text-gray-800 text-sm leading-relaxed">{r}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              </>
+            )}
+          </div>
+        )}
+
+        {/* ── CURRENT WEATHER PANEL ────────────────────────────────── */}
+        {activeTab === "weather" && weatherFetched && currentWeather && (
           <>
             <div className="bg-white rounded-3xl shadow-2xl p-8 mb-12 border border-gray-100">
               <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
