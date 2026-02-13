@@ -28,6 +28,15 @@ from schemes_api import router as schemes_router
 from weather_service import WeatherService
 from advisory_service import AdvisoryService
 
+# Import SEASONAL ANALYSIS services
+try:
+    from seasonal_analysis_service import SeasonalAnalysisService
+    seasonal_service_available = True
+    print("✅ Seasonal Analysis Service imported")
+except Exception as _se:
+    seasonal_service_available = False
+    print(f"⚠️ Seasonal Analysis Service unavailable: {_se}")
+
 # Load environment variables
 load_dotenv()
 
@@ -85,6 +94,15 @@ try:
 except Exception as e:
     weather_services_available = False
     print(f"⚠️ Weather services initialization failed: {str(e)}")
+
+# Initialize seasonal analysis service
+seasonal_analysis_svc = None
+if seasonal_service_available:
+    try:
+        seasonal_analysis_svc = SeasonalAnalysisService()
+        print("✅ Seasonal Analysis Service initialized successfully")
+    except Exception as e:
+        print(f"⚠️ Seasonal Analysis Service initialization failed: {str(e)}")
 
 # ============================================================================
 # PYDANTIC MODELS - EXISTING
@@ -174,6 +192,22 @@ class AdvisoryRequest(BaseModel):
         }
 
 
+class SeasonalAnalysisRequest(BaseModel):
+    """Request model for seasonal crop suitability analysis"""
+    state: str = Field(..., description="State name (e.g., Odisha)")
+    district: str = Field(..., description="District / city name (e.g., Bhubaneswar)")
+    crop: str = Field(..., description="Crop name (e.g., Rice, Wheat, Cotton)")
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "state": "Odisha",
+                "district": "Bhubaneswar",
+                "crop": "Rice"
+            }
+        }
+
+
 # ============================================================================
 # API ENDPOINTS - EXISTING
 # ============================================================================
@@ -190,7 +224,8 @@ def read_root():
             "risk_prediction": "enabled",
             "weather_advisory": "enabled" if weather_services_available else "disabled",
             "disease_detection": "enabled",
-            "crop_recommendation": "enabled"
+            "crop_recommendation": "enabled",
+            "seasonal_analysis": "enabled" if (seasonal_service_available and seasonal_analysis_svc) else "disabled"
         },
         "endpoints": {
             "risk_prediction": "POST /api/predict-risk",
@@ -198,6 +233,7 @@ def read_root():
             "weather_forecast": "POST /api/weather/forecast",
             "weather_complete": "POST /api/weather/complete",
             "advisory": "POST /api/advisory",
+            "seasonal_analysis": "POST /api/seasonal-analysis",
             "health": "GET /api/health",
             "crops": "GET /api/crops",
             "states": "GET /api/states",
@@ -614,6 +650,70 @@ async def get_complete_weather_advisory(request: WeatherRequest):
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
 
 # ============================================================================
+# API ENDPOINT - SEASONAL CROP SUITABILITY ANALYSIS (NEW FEATURE)
+# ============================================================================
+
+@app.post("/api/seasonal-analysis", tags=["Seasonal Analysis"])
+async def get_seasonal_analysis(request: SeasonalAnalysisRequest):
+    """
+    **Seasonal Crop Suitability Analysis** — Historical + Predictive Intelligence
+
+    Compares the current season's weather to 20 years of historical data for
+    the selected city/state and tells you whether this year is better or worse
+    than previous years for growing the chosen crop.
+
+    **What it returns:**
+    - 📅 12-month projected forecast (actual + normals-based projection)
+    - 📊 Season-vs-history comparison (current year vs last 10 seasons)
+    - 🌀 Recurring disaster/cyclone warnings based on historical patterns
+    - ✅/❌ Overall crop suitability verdict with score (0-100)
+    - 🔄 Multi-cycle cultivation recommendation
+
+    **Data source:** Open-Meteo Archive API (ERA5 reanalysis, free, no key needed)
+    covering 2004–2023 + current year actuals.
+    """
+    if not seasonal_service_available or seasonal_analysis_svc is None:
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Seasonal Analysis Service is unavailable. "
+                "Ensure 'seasonal_analysis_service.py' and 'historical_weather_service.py' "
+                "are present in the backend directory."
+            )
+        )
+
+    try:
+        result = seasonal_analysis_svc.get_seasonal_analysis(
+            state=request.state,
+            district=request.district,
+            crop=request.crop,
+        )
+
+        if not result.get("success"):
+            raise HTTPException(
+                status_code=400,
+                detail=result.get("error", "Analysis failed. Check district name.")
+            )
+
+        return {
+            "success": True,
+            "data": result,
+            "location": {
+                "state": request.state,
+                "district": request.district,
+                "formatted": f"{request.district}, {request.state}, India",
+            },
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Seasonal analysis error: {str(e)}")
+
+
+# ============================================================================
 # INFORMATION ENDPOINTS
 # ============================================================================
 
@@ -714,6 +814,7 @@ async def startup_event():
     print(f"✅ Risk Prediction Models: Loaded")
     print(f"✅ Weather Service: {'Active' if weather_services_available else 'Inactive (check .env)'}")
     print(f"✅ Advisory Service: {'Active' if weather_services_available else 'Inactive'}")
+    print(f"✅ Seasonal Analysis Service: {'Active' if (seasonal_service_available and seasonal_analysis_svc) else 'Inactive'}")
     print(f"✅ Supported Crops: {len(crop_list)}")
     states_count = len(scheme_manager.get_unique_states()) if scheme_manager else "Unknown"
     print(f"✅ Supported States: {states_count} (Government Schemes)")
@@ -737,4 +838,4 @@ if __name__ == "__main__":
         port=8000,
         reload=True,
         log_level="info"
-    ) 
+    )
