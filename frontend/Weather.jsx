@@ -489,7 +489,15 @@ const formatAdvisoryData = () => {
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
                           <Shield className={`w-8 h-8 ${seasonalData.crop_suitability.overall_score >= 55 ? "text-emerald-600" : "text-red-600"}`} />
-                          <h2 className="text-2xl font-bold text-gray-900">Seasonal Suitability Verdict</h2>
+                          <div>
+                            <h2 className="text-2xl font-bold text-gray-900">Is it suitable to grow <em>{crop}</em> RIGHT NOW?</h2>
+                            <p className="text-sm text-gray-500 mt-0.5">
+                              📍 {state} &nbsp;|&nbsp; 📅 Current conditions vs. historical baseline
+                              {seasonalData.crop_suitability.season_label && (
+                                <span> | 🌾 Normal season: <strong>{seasonalData.crop_suitability.season_label}</strong></span>
+                              )}
+                            </p>
+                          </div>
                         </div>
                         <p className="text-3xl font-black mb-2" style={{color: seasonalData.crop_suitability.overall_score >= 75 ? "#059669" : seasonalData.crop_suitability.overall_score >= 55 ? "#d97706" : "#dc2626"}}>
                           {seasonalData.crop_suitability.verdict}
@@ -507,7 +515,24 @@ const formatAdvisoryData = () => {
                         </div>
                         <div className="text-gray-500 font-semibold text-sm">/ 100</div>
                         <div className="text-xs text-gray-400 mt-1">Suitability Score</div>
+                        <div className="text-xs text-gray-400 mt-3 text-center leading-tight">
+                          Based on<br/>current conditions
+                        </div>
                       </div>
+                    </div>
+                    {/* Score legend */}
+                    <div className="mt-4 grid grid-cols-4 gap-2 text-xs text-center">
+                      {[
+                        { range: "75–100", label: "Highly Suitable", color: "bg-emerald-100 text-emerald-800" },
+                        { range: "55–74", label: "Proceed with Care", color: "bg-yellow-100 text-yellow-800" },
+                        { range: "35–54", label: "Conditions Challenging", color: "bg-orange-100 text-orange-800" },
+                        { range: "0–34", label: "Not Suitable Now", color: "bg-red-100 text-red-800" },
+                      ].map((s, i) => (
+                        <div key={i} className={`rounded-lg p-1.5 ${s.color}`}>
+                          <div className="font-bold">{s.range}</div>
+                          <div className="text-xs opacity-80">{s.label}</div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -558,18 +583,35 @@ const formatAdvisoryData = () => {
                     </h2>
                     <div className="grid md:grid-cols-2 gap-4">
                       {seasonalData.crop_suitability.key_factors.map((f, i) => (
-                        <div key={i} className="bg-gray-50 rounded-2xl p-5 border border-gray-200">
+                        <div key={i} className={`rounded-2xl p-5 border-2 ${
+                          f.score_impact > 15 ? "bg-emerald-50 border-emerald-200" :
+                          f.score_impact > 0  ? "bg-blue-50 border-blue-200" :
+                          f.score_impact < 0  ? "bg-red-50 border-red-200" :
+                          "bg-gray-50 border-gray-200"
+                        }`}>
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-bold text-gray-900 text-sm">{f.label}</span>
-                            <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                            <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${
                               f.score_impact > 0 ? "bg-green-100 text-green-800" :
                               f.score_impact < 0 ? "bg-red-100 text-red-800" :
-                              "bg-blue-100 text-blue-800"
+                              "bg-gray-100 text-gray-600"
                             }`}>
-                              {f.score_impact > 0 ? `+${f.score_impact}` : f.score_impact === 0 ? "neutral" : `${f.score_impact}`}
+                              {f.score_impact > 0 ? `+${f.score_impact} pts` : f.score_impact === 0 ? "neutral" : `${f.score_impact} pts`}
                             </span>
                           </div>
                           <div className="text-sm font-semibold mb-1">{f.status}</div>
+                          {f.current_value && f.ideal_range && (
+                            <div className="flex gap-3 mb-2 text-xs">
+                              <span className="bg-white rounded-lg px-2 py-1 border border-gray-200">
+                                <span className="text-gray-400">Now: </span>
+                                <span className="font-semibold text-gray-800">{f.current_value}</span>
+                              </span>
+                              <span className="bg-white rounded-lg px-2 py-1 border border-gray-200">
+                                <span className="text-gray-400">Ideal: </span>
+                                <span className="font-semibold text-emerald-700">{f.ideal_range}</span>
+                              </span>
+                            </div>
+                          )}
                           <p className="text-xs text-gray-600 leading-relaxed">{f.detail}</p>
                         </div>
                       ))}
@@ -584,13 +626,16 @@ const formatAdvisoryData = () => {
                       <BarChart2 className="w-6 h-6 text-indigo-600" />
                       Season vs. Historical Comparison
                     </h2>
-                    <p className="text-gray-500 text-sm mb-6">How does this year's {seasonalData.season_comparison.season_type} season compare to the last decade?</p>
+                    <p className="text-gray-500 text-sm mb-6">
+                      How does this year's <strong>{seasonalData.season_comparison.season_display || seasonalData.season_comparison.season_type}</strong> season 
+                      ({seasonalData.season_comparison.season_window}) compare to the last decade?
+                    </p>
 
                     {/* Summary stats */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                       {[
-                        { label: "This Year", value: `${seasonalData.season_comparison.current_year_rainfall_mm} mm`, icon: "🌧️", highlight: true },
-                        { label: "10-yr Avg", value: `${seasonalData.season_comparison.historical_avg_rainfall_mm} mm`, icon: "📊" },
+                        { label: "This Season (so far)", value: `${seasonalData.season_comparison.current_year_rainfall_mm} mm`, icon: "🌧️", highlight: true },
+                        { label: `${seasonalData.season_comparison.season_window} Avg (10yr)`, value: `${seasonalData.season_comparison.historical_avg_rainfall_mm} mm`, icon: "📊" },
                         { label: "10-yr High", value: `${seasonalData.season_comparison.historical_max_rainfall_mm} mm`, icon: "⬆️" },
                         { label: "10-yr Low", value: `${seasonalData.season_comparison.historical_min_rainfall_mm} mm`, icon: "⬇️" },
                       ].map((s, i) => (
