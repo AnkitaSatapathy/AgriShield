@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import Chatbot from "./Chatbot";
 
+
+const HERO_CONFIG = {
+
+  backgroundImage: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920&q=80",
+};
+
 function FarmingTips() {
   const [isOpen, setIsOpen] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTip, setSelectedTip] = useState(null);
 
-  // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -599,12 +604,12 @@ function FarmingTips() {
     }
   ];
 
-  // Always show only 6 crops unless searching
+  // Always show 8 crops by default unless searching
   const displayedTips = searchQuery
     ? farmingTipsData.filter((tip) =>
         tip.crop.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : farmingTipsData.slice(0, 6);
+    : farmingTipsData.slice(0, 8);
 
   const filteredTips = displayedTips;
 
@@ -618,7 +623,12 @@ function FarmingTips() {
   return (
     <div className="farming-tips-container">
       {/* Hero Section */}
-      <section className="hero-section">
+      <section 
+        className="hero-section"
+        style={{
+          backgroundImage: `url(${HERO_CONFIG.backgroundImage})`
+        }}
+      >
         <div className="hero-content">
           <h1 className="hero-title">
             <span className="hero-icon">🌱</span>
@@ -694,10 +704,11 @@ function FarmingTips() {
         </div>
 
         <div className="tips-grid">
-          {filteredTips.map((tip) => (
+          {filteredTips.map((tip, index) => (
             <div
               key={tip.id}
               className="tip-card"
+              style={{ animationDelay: `${index * 0.1}s` }}
               onClick={() => setSelectedTip(tip)}
             >
               <div className="tip-icon">{tip.icon}</div>
@@ -872,9 +883,9 @@ const farmingTipsStyles = `
 /* Farming Tips Container */
 .farming-tips-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f9f9f1 0%, #efed6c 25%, #f4f3dc 50%, #e7eef5 75%, #fffdf5 100%);
+  background: linear-gradient(135deg, #f5f9e8 0%, #e8f5d1 25%, #d4e89f 50%, #c4d98f 75%, #a8c969 100%);
   background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
+  animation: gradientShift 20s ease infinite;
   padding-bottom: 80px;
   position: relative;
   overflow-x: hidden;
@@ -888,9 +899,19 @@ const farmingTipsStyles = `
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
   pointer-events: none;
+  animation: floatingOverlay 15s ease-in-out infinite;
+}
+
+@keyframes floatingOverlay {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-15px) translateX(10px);
+  }
 }
 
 @keyframes gradientShift {
@@ -903,12 +924,13 @@ const farmingTipsStyles = `
 .hero-section {
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920') center/cover;
-  padding: 50px 20px 60px;
+  padding: 80px 20px 100px;
   text-align: center;
   color: white;
   position: relative;
   overflow: hidden;
-  min-height: 400px;
+  min-height: 550px;
+  animation: slideInPage 0.8s ease-out;
 }
 
 .hero-content {
@@ -921,14 +943,14 @@ const farmingTipsStyles = `
 .hero-title {
   font-size: 2.8rem;
   font-weight: 700;
-  margin: 0 0 15px 0;
+  margin: 0 0 25px 0;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
   letter-spacing: 0.5px;
   animation: fadeInUp 0.8s ease 0.1s both;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: 25px;
 }
 
 .hero-title .hero-icon {
@@ -942,6 +964,7 @@ const farmingTipsStyles = `
   align-items: center;
   justify-content: center;
   box-shadow: 0 8px 20px rgba(74, 222, 128, 0.4);
+  animation: heroPulse 2s ease-in-out infinite;
 }
 
 .hero-subtitle {
@@ -968,20 +991,21 @@ const farmingTipsStyles = `
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15); /* more visible */
+  backdrop-filter: blur(8px);           
+  border: 2px solid rgba(255, 255, 255, 0.5); /* brighter border */
   border-radius: 15px;
   padding: 18px 15px;
   transition: all 0.4s ease;
   cursor: default;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25); /* subtle lift */
 }
 
 .stat-card:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.45); 
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .stat-icon {
@@ -1010,6 +1034,7 @@ const farmingTipsStyles = `
   padding: 30px 20px;
   max-width: 600px;
   margin: 0 auto;
+  animation: slideInPage 0.8s ease-out 0.1s both;
 }
 
 .search-container {
@@ -1080,18 +1105,19 @@ const farmingTipsStyles = `
   padding: 20px;
   position: relative;
   z-index: 1;
+  animation: slideInPage 0.8s ease-out;
 }
 
 .tips-header {
   text-align: center;
   margin-bottom: 35px;
-  animation: fadeInUp 0.8s ease;
+  animation: slideInPage 0.8s ease-out 0.2s both;
 }
 
 .section-title {
-  font-size: 2.2rem;
-  font-weight: 600;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 50%, #764ba2 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1100,18 +1126,18 @@ const farmingTipsStyles = `
 }
 
 .section-subtitle {
-  font-size: 1rem;
+  font-size: 1.3rem;
   color: #1e1e1e;
   margin: 0;
   font-weight: 500;
   opacity: 0.8;
 }
 
-/* Tips Grid */
+/* Tips Grid - 4 COLUMNS (4 cards in first row, 4 in second row if available) */
 .tips-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
   margin-bottom: 35px;
 }
 
@@ -1126,9 +1152,9 @@ const farmingTipsStyles = `
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
   border: 2px solid rgba(255, 255, 255, 0.5);
-  animation: fadeInUp 0.6s ease both;
   position: relative;
   overflow: hidden;
+  animation: slideInCard 0.6s ease-out backwards;
 }
 
 .tip-card::before {
@@ -1587,6 +1613,55 @@ const farmingTipsStyles = `
   }
 }
 
+@keyframes slideInCard {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideInPage {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cardGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(168, 201, 105, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(168, 201, 105, 0.6);
+  }
+}
+
+@keyframes floatingOverlay {
+  0%, 100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-15px) translateX(10px);
+  }
+}
+
+@keyframes heroPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(74, 222, 128, 0.4);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(74, 222, 128, 0.7);
+  }
+}
+
 @keyframes bounce {
   0%, 100% {
     transform: translateY(0);
@@ -1597,6 +1672,18 @@ const farmingTipsStyles = `
 }
 
 /* Responsive Design */
+@media (max-width: 1400px) {
+  .tips-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .tips-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .hero-title {
     font-size: 2.5rem;
