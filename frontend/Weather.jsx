@@ -377,7 +377,7 @@ const formatAdvisoryData = () => {
               <button 
                 onClick={handleSearch}
                 disabled={loading}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 px-3 rounded-xl hover:from-blue-700 hover:to-cyan-700 transition font-semibold shadow-lg transform hover:scale-105 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-40 bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-3 px-3 rounded-xl hover:from-blue-700 hover:to-cyan-700 transition font-semibold shadow-lg transform hover:scale-105 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>
@@ -395,7 +395,7 @@ const formatAdvisoryData = () => {
                 onClick={handleSeasonalAnalysis}
                 disabled={seasonalLoading}
                 title="Get seasonal suitability analysis using 20-year historical data"
-                className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 px-3 rounded-xl hover:from-emerald-700 hover:to-teal-700 transition font-semibold shadow-lg transform hover:scale-105 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-grow bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 px-3 rounded-xl hover:from-emerald-700 hover:to-teal-700 transition font-semibold shadow-lg transform hover:scale-105 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:scursor-not-allowed min-w-[12rem]"
               >
                 {seasonalLoading ? (
                   <>

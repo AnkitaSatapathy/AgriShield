@@ -2024,3 +2024,121 @@ AttributeError: 'numpy.ndarray' object has no attribute 'transform'. Did you mea
 2026-02-10 22:53:10,503 - INFO -   - Added safety checks before prediction
 2026-02-10 22:53:10,504 - INFO -   - Complete 32-feature engineering pipeline
 2026-02-10 22:53:10,504 - INFO - ================================================================================
+2026-02-23 19:26:49,223 - INFO - ================================================================================
+2026-02-23 19:26:49,223 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-23 19:26:49,223 - INFO - ================================================================================
+2026-02-23 19:26:49,223 - INFO - ================================================================================
+2026-02-23 19:26:49,223 - INFO - LOADING MODEL ARTIFACTS
+2026-02-23 19:26:49,228 - INFO - ================================================================================
+2026-02-23 19:26:49,228 - INFO - Model directory: C:\Users\LENOVO\Desktop\AgriShield\models
+2026-02-23 19:26:49,228 - INFO - Absolute path: C:\Users\LENOVO\Desktop\AgriShield\models
+2026-02-23 19:26:49,228 - INFO - 
+2026-02-23 19:26:49,228 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-23 19:26:49,228 - INFO - Loading crop_model.pkl (3330.7 KB)...
+2026-02-23 19:26:51,492 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-23 19:26:51,530 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-23 19:26:51,530 - INFO - SUCCESS: Model loaded
+2026-02-23 19:26:51,530 - INFO - 
+2026-02-23 19:26:51,530 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-23 19:26:51,530 - INFO - Loading scaler2.pkl (1.6 KB)...
+2026-02-23 19:26:51,561 - WARNING - Pickle failed for scaler2.pkl: invalid load key, 'x'.
+2026-02-23 19:26:51,569 - INFO - SUCCESS: Loaded scaler2.pkl using joblib
+2026-02-23 19:26:51,571 - INFO - Scaler type: StandardScaler
+2026-02-23 19:26:51,571 - INFO - Expected features: 32
+2026-02-23 19:26:51,571 - INFO - Feature names available: 32 features
+2026-02-23 19:26:51,615 - INFO - 
+2026-02-23 19:26:51,629 - INFO - Step 3/5: Loading label_encoder.pkl...
+2026-02-23 19:26:51,631 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-23 19:26:51,680 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-23 19:26:51,682 - INFO - SUCCESS: Label encoder loaded (array format)
+2026-02-23 19:26:51,682 - INFO - Crops available: 22
+2026-02-23 19:26:51,682 - INFO - 
+2026-02-23 19:26:51,683 - INFO - Step 4/5: Loading model_info.json...
+2026-02-23 19:26:51,710 - INFO - SUCCESS: Model info loaded
+2026-02-23 19:26:51,712 - INFO - 
+2026-02-23 19:26:51,713 - INFO - Step 5/5: Loading/recovering feature columns...
+2026-02-23 19:26:51,714 - INFO - SUCCESS: Features loaded from model_info.json: 32
+2026-02-23 19:26:51,714 - INFO - 
+2026-02-23 19:26:51,714 - INFO - ================================================================================
+2026-02-23 19:26:51,714 - INFO - MODEL LOADING COMPLETE
+2026-02-23 19:26:51,714 - INFO - ================================================================================
+2026-02-23 19:26:51,714 - INFO - Model type: Random Forest Classifier
+2026-02-23 19:26:51,714 - INFO - Version: v7.0-ABSOLUTE-FIX
+2026-02-23 19:26:51,714 - INFO - Features: 32
+2026-02-23 19:26:51,714 - INFO - Crops: 22
+2026-02-23 19:26:51,714 - INFO - Balanced: True
+2026-02-23 19:26:51,714 - INFO - ================================================================================
+2026-02-23 19:26:51,714 - INFO - ================================================================================
+2026-02-23 19:26:51,714 - INFO - CROP RECOMMENDATION API V6.0 READY - FULLY FIXED VERSION
+2026-02-23 19:26:51,714 - INFO - ================================================================================
+2026-02-23 19:26:51,714 - INFO - Mode: TESTING (Reduced penalties)
+2026-02-23 19:26:51,714 - INFO - Model: Random Forest Classifier
+2026-02-23 19:26:51,714 - INFO - Version: v7.0-ABSOLUTE-FIX
+2026-02-23 19:26:51,714 - INFO - Features: 32
+2026-02-23 19:26:51,714 - INFO - Crops: 22
+2026-02-23 19:26:51,714 - INFO - Balanced: True
+2026-02-23 19:26:51,714 - INFO - FIXES APPLIED:
+2026-02-23 19:26:51,714 - INFO -   - Feature columns auto-recovery from scaler
+2026-02-23 19:26:51,714 - INFO -   - Robust label encoder handling
+2026-02-23 19:26:51,714 - INFO -   - Added safety checks before prediction
+2026-02-23 19:26:51,714 - INFO -   - Complete 32-feature engineering pipeline
+2026-02-23 19:26:51,714 - INFO - ================================================================================
+2026-02-23 20:44:53,109 - INFO - ================================================================================
+2026-02-23 20:44:53,109 - INFO - CROP RECOMMENDATION API V6.0 - FULLY FIXED VERSION - INITIALIZING
+2026-02-23 20:44:53,110 - INFO - ================================================================================
+2026-02-23 20:44:53,110 - INFO - ================================================================================
+2026-02-23 20:44:53,110 - INFO - LOADING MODEL ARTIFACTS
+2026-02-23 20:44:53,111 - INFO - ================================================================================
+2026-02-23 20:44:53,111 - INFO - Model directory: C:\Users\LENOVO\Desktop\AgriShield\models
+2026-02-23 20:44:53,112 - INFO - Absolute path: C:\Users\LENOVO\Desktop\AgriShield\models
+2026-02-23 20:44:53,112 - INFO - 
+2026-02-23 20:44:53,112 - INFO - Step 1/5: Loading crop_model.pkl...
+2026-02-23 20:44:53,113 - INFO - Loading crop_model.pkl (3330.7 KB)...
+2026-02-23 20:44:57,148 - WARNING - Pickle failed for crop_model.pkl: invalid load key, '\x01'.
+2026-02-23 20:44:57,210 - INFO - SUCCESS: Loaded crop_model.pkl using joblib
+2026-02-23 20:44:57,210 - INFO - SUCCESS: Model loaded
+2026-02-23 20:44:57,211 - INFO - 
+2026-02-23 20:44:57,212 - INFO - Step 2/5: Loading scaler2.pkl...
+2026-02-23 20:44:57,213 - INFO - Loading scaler2.pkl (1.6 KB)...
+2026-02-23 20:44:57,253 - WARNING - Pickle failed for scaler2.pkl: invalid load key, 'x'.
+2026-02-23 20:44:57,261 - INFO - SUCCESS: Loaded scaler2.pkl using joblib
+2026-02-23 20:44:57,262 - INFO - Scaler type: StandardScaler
+2026-02-23 20:44:57,263 - INFO - Expected features: 32
+2026-02-23 20:44:57,264 - INFO - Feature names available: 32 features
+2026-02-23 20:44:57,265 - INFO - 
+2026-02-23 20:44:57,265 - INFO - Step 3/5: Loading label_encoder.pkl...
+2026-02-23 20:44:57,265 - INFO - Loading label_encoder.pkl (0.8 KB)...
+2026-02-23 20:44:57,302 - INFO - SUCCESS: Loaded label_encoder.pkl using pickle
+2026-02-23 20:44:57,302 - INFO - SUCCESS: Label encoder loaded (array format)
+2026-02-23 20:44:57,303 - INFO - Crops available: 22
+2026-02-23 20:44:57,303 - INFO - 
+2026-02-23 20:44:57,303 - INFO - Step 4/5: Loading model_info.json...
+2026-02-23 20:44:57,337 - INFO - SUCCESS: Model info loaded
+2026-02-23 20:44:57,337 - INFO - 
+2026-02-23 20:44:57,341 - INFO - Step 5/5: Loading/recovering feature columns...
+2026-02-23 20:44:57,342 - INFO - SUCCESS: Features loaded from model_info.json: 32
+2026-02-23 20:44:57,346 - INFO - 
+2026-02-23 20:44:57,347 - INFO - ================================================================================
+2026-02-23 20:44:57,347 - INFO - MODEL LOADING COMPLETE
+2026-02-23 20:44:57,348 - INFO - ================================================================================
+2026-02-23 20:44:57,348 - INFO - Model type: Random Forest Classifier
+2026-02-23 20:44:57,348 - INFO - Version: v7.0-ABSOLUTE-FIX
+2026-02-23 20:44:57,349 - INFO - Features: 32
+2026-02-23 20:44:57,349 - INFO - Crops: 22
+2026-02-23 20:44:57,351 - INFO - Balanced: True
+2026-02-23 20:44:57,351 - INFO - ================================================================================
+2026-02-23 20:44:57,352 - INFO - ================================================================================
+2026-02-23 20:44:57,352 - INFO - CROP RECOMMENDATION API V6.0 READY - FULLY FIXED VERSION
+2026-02-23 20:44:57,353 - INFO - ================================================================================
+2026-02-23 20:44:57,353 - INFO - Mode: TESTING (Reduced penalties)
+2026-02-23 20:44:57,354 - INFO - Model: Random Forest Classifier
+2026-02-23 20:44:57,354 - INFO - Version: v7.0-ABSOLUTE-FIX
+2026-02-23 20:44:57,354 - INFO - Features: 32
+2026-02-23 20:44:57,354 - INFO - Crops: 22
+2026-02-23 20:44:57,355 - INFO - Balanced: True
+2026-02-23 20:44:57,355 - INFO - FIXES APPLIED:
+2026-02-23 20:44:57,355 - INFO -   - Feature columns auto-recovery from scaler
+2026-02-23 20:44:57,355 - INFO -   - Robust label encoder handling
+2026-02-23 20:44:57,356 - INFO -   - Added safety checks before prediction
+2026-02-23 20:44:57,357 - INFO -   - Complete 32-feature engineering pipeline
+2026-02-23 20:44:57,360 - INFO - ================================================================================

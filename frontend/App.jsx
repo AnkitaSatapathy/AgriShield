@@ -6,7 +6,7 @@ import CropRecommendation from './CropRecommendation';
 import Weather from './Weather';
 import FarmingTips from './FarmingTips';
 import SchemeCard from './SchemeCard';
-import FertilizerPesticideShop from './FertilizerPesticideShop';  
+import MarketPlace from './MarketPlace';  
 
 
 const App = () => {
@@ -386,7 +386,7 @@ const App = () => {
           </div>
         </nav>
 
-        <FertilizerPesticideShop />
+        <MarketPlace />
       </div>
     );
   }
