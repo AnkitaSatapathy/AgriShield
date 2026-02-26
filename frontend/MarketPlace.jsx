@@ -24,7 +24,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Apply in deficient alkaline soils",
       benefits: ["Corrects zinc deficiency", "Improves crop quality", "Enhances yield"],
-      icon: "🌾"
+      image: "https://m.media-amazon.com/images/I/713geAwU5vL.jpg"
     },
     {
       id: 2,
@@ -40,7 +40,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Split application recommended",
       benefits: ["Quick nitrogen supply", "Promotes vegetative growth", "Water soluble"],
-      icon: "💧"
+      image: "https://5.imimg.com/data5/ANDROID/Default/2025/7/530155878/IQ/TD/OZ/89965844/product-jpeg-500x500.jpg"
     },
     {
       id: 3,
@@ -56,7 +56,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Basal application at planting",
       benefits: ["Strong root system", "Early plant vigor", "High phosphorus content"],
-      icon: "🌱"
+      image: "https://5.imimg.com/data5/ANDROID/Default/2022/5/KI/NZ/OA/49437380/product-jpeg.jpg"
     },
     {
       id: 4,
@@ -72,7 +72,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "All-purpose fertilizer",
       benefits: ["Balanced nutrition", "Suitable for all crops", "Easy application"],
-      icon: "⚗️"
+      image: "https://cpimg.tistatic.com/03752519/b/5/NPK-20-20-0-Fertilizer.jpg"
     },
     {
       id: 5,
@@ -88,7 +88,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Flowering and fruiting stage",
       benefits: ["Better grain quality", "Disease resistance", "Improved shelf life"],
-      icon: "🌾"
+      image: "https://m.media-amazon.com/images/I/71-kyZvVTLL.jpg"
     },
     {
       id: 6,
@@ -104,7 +104,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray or soil application",
       benefits: ["Enhances nutrient uptake", "Improves plant vigor", "Better fruit color"],
-      icon: "✨"
+      image: "https://m.media-amazon.com/images/I/81or-pPHSxS.jpg"
     },
     {
       id: 7,
@@ -120,7 +120,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Basal or split application",
       benefits: ["Acidifies alkaline soils", "Contains sulfur", "Promotes leaf growth"],
-      icon: "🧪"
+      image: "https://cpimg.tistatic.com/7017332/b/1/ammonium-sulphate.jpg"
     },
     {
       id: 8,
@@ -136,7 +136,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Split application recommended",
       benefits: ["Quick nitrogen supply", "Reduces blossom end rot", "High calcium content"],
-      icon: "🥛"
+      image: "https://5.imimg.com/data5/ANDROID/Default/2023/1/NV/UL/TM/100389172/product-jpeg.jpg"
     },
     {
       id: 9,
@@ -152,7 +152,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Basal application",
       benefits: ["Rich in phosphorus", "Contains sulfur", "Improves root strength"],
-      icon: "🌳"
+      image: "https://inputs.kalgudi.com/data/p_images/1683279263594.png"
     },
     {
       id: 10,
@@ -168,7 +168,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Flowering and fruiting stage",
       benefits: ["Chloride-free", "Contains sulfur", "Enhanced nutrient uptake"],
-      icon: "💎"
+      image: "https://5.imimg.com/data5/SJ/TZ/OH/GLADMIN-29199958/selection-170-500x500.png"
     },
     {
       id: 11,
@@ -184,7 +184,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray or soil application",
       benefits: ["Improves pollination", "Better fruit setting", "Prevents hollow heart"],
-      icon: "🌼"
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb0_a121ShQJ5a-9M46YaBF3g68vL02OkCrA&s"
     },
     {
       id: 12,
@@ -200,7 +200,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray or soil drench",
       benefits: ["Corrects chlorosis", "Vibrant green leaves", "Cost-effective"],
-      icon: "🔴"
+      image: "https://3.imimg.com/data3/MM/GL/MY-927110/ferrous-sulphate.jpg"
     },
     {
       id: 13,
@@ -216,7 +216,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray or soil application",
       benefits: ["Corrects manganese deficiency", "Improves enzyme activity", "Better disease resistance"],
-      icon: "⚙️"
+      image: "https://www.innovativeagrify.com/cdn/shop/files/mnsulphate2kg.png?v=1750227962&width=1946"
     },
     {
       id: 14,
@@ -232,7 +232,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray or soil application",
       benefits: ["Essential micronutrient", "Improves disease resistance", "Better photosynthesis"],
-      icon: "💠"
+      image: "https://m.media-amazon.com/images/I/81aO2gMzuoL._AC_UF1000,1000_QL80_.jpg"
     },
     {
       id: 15,
@@ -248,7 +248,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Split application",
       benefits: ["Nitrogen source", "Suitable for saline soils", "Economical"],
-      icon: "❄️"
+      image: "https://5.imimg.com/data5/MM/JP/CK/SELLER-16199489/bnjmbhjmhk-500x500.jpg"
     },
     {
       id: 16,
@@ -264,7 +264,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Split application",
       benefits: ["Quick nitrogen supply", "Fast acting", "Reduces acid soils"],
-      icon: "⚪"
+      image: "https://5.imimg.com/data5/SELLER/Default/2023/9/341040280/LF/ZW/XN/139302294/sodium-nitrate-99-extra-pure.jpg"
     },
     {
       id: 17,
@@ -280,7 +280,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Fertigation or foliar spray",
       benefits: ["Concentrated phosphorus", "Rapid absorption", "Improves root development"],
-      icon: "🧪"
+      image: "https://5.imimg.com/data5/ANDROID/Default/2022/3/QC/IQ/RF/38477453/1648350127058-jpg.jpg"
     },
     {
       id: 18,
@@ -296,7 +296,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Basal or split application",
       benefits: ["High phosphorus", "Suitable for fruits", "Better grain quality"],
-      icon: "🎯"
+      image: "https://iffco-public-assets.s3.ap-south-1.amazonaws.com/s3fs-public/2019-09/npk-12-32-16.png"
     },
     {
       id: 19,
@@ -312,7 +312,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Split application",
       benefits: ["Balanced nutrition", "For vegetables", "Improved shelf life"],
-      icon: "🥬"
+      image: "https://kissanemart.com/storage/iffco-102626-major-nutrient.jpg"
     },
     {
       id: 20,
@@ -328,7 +328,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Split application",
       benefits: ["High nitrogen", "Fast growth", "Contains calcium"],
-      icon: "💪"
+      image: "https://5.imimg.com/data5/SELLER/Default/2025/9/547740676/BS/WG/TE/95667856/ammonium-nitrate-500x500.jpeg"
     },
     // ── PESTICIDES (20) ──
     {
@@ -345,7 +345,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Spray or soil drench",
       benefits: ["Long-lasting protection", "Systemic action", "Controls aphids, whiteflies"],
-      icon: "🛡️"
+      image: "https://5.imimg.com/data5/SELLER/Default/2021/2/JV/NB/UK/9847984/2694b071-cdda-4f0d-8ebb-444a7109eb31.jpg"
     },
     {
       id: 22,
@@ -361,7 +361,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Apply in root zone",
       benefits: ["Soil pest control", "Extended protection", "Easy application"],
-      icon: "🐛"
+      image: "https://5.imimg.com/data5/SELLER/Default/2024/3/398968978/XA/FR/PQ/79851997/furadan-3g-insecticide.jpg"
     },
     {
       id: 23,
@@ -377,7 +377,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Wide spectrum control", "Economical", "Effective on borers"],
-      icon: "🦗"
+      image: "https://dujjhct8zer0r.cloudfront.net/media/prod_image/2740249481743498805.webp"
     },
     {
       id: 24,
@@ -393,7 +393,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Spray application",
       benefits: ["Controls hoppers", "Fast acting", "Residual effect"],
-      icon: "🦟"
+      image: "https://5.imimg.com/data5/SELLER/Default/2023/6/316066776/IL/ER/ND/149490071/cartap-50-.jpeg"
     },
     {
       id: 25,
@@ -409,7 +409,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Preventive spray",
       benefits: ["Blast disease control", "Preventive action", "Safe for crops"],
-      icon: "🍄"
+      image: "https://dujjhct8zer0r.cloudfront.net/media/prod_image/19833535791727759362.webp"
     },
     {
       id: 26,
@@ -425,7 +425,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Broad spectrum", "Contact fungicide", "Cost effective"],
-      icon: "🟢"
+      image: "https://5.imimg.com/data5/SELLER/Default/2021/7/QW/GH/SA/6616513/mancozeb-75-wp-contact-fungicide.jpg"
     },
     {
       id: 27,
@@ -441,7 +441,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Bacterial disease control", "Preventive action", "Eco-friendly"],
-      icon: "💊"
+      image: "https://easy2agri.in/cdn/shop/files/1.jpg?v=1685599192"
     },
     {
       id: 28,
@@ -457,7 +457,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Fast acting", "Long residual period", "Broad spectrum"],
-      icon: "⚡"
+      image: "https://cdn.shopify.com/s/files/1/0722/2059/files/thumbnail_4b72bfe9-a10c-460e-95ac-85277a8c8681.png?v=1751895771&width=384&format=webp"
     },
     {
       id: 29,
@@ -473,7 +473,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Broad spectrum", "Economical", "Effective contact action"],
-      icon: "🎯"
+      image: "https://images.jdmagicbox.com/quickquotes/images_main/quinalphos-25-ec-801271149-dhkeml2l.jpg"
     },
     {
       id: 30,
@@ -489,7 +489,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Effective on sucking pests", "Quick knockdown", "Residual action"],
-      icon: "🌊"
+      image: "https://5.imimg.com/data5/NF/SJ/YE/SELLER-48133236/whatsapp-image-2019-11-18-at-3-57-29-pm-500x500.jpeg"
     },
     {
       id: 31,
@@ -505,7 +505,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray or soil treatment",
       benefits: ["Long-lasting protection", "Effective on hoppers", "Weather resistant"],
-      icon: "🔒"
+      image: "https://www.bestagrolife.com/img/Fasten.png"
     },
     {
       id: 32,
@@ -521,7 +521,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Seed treatment or foliar spray",
       benefits: ["Prevents seed-borne diseases", "Protects young plants", "Cost-effective"],
-      icon: "🌪️"
+      image: "https://5.imimg.com/data5/SELLER/Default/2023/12/371642625/SZ/JJ/TO/9550204/thiron-thiram-75-ws-ds.jpg"
     },
     {
       id: 33,
@@ -537,7 +537,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Controls powdery mildew", "Long residual", "Safe on most crops"],
-      icon: "🌫️"
+      image: "https://5.imimg.com/data5/SELLER/Default/2025/6/517531766/ZQ/JR/CR/3978161/hexokine-hexaconazole-5-ec-500x500.png"
     },
     {
       id: 34,
@@ -553,7 +553,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Systemic action", "Long-lasting", "Prevents diseases"],
-      icon: "💨"
+      image: "https://5.imimg.com/data5/SELLER/Default/2025/3/498668619/YX/NY/YS/110019580/whatsapp-image-2025-03-12-at-5-26-01-pm-3.jpeg"
     },
     {
       id: 35,
@@ -569,7 +569,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Broad spectrum", "Systemic action", "Preventive and curative"],
-      icon: "🛡️"
+      image: "https://www.katyayaniorganics.com/wp-content/uploads/2022/06/Azoxy-1.png"
     },
     {
       id: 36,
@@ -585,7 +585,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Apple scab control", "Preventive action", "Cost-effective"],
-      icon: "🍎"
+      image: "https://cpimg.tistatic.com/08700746/b/4/Myclob-Myclobutanil-10-Percent-WP.jpg"
     },
     {
       id: 37,
@@ -601,7 +601,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Seed treatment or foliar spray",
       benefits: ["Downy mildew control", "Systemic action", "Prevents damping-off"],
-      icon: "💧"
+      image: "https://www.katyayaniorganics.com/wp-content/uploads/2023/10/400-gm-17.png"
     },
     {
       id: 38,
@@ -617,7 +617,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Multi-site action", "Contact fungicide", "Broad spectrum"],
-      icon: "🎯"
+      image: "https://cpimg.tistatic.com/11124843/b/4/Captan-50-WP-Fungicide..jpg"
     },
     {
       id: 39,
@@ -633,7 +633,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray or seed treatment",
       benefits: ["Systemic action", "Wide spectrum", "Improves shelf life"],
-      icon: "✨"
+      image: "https://image.made-in-china.com/202f0j00BAwlsztMMTcN/Fungicide-Benomyl-Benlate50-Wp-Fungicide-Benomyl-50-Wp-50-Wp-Fungicide-Benomyl-with-Best-Price-for-Sale.jpg"
     },
     {
       id: 40,
@@ -649,7 +649,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray",
       benefits: ["Controls soft insects", "Safe on beneficials", "Economical"],
-      icon: "🌱"
+      image: "https://cpimg.tistatic.com/08001205/s/4/Sodium-Sulphate-Anhydrous.jpg"
     },
     {
       id: 41,
@@ -665,7 +665,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Spray on affected plants",
       benefits: ["OMRI certified", "Repels insects", "Antifungal properties"],
-      icon: "🌿"
+      image: "https://m.media-amazon.com/images/I/61Cra7kHlxL.jpg"
     },
     {
       id: 42,
@@ -681,7 +681,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix in soil before planting",
       benefits: ["Improves soil structure", "Enhances water retention", "Slow-release nutrients"],
-      icon: "🪱"
+      image: "https://rukminim2.flixcart.com/image/480/640/xif0q/soil-manure/n/9/4/1-vermicompost-1kg-1-vermi-compost-original-imah947vhv8h9yye.jpeg?q=90"
     },
     {
       id: 43,
@@ -697,7 +697,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Incorporate into soil",
       benefits: ["Improves soil fertility", "Better aggregation", "Cost-effective"],
-      icon: "🐄"
+      image: "https://m.media-amazon.com/images/I/71+CZ2NYGWL._AC_UF1000,1000_QL80_.jpg"
     },
     {
       id: 44,
@@ -713,7 +713,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with potting soil",
       benefits: ["Sustainable", "High water retention", "Good aeration"],
-      icon: "🥥"
+      image: "https://m.media-amazon.com/images/I/71+CZ2NYGWL._AC_UF1000,1000_QL80_.jpg"
     },
     {
       id: 45,
@@ -729,7 +729,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with compost or soil",
       benefits: ["High phosphorus", "Promotes root growth", "Slow-release"],
-      icon: "🦴"
+      image: "https://dms.mydukaan.io/original/jpeg/upload_file_service/00ee6ab7-d259-42a3-b332-1b86310249cb/11.jpg"
     },
     {
       id: 46,
@@ -745,7 +745,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar and soil application",
       benefits: ["Plant vigor enhancer", "Stress tolerance", "Mineral-rich"],
-      icon: "🌊"
+      image: "https://www.legendagroindia.com/wp-content/uploads/2023/04/46.png"
     },
     {
       id: 47,
@@ -761,7 +761,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with soil before planting",
       benefits: ["Balanced nutrition", "Improves soil life", "Environmental friendly"],
-      icon: "🌲"
+      image: "https://m.media-amazon.com/images/I/81PrJVYjazL._AC_UF350,350_QL80_.jpg"
     },
     {
       id: 48,
@@ -777,7 +777,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with compost or apply with water",
       benefits: ["Fixes atmospheric nitrogen", "Reduces nitrogen fertilizer need", "Ecofriendly"],
-      icon: "🔬"
+      image: "https://m.media-amazon.com/images/I/71qaEY+DyFL.jpg"
     },
     {
       id: 49,
@@ -793,7 +793,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Spray on plants",
       benefits: ["Organic certified", "Specific to pests", "No residue"],
-      icon: "🍃"
+      image: "https://www.katyayaniorganics.com/wp-content/uploads/2022/06/Spino45-Slide-1.webp"
     },
     {
       id: 50,
@@ -809,7 +809,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Spray on foliage",
       benefits: ["Improves immunity", "Natural growth promoter", "Traditional recipe"],
-      icon: "🏺"
+      image: "https://5.imimg.com/data5/ANDROID/Default/2025/7/525341580/VX/LJ/KD/11636987/product-jpeg-500x500.jpg"
     },
     {
       id: 51,
@@ -825,7 +825,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with soil or compost",
       benefits: ["Controls root diseases", "Improves soil health", "Enzyme secretion"],
-      icon: "🦠"
+      image: "https://m.media-amazon.com/images/I/61kA8t-efbL._AC_UF1000,1000_QL80_.jpg"
     },
     {
       id: 52,
@@ -841,7 +841,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Spray on affected areas",
       benefits: ["Organic approved", "Safe for humans", "Target-specific"],
-      icon: "🐛"
+      image: "https://5.imimg.com/data5/SELLER/Default/2023/2/CE/IN/IF/108900452/bacillus-thuringiensis.jpg"
     },
     {
       id: 53,
@@ -857,7 +857,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with soil before planting",
       benefits: ["Slow-release nutrition", "Nematode repellent", "Sustainable"],
-      icon: "🍂"
+      image: "https://5.imimg.com/data5/SELLER/Default/2023/9/347884257/DF/RW/XS/4785906/neem-oil-cake.png"
     },
     {
       id: 54,
@@ -873,7 +873,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with soil or compost",
       benefits: ["Long-lasting phosphorus", "Sustainable source", "Improves soil"],
-      icon: "⛰️"
+      image: "https://m.media-amazon.com/images/I/61z21cm1Z9L._AC_UF1000,1000_QL80_.jpg"
     },
     {
       id: 55,
@@ -889,7 +889,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Spread on soil surface",
       benefits: ["Potassium source", "Pest deterrent", "pH regulator"],
-      icon: "🔥"
+      image: "https://5.imimg.com/data5/ANDROID/Default/2024/6/425760869/HR/AV/AY/221858701/product-jpeg-500x500.jpg"
     },
     {
       id: 56,
@@ -905,7 +905,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix into soil",
       benefits: ["Carbon sequestration", "Water retention", "Microbe habitat"],
-      icon: "⚫"
+      image: "https://m.media-amazon.com/images/I/81KDoh0ETfL.jpg"
     },
     {
       id: 57,
@@ -921,7 +921,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with water and apply",
       benefits: ["Enhances CEC", "Chelates nutrients", "Improves structure"],
-      icon: "🌍"
+      image: "https://m.media-amazon.com/images/I/61hCV6ZszJL._AC_UF1000,1000_QL80_.jpg"
     },
     {
       id: 58,
@@ -937,7 +937,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar spray or soil application",
       benefits: ["Better absorption", "Stress relief", "Balanced micronutrients"],
-      icon: "🧬"
+      image: "https://dujjhct8zer0r.cloudfront.net/media/prod_image/18644183161735207229.webp"
     },
     {
       id: 59,
@@ -953,7 +953,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with potting soil or apply to roots",
       benefits: ["Symbiotic relationship", "Nutrient uptake", "Disease resistance"],
-      icon: "🍄"
+      image: "https://m.media-amazon.com/images/I/8107IiNfJDL._AC_UF1000,1000_QL80_.jpg"
     },
     {
       id: 60,
@@ -969,7 +969,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with manure or soil",
       benefits: ["Phosphorus availability", "Reduces P fertilizer need", "Sustainable"],
-      icon: "🧪"
+      image: "https://5.imimg.com/data5/XH/GJ/MY-3497614/phosphate-solubilizing-bacteria.png"
     },
     {
       id: 61,
@@ -985,7 +985,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Apply to moist soil",
       benefits: ["Controls white grubs", "Controls root pests", "Chemical-free"],
-      icon: "🔍"
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbsU_Xr4HggM07Dt90HozfnazVuhNFT1eAOg&s"
     },
     {
       id: 62,
@@ -1001,7 +1001,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Spray on plants",
       benefits: ["Plant vigor", "Fruit setting", "Stress management"],
-      icon: "📈"
+      image: "https://organicbazar.net/cdn/shop/files/PlantGrowthPromoterNew.jpg?v=1703743756"
     },
     {
       id: 63,
@@ -1017,7 +1017,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Dust or spray suspension",
       benefits: ["Fungicide action", "Mite control", "Low phytotoxicity"],
-      icon: "💛"
+      image: "https://3.imimg.com/data3/UM/TC/MY-891317/sulphur-powder-500x500.jpg"
     },
     {
       id: 64,
@@ -1033,7 +1033,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix into soil",
       benefits: ["Water retention", "Cation exchange", "Odor control"],
-      icon: "💎"
+      image: "https://cpimg.tistatic.com/9757315/b/4/c-max-zeomax-advance-specially-activated-natural-zeolite-powder..jpg"
     },
     {
       id: 65,
@@ -1049,7 +1049,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Foliar or soil application",
       benefits: ["Strengthens cell walls", "Disease resistance", "Stress tolerance"],
-      icon: "🔷"
+      image: "https://cloudinary.images-iherb.com/image/upload/f_auto,q_auto:eco/images/now/now01492/l/63.jpg"
     },
     {
       id: 66,
@@ -1065,7 +1065,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with organic matter",
       benefits: ["Nutrient cycling", "Disease suppression", "Soil health"],
-      icon: "👨‍🔬"
+      image: "https://5.imimg.com/data5/SELLER/Default/2023/9/348509780/MA/GW/ZY/190607023/whatsapp-image-2023-09-28-at-5-22-40-pm-500x500.jpeg"
     },
     {
       id: 67,
@@ -1081,7 +1081,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Spray solution",
       benefits: ["Fungal control", "Oxidizing action", "Organic approved"],
-      icon: "🟣"
+      image: "https://5.imimg.com/data5/SELLER/Default/2024/9/452850665/VE/AJ/BF/25369132/potassium-permanganate-chemical.jpeg"
     },
     {
       id: 68,
@@ -1097,7 +1097,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Mix with soil or compost",
       benefits: ["High potassium", "Trace minerals", "Plant vigor enhancer"],
-      icon: "🌾"
+      image: "https://m.media-amazon.com/images/I/71PHKQ8GYGL._AC_UF1000,1000_QL80_.jpg"
     },
     {
       id: 69,
@@ -1113,7 +1113,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Spray on foliage or soil",
       benefits: ["Microbial diversity", "Nutrient solubility", "Plant immunity boost"],
-      icon: "🍯"
+      image: "https://5.imimg.com/data5/SELLER/Default/2024/2/388657172/ZT/FB/YZ/181011561/vermicompost-tea-500x500.jpg"
     },
     {
       id: 70,
@@ -1129,7 +1129,7 @@ const MarketPlace = () => {
       inStock: true,
       usage: "Follow instructions in kit",
       benefits: ["Know your soil", "Make informed decisions", "Promotional offer"],
-      icon: "🧪"
+      image: "https://www.thespruce.com/thmb/VA7xpXC6WabuEfrZpJIPWVlOPHw=/4206x0/filters:no_upscale():max_bytes(150000):strip_icc()/healthy-soil-and-how-to-make-it-2539853-hero-fdf9b0280dca41cb8ae9614e6fc4a0b0.jpg"
     }
   ]);
 
@@ -1375,12 +1375,12 @@ const MarketPlace = () => {
                       {product.type}
                     </div>
                     
-                    <div className={`h-40 flex items-center justify-center text-6xl ${
-                      product.category === 'fertilizer' ? 'bg-gradient-to-br from-green-400 to-green-600' :
-                      product.category === 'pesticide' ? 'bg-gradient-to-br from-orange-400 to-orange-600' :
-                      'bg-gradient-to-br from-emerald-400 to-emerald-600'
-                    }`}>
-                      {product.icon}
+                    <div className="h-40 overflow-hidden bg-gray-100">
+                      <img 
+                        src={product.image} 
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   </div>
 
@@ -1497,12 +1497,12 @@ const MarketPlace = () => {
                 <div className="space-y-4">
                   {cart.map((item) => (
                     <div key={item.id} className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-5 flex items-center space-x-4 border border-gray-200 hover:border-green-300 transition">
-                      <div className={`w-20 h-20 rounded-xl flex items-center justify-center text-4xl flex-shrink-0 ${
-                        item.category === 'fertilizer' ? 'bg-gradient-to-br from-green-200 to-green-300' :
-                        item.category === 'pesticide' ? 'bg-gradient-to-br from-orange-200 to-orange-300' :
-                        'bg-gradient-to-br from-emerald-200 to-emerald-300'
-                      }`}>
-                        {item.icon}
+                      <div className="w-20 h-20 rounded-xl flex-shrink-0 overflow-hidden bg-gray-200">
+                        <img 
+                          src={item.image} 
+                          alt={item.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       
                       <div className="flex-1">
@@ -1583,12 +1583,12 @@ const MarketPlace = () => {
             <div className="p-8">
               {/* Product Header */}
               <div className="flex items-start space-x-6 mb-6">
-                <div className={`w-32 h-32 rounded-2xl flex items-center justify-center text-6xl ${
-                  selectedProduct.category === 'fertilizer' ? 'bg-gradient-to-br from-green-400 to-green-600' :
-                  selectedProduct.category === 'pesticide' ? 'bg-gradient-to-br from-orange-400 to-orange-600' :
-                  'bg-gradient-to-br from-emerald-400 to-emerald-600'
-                }`}>
-                  {selectedProduct.icon}
+                <div className="w-32 h-32 rounded-2xl overflow-hidden bg-gray-200 flex-shrink-0">
+                  <img 
+                    src={selectedProduct.image} 
+                    alt={selectedProduct.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 
                 <div className="flex-1">
