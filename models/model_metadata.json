@@ -1,0 +1,65 @@
+{
+  "confidence_threshold": 0.4,
+  "log_transformed_cols": [
+    "K"
+  ],
+  "optimal_trees": 247,
+  "calibration_method": "sigmoid",
+  "val_log_loss_raw": 0.06552049351432739,
+  "val_log_loss_cal": 0.10628789164658374,
+  "cv_mean_f1_macro": 0.9889076666340293,
+  "cv_std_f1_macro": 0.008376919224448817,
+  "test_accuracy_raw": 0.996969696969697,
+  "test_accuracy_cal": 0.996969696969697,
+  "num_classes": 22,
+  "classes": [
+    "apple",
+    "banana",
+    "blackgram",
+    "chickpea",
+    "coconut",
+    "coffee",
+    "cotton",
+    "grapes",
+    "jute",
+    "kidneybeans",
+    "lentil",
+    "maize",
+    "mango",
+    "mothbeans",
+    "mungbean",
+    "muskmelon",
+    "orange",
+    "papaya",
+    "pigeonpeas",
+    "pomegranate",
+    "rice",
+    "watermelon"
+  ],
+  "features": [
+    "N",
+    "P",
+    "K",
+    "temperature",
+    "humidity",
+    "ph",
+    "rainfall",
+    "NPK_sum",
+    "N_P_ratio",
+    "Temp_Humidity_Index"
+  ],
+  "features_base": [
+    "N",
+    "P",
+    "K",
+    "temperature",
+    "humidity",
+    "ph",
+    "rainfall"
+  ],
+  "features_engineered": [
+    "NPK_sum",
+    "N_P_ratio",
+    "Temp_Humidity_Index"
+  ]
+}
