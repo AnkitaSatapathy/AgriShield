@@ -41,6 +41,14 @@ Production-grade training script. All original fixes applied PLUS:
   ✅ NEW #12 – CV scoring fixed: both scoring= and metadata key now consistently "f1_macro"
                Previously scoring="accuracy" but metadata key was "cv_mean_f1_macro" (mismatch)
 
+  NEW FIXES (from code review – round 4 / XGBoost 3.x):
+  ✅ NEW #13 – Removed use_label_encoder=False from all 3 XGBClassifier calls
+               (base, model, cv_model). Parameter was deprecated in XGBoost 2.x
+               and permanently removed in 3.x. Its removal caused:
+               AttributeError: 'XGBClassifier' object has no attribute 'use_label_encoder'
+               when CalibratedClassifierCV called get_params() at predict time.
+               No retraining logic changed — only the constructor calls are affected.
+
   PLUS all previous upgrades:
   ✅ Early stopping · 70/15/15 split · RandomizedSearchCV
   ✅ Top-3 demo · Confusion matrix · Reproducibility seeds
@@ -334,11 +342,11 @@ param_dist = {
 }
 
 base = XGBClassifier(
-    objective         = "multi:softprob",
-    eval_metric       = "mlogloss",
-    random_state      = 42,
-    verbosity         = 0,
-    use_label_encoder = False
+    objective    = "multi:softprob",
+    eval_metric  = "mlogloss",
+    random_state = 42,
+    verbosity    = 0,
+    # use_label_encoder removed — deprecated in XGBoost 2.x, removed in 3.x
 )
 
 search = RandomizedSearchCV(
@@ -376,7 +384,7 @@ model = XGBClassifier(
     early_stopping_rounds = 20,
     random_state          = 42,
     verbosity             = 0,
-    use_label_encoder     = False
+    # use_label_encoder removed — deprecated in XGBoost 2.x, removed in 3.x
 )
 
 model.fit(
@@ -404,12 +412,12 @@ print("=" * 60)
 
 cv_model = XGBClassifier(
     **train_params,
-    n_estimators      = optimal_trees,
-    objective         = "multi:softprob",
-    eval_metric       = "mlogloss",
-    random_state      = 42,
-    verbosity         = 0,
-    use_label_encoder = False
+    n_estimators = optimal_trees,
+    objective    = "multi:softprob",
+    eval_metric  = "mlogloss",
+    random_state = 42,
+    verbosity    = 0,
+    # use_label_encoder removed — deprecated in XGBoost 2.x, removed in 3.x
 )
 
 # NEW #12 – scoring changed to "f1_macro" to match tuning and metadata key.
