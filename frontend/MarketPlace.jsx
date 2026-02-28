@@ -1130,6 +1130,359 @@ const MarketPlace = () => {
       usage: "Follow instructions in kit",
       benefits: ["Know your soil", "Make informed decisions", "Promotional offer"],
       image: "https://www.thespruce.com/thmb/VA7xpXC6WabuEfrZpJIPWVlOPHw=/4206x0/filters:no_upscale():max_bytes(150000):strip_icc()/healthy-soil-and-how-to-make-it-2539853-hero-fdf9b0280dca41cb8ae9614e6fc4a0b0.jpg"
+    },
+    // ── SEEDS (22) ──
+    {
+      id: 71,
+      name: "Apple Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "High germination apple seeds for orchard planting.",
+      dosage: "As per planting guide",
+      price: 120,
+      unit: "100 g packet",
+      rating: 4.5,
+      reviews: 89,
+      inStock: true,
+      usage: "Sow in well-drained soil",
+      benefits: ["High germination", "Disease resistant", "Uniform growth"],
+      image: "https://media.istockphoto.com/id/474987794/photo/dry-apple-seeds.jpg?s=612x612&w=0&k=20&c=pwZGgdWA0Wa-xL389lB65rXG6xX_KSmlbQ0EMJ9YgZo="
+    },
+    {
+      id: 72,
+      name: "Banana Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Quality banana seeds for plantation.",
+      dosage: "As per planting guide",
+      price: 100,
+      unit: "100 g packet",
+      rating: 4.4,
+      reviews: 76,
+      inStock: true,
+      usage: "Sow in sandy loam soil",
+      benefits: ["Good sprouting", "High yield potential"],
+      image: "https://5.imimg.com/data5/ANDROID/Default/2020/12/LC/VP/XQ/43357090/product-jpeg-500x500.jpg"
+    },
+    {
+      id: 73,
+      name: "Blackgram Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "High-yielding blackgram seeds suitable for various soils.",
+      dosage: "5-6 kg/ha",
+      price: 80,
+      unit: "1 kg packet",
+      rating: 4.3,
+      reviews: 54,
+      inStock: true,
+      usage: "Plant after rice harvest",
+      benefits: ["Short duration", "Good disease tolerance"],
+      image: "https://5.imimg.com/data5/PF/MN/MY-37621083/organic-black-gram-seeds.jpg"
+    },
+    {
+      id: 74,
+      name: "Chickpea Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Premium chickpea seeds for rabi cultivation.",
+      dosage: "80-100 kg/ha",
+      price: 150,
+      unit: "1 kg packet",
+      rating: 4.6,
+      reviews: 68,
+      inStock: true,
+      usage: "Sow in well-prepared soil",
+      benefits: ["Good nodulation", "High protein content"],
+      image: "https://cdn.britannica.com/65/176565-050-D6AB65D7/chickpeas-garbanzos.jpg"
+    },
+    {
+      id: 75,
+      name: "Coconut Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Certified coconut seeds for new plantations.",
+      dosage: "2-3 seeds/pit",
+      price: 200,
+      unit: "Pack of 10",
+      rating: 4.2,
+      reviews: 31,
+      inStock: true,
+      usage: "Plant in raised beds",
+      benefits: ["Tolerant to salinity", "High oil content"],
+      image: "https://5.imimg.com/data5/SELLER/Default/2022/8/WJ/OP/DK/1064512/coconut-seeds.jpeg"
+    },
+    {
+      id: 76,
+      name: "Coffee Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Arabica coffee seeds for quality plantation.",
+      dosage: "10-12 kg/ha",
+      price: 250,
+      unit: "500 g packet",
+      rating: 4.7,
+      reviews: 45,
+      inStock: true,
+      usage: "Sow in shade net",
+      benefits: ["Uniform seedlings", "High cup quality"],
+      image: "https://plus.unsplash.com/premium_photo-1666976506284-bbd70064976d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y29mZmVlJTIwc2VlZHxlbnwwfHwwfHx8MA%3D%3D"
+    },
+    {
+      id: 77,
+      name: "Cotton Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "BT cotton seeds with superior boll quality.",
+      dosage: "20-25 kg/ha",
+      price: 180,
+      unit: "1 kg packet",
+      rating: 4.5,
+      reviews: 92,
+      inStock: true,
+      usage: "Plant after monsoon onset",
+      benefits: ["High ginning outturn", "Pest resistance"],
+      image: "https://5.imimg.com/data5/SELLER/Default/2024/3/400318533/CZ/BF/CX/18861196/cotton-seeds.png"
+    },
+    {
+      id: 78,
+      name: "Grapes Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Quality grape seeds for vineyard establishment.",
+      dosage: "As per spacing",
+      price: 220,
+      unit: "100 seeds pack",
+      rating: 4.4,
+      reviews: 38,
+      inStock: true,
+      usage: "Sow in nursery beds",
+      benefits: ["Good germination", "Disease free"],
+      image: "https://media.istockphoto.com/id/97475269/photo/grapes-seeds.jpg?s=612x612&w=0&k=20&c=btL_9DNbVbzAXvkMr6OnYmymXBEfk7jif0gDT3NXIQM="
+    },
+    {
+      id: 79,
+      name: "Jute Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Certified jute seeds for fibre production.",
+      dosage: "7-8 kg/ha",
+      price: 90,
+      unit: "1 kg packet",
+      rating: 4.2,
+      reviews: 27,
+      inStock: true,
+      usage: "Sow after rice",
+      benefits: ["Fast maturing", "High fibre"],
+      image: "https://5.imimg.com/data5/SELLER/Default/2023/12/372286271/VQ/SM/LC/50667673/loose-jute-seeds.jpg"
+    },
+    {
+      id: 80,
+      name: "Kidneybeans Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "High-yield kidneybeans seeds for rabi cropping.",
+      dosage: "50 kg/ha",
+      price: 140,
+      unit: "1 kg packet",
+      rating: 4.3,
+      reviews: 59,
+      inStock: true,
+      usage: "Plant in rows",
+      benefits: ["Good shelf life", "Disease tolerant"],
+      image: "https://5.imimg.com/data5/SELLER/Default/2021/1/IH/LS/DY/120490310/red-kidney-beans.jpg"
+    },
+    {
+      id: 81,
+      name: "Lentil Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Premium lentil seeds for high protein yield.",
+      dosage: "80-90 kg/ha",
+      price: 160,
+      unit: "1 kg packet",
+      rating: 4.6,
+      reviews: 71,
+      inStock: true,
+      usage: "Sow in well-drained soil",
+      benefits: ["High protein", "Good nodulation"],
+      image: "https://5.imimg.com/data5/SELLER/Default/2023/2/KJ/QA/RC/185067263/dried-lentil-seeds.jpeg"
+    },
+    {
+      id: 82,
+      name: "Maize Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Hybrid maize seeds for robust growth.",
+      dosage: "25 kg/ha",
+      price: 200,
+      unit: "1 kg packet",
+      rating: 4.7,
+      reviews: 102,
+      inStock: true,
+      usage: "Plant during monsoon",
+      benefits: ["High yield", "Drought tolerant"],
+      image: "https://5.imimg.com/data5/HO/NR/MY-43014498/maize-seed-500x500.jpg"
+    },
+    {
+      id: 83,
+      name: "Mango Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Quality mango seeds for nursery propagation.",
+      dosage: "N/A",
+      price: 70,
+      unit: "10 seeds pack",
+      rating: 4.1,
+      reviews: 54,
+      inStock: true,
+      usage: "Soak before sowing",
+      benefits: ["Good germination", "Varietal purity"],
+      image: "https://c.ndtvimg.com/2025-05/j9etk8cs_mango-seed_625x300_23_May_25.jpg?im=FeatureCrop,algorithm=dnn,width=620,height=350?im=FaceCrop,algorithm=dnn,width=1200,height=886"
+    },
+    {
+      id: 84,
+      name: "Mothbeans Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Drought tolerant mothbeans seeds.",
+      dosage: "8-10 kg/ha",
+      price: 95,
+      unit: "1 kg packet",
+      rating: 4.3,
+      reviews: 33,
+      inStock: true,
+      usage: "Sow in light soil",
+      benefits: ["Quick maturity", "Low input"],
+      image: "https://5.imimg.com/data5/SELLER/Default/2025/1/478254420/LE/OW/PX/124470028/moth-bean-seeds.jpg"
+    },
+    {
+      id: 85,
+      name: "Mungbean Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Quality mungbean seeds with high protein.",
+      dosage: "15 kg/ha",
+      price: 110,
+      unit: "1 kg packet",
+      rating: 4.5,
+      reviews: 60,
+      inStock: true,
+      usage: "Plant after wheat",
+      benefits: ["Fast growth", "Nitrogen fixer"],
+      image: "https://media.istockphoto.com/id/481275428/photo/mung-beans-poured-from-the-sack.jpg?s=612x612&w=0&k=20&c=0fhXUTSFNAOelDisralouhP__sWcJFCO8l-TI2j_cjc="
+    },
+    {
+      id: 86,
+      name: "Muskmelon Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Sweet muskmelon seeds for high quality fruits.",
+      dosage: "2 kg/ha",
+      price: 130,
+      unit: "500 g packet",
+      rating: 4.4,
+      reviews: 45,
+      inStock: true,
+      usage: "Sow in raised beds",
+      benefits: ["Sweet taste", "High sugars"],
+      image: "https://beejwala.com/cdn/shop/products/muskmelon-seeds-1_compressed_500x.jpg?v=1653576919"
+    },
+    {
+      id: 87,
+      name: "Orange Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Citrus orange seeds for orchard establishment.",
+      dosage: "Based on spacing",
+      price: 90,
+      unit: "Pack of 20",
+      rating: 4.2,
+      reviews: 29,
+      inStock: true,
+      usage: "Stratify before sowing",
+      benefits: ["Good germination", "Disease free"],
+      image: "https://m.media-amazon.com/images/I/512bWVtKb0L._AC_UF1000,1000_QL80_.jpg"
+    },
+    {
+      id: 88,
+      name: "Papaya Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Fresh papaya seeds for quick sprouting.",
+      dosage: "N/A",
+      price: 50,
+      unit: "Packet of 30",
+      rating: 4.3,
+      reviews: 40,
+      inStock: true,
+      usage: "Dry before storage",
+      benefits: ["High viability", "Uniform growth"],
+      image: "https://sustainablebartender.com/wp-content/uploads/2020/11/IMG_20201012_153653_1_-removebg-preview.png"
+    },
+    {
+      id: 89,
+      name: "Pigeonpeas Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Durable pigeonpeas seeds for kharif season.",
+      dosage: "30 kg/ha",
+      price: 120,
+      unit: "1 kg packet",
+      rating: 4.4,
+      reviews: 52,
+      inStock: true,
+      usage: "Sow in rows",
+      benefits: ["Drought resistance", "Protein rich"],
+      image: "https://media.istockphoto.com/id/1840879008/photo/pigeon-pea-grain-cajanus-cajan.jpg?s=612x612&w=0&k=20&c=17IWoQV1WrEwWyy39DxGPHlSOqIoBIbZMM_JEodCuUs="
+    },
+    {
+      id: 90,
+      name: "Pomegranate Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "High quality pomegranate seeds for orchards.",
+      dosage: "N/A",
+      price: 210,
+      unit: "Pack of 15",
+      rating: 4.5,
+      reviews: 34,
+      inStock: true,
+      usage: "Clean before sowing",
+      benefits: ["High germination", "Vigorous seedlings"],
+      image: "https://5.imimg.com/data5/SELLER/Default/2023/10/357137876/IM/DH/CN/4859852/dry-pomegranate-seeds-500x500.jpg"
+    },
+    {
+      id: 91,
+      name: "Rice Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "HYV rice seeds for high-yield cultivation.",
+      dosage: "40 kg/ha",
+      price: 160,
+      unit: "1 kg packet",
+      rating: 4.6,
+      reviews: 150,
+      inStock: true,
+      usage: "Nursery bed method",
+      benefits: ["Short duration", "High yield"],
+      image: "https://m.media-amazon.com/images/I/51+DIZ54e5L._AC_UF1000,1000_QL80_.jpg"
+    },
+    {
+      id: 92,
+      name: "Watermelon Seeds",
+      category: "seed",
+      type: "Seed",
+      description: "Sweet watermelon seeds for summer crop.",
+      dosage: "2 kg/ha",
+      price: 140,
+      unit: "500 g packet",
+      rating: 4.5,
+      reviews: 81,
+      inStock: true,
+      usage: "Plant in ridges",
+      benefits: ["Fruit sweetness", "High weight"],
+      image: "https://thewholesaler.in/cdn/shop/products/WATERMELON-SEEDS-Citrullus-lanatus-TheWholesalerCo-35646936_460x@2x.jpg?v=1755873725"
     }
   ]);
 
@@ -1252,7 +1605,7 @@ const MarketPlace = () => {
             </h1>
           </div>
           <p className="text-xl text-gray-200 max-w-3xl mx-auto mb-10">
-            Premium Fertilizers, Pesticides & Organic Products for Indian Farmers - Direct Supply at Best Prices
+            Premium Seeds, Fertilizers, Pesticides & Organic Products for Indian Farmers - Direct Supply at Best Prices
           </p>
           
           {/* ── STATS BANNER ────────────────────────────────────────────── */}
@@ -1321,6 +1674,7 @@ const MarketPlace = () => {
                 <option value="fertilizer">Fertilizers</option>
                 <option value="pesticide">Pesticides</option>
                 <option value="organic">Organic Products</option>
+                <option value="seed">Seeds</option>
               </select>
             </div>
           </div>
@@ -1330,7 +1684,7 @@ const MarketPlace = () => {
             <span className="text-sm font-semibold text-gray-600">Active Filters:</span>
             {selectedCategory !== 'all' && (
               <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-2">
-                {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}
+                {selectedCategory === 'seed' ? 'Seeds' : selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}
                 <button onClick={() => setSelectedCategory('all')} className="hover:text-green-600">
                   <XCircle className="w-3 h-3" />
                 </button>
@@ -1370,7 +1724,8 @@ const MarketPlace = () => {
                     <div className={`absolute top-3 right-3 ${
                       product.category === 'fertilizer' ? 'bg-gradient-to-r from-green-600 to-emerald-600' :
                       product.category === 'pesticide' ? 'bg-gradient-to-r from-orange-600 to-red-600' :
-                      'bg-gradient-to-r from-emerald-600 to-teal-600'
+                      product.category === 'organic' ? 'bg-gradient-to-r from-emerald-600 to-teal-600' :
+                      /* seeds */ 'bg-gradient-to-r from-yellow-500 to-yellow-700'
                     } text-white px-2 py-0.5 rounded-full text-xs font-bold uppercase z-10 shadow-lg`}>
                       {product.type}
                     </div>
