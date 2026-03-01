@@ -204,19 +204,42 @@ function GlobalStyles() {
 /* ─────────────────────────────────────────────
    CROP DATA
 ───────────────────────────────────────────── */
+// load all crop images from shared data/images directory (Vite glob)
+const cropImageModules = import.meta.glob('../data/images/*.{jpg,jpeg,png,webp}', { eager: true, import: 'default' });
+
+function getCropImage(name) {
+  if (!name) return '';
+  const key = Object.keys(cropImageModules).find(p =>
+    p.toLowerCase().includes(name.toLowerCase())
+  );
+  return key ? cropImageModules[key] : '';
+}
+
 const CROPS = [
-  { name:"Rice",       icon:"🌾", img:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=700&h=500&fit=crop", shortDesc:"Staple crop thriving in flooded fields",      description:"Rice is a water-loving cereal grain that forms the basis of diets for over half the world. It thrives in warm, humid climates with standing water, making it ideal for lowland and delta regions.", idealConditions:"High humidity (80-90%), temperature 20-25°C, acidic soil pH 6-7, abundant rainfall 200-300mm.", benefits:"High yield potential up to 6t/ha, drought-resistant varieties available, excellent carbohydrate source.", tips:"Maintain 2-5 inches standing water. Use split nitrogen doses. Rotate with legumes to restore N." },
-  { name:"Wheat",      icon:"🌿", img:"https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=700&h=500&fit=crop", shortDesc:"Versatile grain for bread and flour",         description:"Wheat is the world's most widely grown cereal crop, prized for its gluten content that makes it ideal for baking. It prefers cool, dry climates during grain fill.", idealConditions:"Cool temperatures 15-20°C, moderate humidity 60-70%, neutral soil pH 6-7, seasonal rainfall 400-600mm.", benefits:"High protein content 10-12%, versatile end-uses, shorter crop duration 110-130 days.", tips:"Sow in November-December. Irrigate at crown root, flowering, and grain-fill stages. Monitor for rust." },
-  { name:"Maize",      icon:"🌽", img:"https://images.unsplash.com/photo-1603048297172-c92544798d5a?w=700&h=500&fit=crop", shortDesc:"High-yield grain for food and fodder",        description:"Maize is the highest-yielding cereal globally, used for food, animal feed, and industrial applications. It is highly adaptable and responds well to inputs.", idealConditions:"Warm temperatures 20-30°C, moderate humidity 50-70%, neutral pH 6-7, adequate rainfall 500-800mm.", benefits:"Very high yield potential 4-6t/acre, suitable for mechanised farming, excellent fodder crop.", tips:"Maintain 20-25cm plant spacing. Apply herbicides within 3 days of sowing. Harvest at 30% moisture." },
-  { name:"Cotton",     icon:"☁️", img:"https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=700&h=500&fit=crop", shortDesc:"White gold — premier fiber cash crop",       description:"Cotton is one of the most economically important fiber crops, producing soft bolls used in textiles worldwide. It thrives in long frost-free seasons with high temperatures.", idealConditions:"Warm temperatures 25-30°C, moderate humidity 60-70%, slightly acidic pH 6-7, rainfall 700-900mm.", benefits:"Premium cash crop with high per-acre returns, by-products include cottonseed oil and cakes.", tips:"Control bollworm and whitefly regularly. Apply gypsum in alkaline soils. Pick when bolls fully open." },
-  { name:"Soybean",    icon:"🫘", img:"https://images.unsplash.com/photo-1589566732327-b2fb78c5684d?w=700&h=500&fit=crop", shortDesc:"Protein powerhouse — fixes nitrogen",        description:"Soybeans are legumes that naturally fix atmospheric nitrogen, enriching soil for subsequent crops. They are a cornerstone of sustainable agriculture globally.", idealConditions:"Warm temperatures 20-30°C, moderate humidity 60-80%, slightly acidic pH 6-7, even rainfall 600-1000mm.", benefits:"Fixes 50-100kg N/ha naturally, 36-40% protein content, dual grain and fodder use.", tips:"Inoculate seeds with Bradyrhizobium. Rotate with non-legume crops. Harvest when pods rattle." },
-  { name:"Sugarcane",  icon:"🎋", img:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=700&h=500&fit=crop", shortDesc:"Tropical giant — 12-month income cycle",     description:"Sugarcane is a tall perennial grass that provides sucrose for sugar production, along with valuable by-products like molasses, bagasse, and ethanol.", idealConditions:"Hot climate 25-35°C, high humidity 80-85%, deep rich soil pH 6-7.5, high water availability.", benefits:"30-40 t/acre yield, multiple ratoon crops, by-products add 40% revenue.", tips:"Plant setts 5-7cm deep, 90cm row spacing. Earthing-up at 45 days. Harvest when brix reaches 20%." },
-  { name:"Coffee",     icon:"☕", img:"https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=700&h=500&fit=crop", shortDesc:"Premium highland perennial for export",       description:"Coffee is a high-altitude perennial crop that produces prized berries with complex aromatic compounds. Arabica varieties command premium export prices.", idealConditions:"Temperature 15-24°C, high humidity, acidic pH 5.5-6.5, moderate rainfall, well-distributed 1500-2500mm.", benefits:"High export value, 30-40 year productive life, supports agro-biodiversity under shade trees.", tips:"Prune annually after harvest. Harvest only red-ripe cherries. Compost pulp back into soil." },
-  { name:"Mango",      icon:"🥭", img:"https://images.unsplash.com/photo-1605027990121-cbae9d3ce9f3?w=700&h=500&fit=crop", shortDesc:"King of fruits — decades of income",         description:"Mango is India's most beloved fruit tree, with over 1,000 varieties. A well-managed orchard provides reliable income for 40-50 years with minimal inputs.", idealConditions:"Temperature 24-30°C, low humidity during flowering, well-drained soil pH 5.5-7.5, dry pre-flowering period.", benefits:"Productive for 40-50 years, 3-5 t/acre yield, strong domestic and export demand.", tips:"Apply potash-rich fertilizer before flowering. Allow a dry period of 2-3 months before flowering. Prune after harvest." },
-  { name:"Banana",     icon:"🍌", img:"https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=700&h=500&fit=crop", shortDesc:"Year-round income — fast crop cycle",        description:"Banana is one of the world's most productive crops per unit area, providing continuous income as ratoon crops keep yielding for years from a single planting.", idealConditions:"Temperature 26-30°C, high humidity 70-90%, deep loamy soil pH 6-7.5, high water 1200-2200mm.", benefits:"8-12 t/acre yield, 11-month crop cycle, continuous ratoon harvests for 3-5 years.", tips:"Remove all suckers except one ratoon. Bag fruit bunches at shooting. Irrigate every 3-5 days in summer." },
-  { name:"Chickpea",   icon:"🟡", img:"https://images.unsplash.com/photo-1589621316382-008455b857cd?w=700&h=500&fit=crop", shortDesc:"Hardy legume for dry Rabi seasons",          description:"Chickpea is India's most important pulse crop, providing affordable plant protein to millions. It is highly drought-tolerant and fixes atmospheric nitrogen.", idealConditions:"Cool dry climate 15-25°C, low humidity, neutral-alkaline soil pH 6-9, low rainfall 400-500mm.", benefits:"Drought-tolerant, fixes 40-60 kg N/ha, 0.8-1.5 t/acre yield, high protein content.", tips:"Sow October-November in well-drained soil. Avoid waterlogging. Treat seeds with Rhizobium culture." },
-  { name:"Watermelon", icon:"🍉", img:"https://images.unsplash.com/photo-1587049352846-4a222e784422?w=700&h=500&fit=crop", shortDesc:"Fast returns — 80-day summer crop",           description:"Watermelon is a warm-season cucurbit that delivers rapid returns in 80-90 days. Sandy soils and warm temperatures produce the sweetest, highest-quality fruits.", idealConditions:"Temperature 21-35°C, moderate humidity, sandy loam pH 6-7, moderate water with good drainage.", benefits:"80-90 day crop cycle, 8-12 t/acre yield, high summer market premium.", tips:"Use drip irrigation. Ensure cross-pollination with bees. Harvest when the tendril nearest fruit dries." },
-  { name:"Coconut",    icon:"🥥", img:"https://images.unsplash.com/photo-1598181261555-e2155fc14c44?w=700&h=500&fit=crop", shortDesc:"Coastal perennial — 100 years of returns",   description:"The coconut palm is called the 'tree of life' — every part is commercially valuable. It thrives in tropical coastal regions with high humidity and regular rainfall.", idealConditions:"Temperature 20-32°C, high humidity 80-90%, sandy loam pH 5.5-7, high rainfall or irrigation.", benefits:"Productive for 80-100 years, all parts commercially valuable, 40-60 nuts/tree/year.", tips:"Apply potassium-rich fertilizer twice yearly. Mulch heavily at base. Watch for Rhinoceros beetle attacks." },
+  { name:"Rice",        icon:"🌾", img:getCropImage("Rice"), shortDesc:"Staple crop thriving in flooded fields",       description:"Rice is a water-loving cereal grain that forms the basis of diets for over half the world. It thrives in warm, humid climates with standing water, making it ideal for lowland and delta regions.", idealConditions:"High humidity (80-90%), temperature 20-25°C, acidic soil pH 6-7, abundant rainfall 200-300mm.", benefits:"High yield potential up to 6t/ha, drought-resistant varieties available, excellent carbohydrate source.", tips:"Maintain 2-5 inches standing water. Use split nitrogen doses. Rotate with legumes to restore N." },
+  { name:"Wheat",       icon:"🌿", img:getCropImage("Wheat"), shortDesc:"Versatile grain for bread and flour",          description:"Wheat is the world's most widely grown cereal crop, prized for its gluten content that makes it ideal for baking. It prefers cool, dry climates during grain fill.", idealConditions:"Cool temperatures 15-20°C, moderate humidity 60-70%, neutral soil pH 6-7, seasonal rainfall 400-600mm.", benefits:"High protein content 10-12%, versatile end-uses, shorter crop duration 110-130 days.", tips:"Sow in November-December. Irrigate at crown root, flowering, and grain-fill stages. Monitor for rust." },
+  { name:"Apple",       icon:"🍎", img:getCropImage("Apple"), shortDesc:"Premium temperate fruit for highlands",         description:"Apple is a high-value temperate fruit crop requiring cold winters for proper dormancy and bud break. It thrives in hilly regions and commands strong market prices.", idealConditions:"Temperature 20-25°C, chilling hours 1000+, well-drained soil pH 5.5-6.5, moderate rainfall 1000-1200mm.", benefits:"High per-kg returns, long shelf life, excellent export demand, productive for 30-40 years.", tips:"Prune annually in dormancy. Apply calcium sprays to prevent bitter pit. Thin fruits in June." },
+  { name:"Banana",      icon:"🍌", img:getCropImage("Banana"), shortDesc:"Year-round income — fast crop cycle",         description:"Banana is one of the world's most productive crops per unit area, providing continuous income as ratoon crops keep yielding for years from a single planting.", idealConditions:"Temperature 26-30°C, high humidity 70-90%, deep loamy soil pH 6-7.5, high water 1200-2200mm.", benefits:"8-12 t/acre yield, 11-month crop cycle, continuous ratoon harvests for 3-5 years.", tips:"Remove all suckers except one ratoon. Bag fruit bunches at shooting. Irrigate every 3-5 days in summer." },
+  { name:"Blackgram",   icon:"🫘", img:getCropImage("Blackgram"), shortDesc:"Fast-maturing pulse with protein power",       description:"Blackgram (Urad dal) is a popular pulse crop of the Indian subcontinent, valued for its high protein content and role in improving soil fertility through nitrogen fixation.", idealConditions:"Warm temperature 25-35°C, moderate humidity, well-drained soil pH 6-7.5, moderate rainfall 600-1000mm.", benefits:"Fixes nitrogen naturally, short duration 60-90 days, high demand as dal in domestic markets.", tips:"Sow at 30x10cm spacing. Avoid waterlogged soils. Harvest pods when they turn black." },
+  { name:"Chickpea",    icon:"🟡", img:getCropImage("Chickpea"), shortDesc:"Hardy legume for dry Rabi seasons",           description:"Chickpea is India's most important pulse crop, providing affordable plant protein to millions. It is highly drought-tolerant and fixes atmospheric nitrogen.", idealConditions:"Cool dry climate 15-25°C, low humidity, neutral-alkaline soil pH 6-9, low rainfall 400-500mm.", benefits:"Drought-tolerant, fixes 40-60 kg N/ha, 0.8-1.5 t/acre yield, high protein content.", tips:"Sow October-November in well-drained soil. Avoid waterlogging. Treat seeds with Rhizobium culture." },
+  { name:"Coconut",     icon:"🥥", img:getCropImage("Coconut"), shortDesc:"Coastal perennial — 100 years of returns",    description:"The coconut palm is called the 'tree of life' — every part is commercially valuable. It thrives in tropical coastal regions with high humidity and regular rainfall.", idealConditions:"Temperature 20-32°C, high humidity 80-90%, sandy loam pH 5.5-7, high rainfall or irrigation.", benefits:"Productive for 80-100 years, all parts commercially valuable, 40-60 nuts/tree/year.", tips:"Apply potassium-rich fertilizer twice yearly. Mulch heavily at base. Watch for Rhinoceros beetle attacks." },
+  { name:"Coffee",      icon:"☕", img:getCropImage("Coffee"), shortDesc:"Premium highland perennial for export",        description:"Coffee is a high-altitude perennial crop that produces prized berries with complex aromatic compounds. Arabica varieties command premium export prices.", idealConditions:"Temperature 15-24°C, high humidity, acidic pH 5.5-6.5, moderate rainfall well-distributed 1500-2500mm.", benefits:"High export value, 30-40 year productive life, supports agro-biodiversity under shade trees.", tips:"Prune annually after harvest. Harvest only red-ripe cherries. Compost pulp back into soil." },
+  { name:"Cotton",      icon:"☁️", img:getCropImage("Cotton"), shortDesc:"White gold — premier fiber cash crop",        description:"Cotton is one of the most economically important fiber crops, producing soft bolls used in textiles worldwide. It thrives in long frost-free seasons with high temperatures.", idealConditions:"Warm temperatures 25-30°C, moderate humidity 60-70%, slightly acidic pH 6-7, rainfall 700-900mm.", benefits:"Premium cash crop with high per-acre returns, by-products include cottonseed oil and cakes.", tips:"Control bollworm and whitefly regularly. Apply gypsum in alkaline soils. Pick when bolls fully open." },
+  { name:"Grapes",      icon:"🍇", img:getCropImage("Grapes"), shortDesc:"Premium vineyard crop for wine and table",    description:"Grapes are a high-value horticultural crop used for fresh consumption, raisins, juice, and wine. They thrive in semi-arid regions with well-defined seasons.", idealConditions:"Temperature 15-35°C, low humidity during harvest, well-drained loamy soil pH 5.5-7, low rainfall 600-800mm.", benefits:"High per-acre value, multiple end-use markets, suitable for drip irrigation farming.", tips:"Train on trellis. Prune canes severely in winter. Apply potassium sulfate before veraison." },
+  { name:"Jute",        icon:"🌱", img:getCropImage("Jute"), shortDesc:"Golden fibre — eco-friendly industrial crop",  description:"Jute is the second most important vegetable fibre after cotton. Known as the 'golden fibre', it is biodegradable, eco-friendly, and used in textiles and packaging.", idealConditions:"Warm humid climate 24-37°C, high humidity 70-90%, alluvial soil pH 6-7.5, heavy rainfall 1500-2000mm.", benefits:"Quick 120-day growth cycle, high demand in packaging industry, improves soil structure.", tips:"Sow in March-April with onset of monsoon. Ret bundles in clean water for 20 days. Dry in shade." },
+  { name:"Kidneybeans", icon:"🫘", img:getCropImage("Kidneybeans"), shortDesc:"Protein-rich legume for diverse cuisines",    description:"Kidney beans are a widely consumed legume globally, prized for their high protein and fiber content. They are an important Kharif crop in hilly and rain-fed regions.", idealConditions:"Moderate temperature 18-24°C, moderate humidity, well-drained loamy soil pH 6-7, moderate rainfall 300-400mm.", benefits:"High protein 22-23%, nitrogen-fixing, 45-60 day maturity, strong export demand.", tips:"Avoid sowing in waterlogged areas. Hill up at knee height. Harvest when pods are dry and hard." },
+  { name:"Lentil",      icon:"🫘", img:getCropImage("Lentil"), shortDesc:"Drought-hardy winter pulse with high nutrition",description:"Lentil is one of the oldest cultivated crops and a vital protein source in South Asian diets. It grows well in dry, cool winter conditions with minimal irrigation needs.", idealConditions:"Cool temperature 15-25°C, low humidity, well-drained soil pH 6-8, low rainfall 250-400mm.", benefits:"Excellent drought tolerance, fixes nitrogen, 80-100 day maturity, high protein 24-26%.", tips:"Inoculate seeds with Rhizobium. Sow October-November. Avoid saline soils. Harvest at 20% pod moisture." },
+  { name:"Maize",       icon:"🌽", img:getCropImage("Maize"), shortDesc:"High-yield grain for food and fodder",         description:"Maize is the highest-yielding cereal globally, used for food, animal feed, and industrial applications. It is highly adaptable and responds well to inputs.", idealConditions:"Warm temperatures 20-30°C, moderate humidity 50-70%, neutral pH 6-7, adequate rainfall 500-800mm.", benefits:"Very high yield potential 4-6t/acre, suitable for mechanised farming, excellent fodder crop.", tips:"Maintain 20-25cm plant spacing. Apply herbicides within 3 days of sowing. Harvest at 30% moisture." },
+  { name:"Mango",       icon:"🥭", img:getCropImage("Mango"), shortDesc:"King of fruits — decades of income",          description:"Mango is India's most beloved fruit tree, with over 1,000 varieties. A well-managed orchard provides reliable income for 40-50 years with minimal inputs.", idealConditions:"Temperature 24-30°C, low humidity during flowering, well-drained soil pH 5.5-7.5, dry pre-flowering period.", benefits:"Productive for 40-50 years, 3-5 t/acre yield, strong domestic and export demand.", tips:"Apply potash-rich fertilizer before flowering. Allow a dry period of 2-3 months before flowering. Prune after harvest." },
+  { name:"Mothbeans",   icon:"🫘", img:getCropImage("Mothbeans"), shortDesc:"Extreme drought-tolerant Kharif pulse",       description:"Mothbeans (Matki) are one of the most drought-tolerant legumes grown in arid and semi-arid regions. They are an important food security crop requiring minimal rainfall.", idealConditions:"Hot dry temperature 24-38°C, low humidity, sandy loam soil pH 6.5-8, very low rainfall 200-400mm.", benefits:"Extreme drought tolerance, nitrogen-fixing, critical in arid zone food security, high feed value.", tips:"Sow at very low seed rate. No supplemental irrigation needed. Harvest pods as they mature to avoid shattering." },
+  { name:"Mungbean",    icon:"🫘", img:getCropImage("Mungbean"), shortDesc:"Short-duration summer pulse — dual season", description:"Mungbean (Green gram) is a fast-growing legume with a 60-75 day crop cycle, allowing it to fit in as a break crop between main seasons. Highly valued as a nutritious dal.", idealConditions:"Warm temperature 25-35°C, moderate humidity, well-drained loamy soil pH 6.5-7.5, moderate rainfall 500-700mm.", benefits:"Very short duration 60-75 days, fits in as relay crop, nitrogen-fixing, high market price.", tips:"Sow in rows 30cm apart. Avoid excessive nitrogen. Harvest pods when 80% turn brown." },
+  { name:"Muskmelon",   icon:"🍈", img:getCropImage("Muskmelon"), shortDesc:"Sweet summer crop — 80-day fast returns",    description:"Muskmelon is a warm-season cucurbit grown primarily in summer. With a short growing period and high demand, it provides excellent short-term income for farmers.", idealConditions:"Temperature 24-35°C, low humidity during fruit maturity, sandy loam soil pH 6-7, moderate water.", benefits:"Short 75-90 day cycle, 4-6 t/acre yield, premium summer pricing, suitable for sandy river beds.", tips:"Train vines to single stem. Irrigate by furrow only. Stop irrigation 7-10 days before harvest for sweeter fruit." },
+  { name:"Orange",      icon:"🍊", img:getCropImage("Orange"), shortDesc:"Citrus perennial with vitamin-rich fruits",    description:"Orange is a major commercial citrus crop producing vitamin C-rich fruits with strong domestic and juice industry demand. It is a long-term investment crop.", idealConditions:"Subtropical temperature 20-30°C, moderate humidity, well-drained loamy soil pH 6-7, moderate rainfall.", benefits:"Productive for 15-20 years, strong juice industry demand, 3-6 t/acre yield, high nutritional value.", tips:"Prune lightly to maintain canopy. Apply micronutrients including zinc and boron. Control citrus psylla." },
+  { name:"Papaya",      icon:"🍈", img:getCropImage("Papaya"), shortDesc:"Fastest-growing tropical fruit tree",          description:"Papaya is one of the fastest-fruiting tropical crops, bearing fruit within 9-12 months of planting. It is grown for fresh fruit, papain enzyme, and industrial processing.", idealConditions:"Warm temperature 22-32°C, moderate humidity, well-drained loamy soil pH 6-6.5, regular irrigation.", benefits:"First harvest within 9-12 months, 15-20 t/acre yield, papain extraction adds revenue.", tips:"Plant on raised beds for drainage. Remove male plants leaving one per 10 females. Harvest at 20% colour break." },
+  { name:"Pigeonpeas",  icon:"🫘", img:getCropImage("Pigeonpeas"), shortDesc:"Long-duration legume — drought warrior",      description:"Pigeonpea (Tur/Arhar dal) is one of the most drought-tolerant crop plants, deeply rooted to access subsoil moisture. It is the second most important pulse in India.", idealConditions:"Warm temperature 18-30°C, low-moderate humidity, well-drained soil pH 6-7.5, low rainfall 600-1000mm.", benefits:"Deep root system improves soil, fixes 40-200 kg N/ha, multi-cut pigeon pea for fodder use.", tips:"Sow June-July. Intercrop with cereals for best yield. Harvest when 75% of pods turn brown." },
+  { name:"Pomegranate", icon:"🔴", img:getCropImage("Pomegranate"), shortDesc:"Drought-tolerant superfruit with premium value", description:"Pomegranate is a highly profitable, drought-tolerant fruit crop well-suited to semi-arid climates. It commands premium prices both domestically and for export.", idealConditions:"Temperature 25-35°C, low humidity, well-drained loamy soil pH 6.5-7.5, low-moderate rainfall.", benefits:"Excellent drought tolerance, 8-10 t/acre yield, high export value, productive for 25 years.", tips:"Train as single stem. Prune 3-4 primary branches. Bag individual fruits for premium quality." },
+  { name:"Sugarcane",   icon:"🎋", img:getCropImage("Sugarcane"), shortDesc:"Tropical giant — 12-month income cycle",      description:"Sugarcane is a tall perennial grass that provides sucrose for sugar production, along with valuable by-products like molasses, bagasse, and ethanol.", idealConditions:"Hot climate 25-35°C, high humidity 80-85%, deep rich soil pH 6-7.5, high water availability.", benefits:"30-40 t/acre yield, multiple ratoon crops, by-products add 40% revenue.", tips:"Plant setts 5-7cm deep, 90cm row spacing. Earthing-up at 45 days. Harvest when brix reaches 20%." },
+  { name:"Watermelon",  icon:"🍉", img:getCropImage("Watermelon"), shortDesc:"Fast returns — 80-day summer crop",            description:"Watermelon is a warm-season cucurbit that delivers rapid returns in 80-90 days. Sandy soils and warm temperatures produce the sweetest, highest-quality fruits.", idealConditions:"Temperature 21-35°C, moderate humidity, sandy loam pH 6-7, moderate water with good drainage.", benefits:"80-90 day crop cycle, 8-12 t/acre yield, high summer market premium.", tips:"Use drip irrigation. Ensure cross-pollination with bees. Harvest when the tendril nearest fruit dries." },
 ];
 
 const CROP_INFO = {
@@ -238,6 +261,7 @@ const CROP_INFO = {
   papaya:      { when:"May–June / Sept–Oct",     water:"High",          yield:"15–20 t/acre",    icon:"🍈", season:"Annual" },
   coconut:     { when:"June–Aug (planting)",     water:"High",          yield:"40–60 nuts/tree", icon:"🥥", season:"Perennial" },
   motherbeans: { when:"June–July",               water:"Low",           yield:"0.5–1 t/acre",    icon:"🫘", season:"Kharif" },
+  mothbeans:   { when:"June–July",               water:"Low",           yield:"0.5–1 t/acre",    icon:"🫘", season:"Kharif" },
   mungbean:    { when:"Feb–Mar / Jun–Jul",       water:"Low–Moderate",  yield:"0.5–1 t/acre",    icon:"🫘", season:"Kharif/Rabi" },
   blackgram:   { when:"June–July",               water:"Low–Moderate",  yield:"0.4–0.8 t/acre",  icon:"🫘", season:"Kharif" },
   lentil:      { when:"Oct–Nov (Rabi)",          water:"Low",           yield:"0.5–1 t/acre",    icon:"🫘", season:"Rabi" },
@@ -249,6 +273,41 @@ const CROP_INFO = {
 function getCropInfo(name) {
   return CROP_INFO[name?.toLowerCase()] || { when:"Consult local office", water:"Moderate", yield:"Varies", icon:"🌱", season:"Varies" };
 }
+
+/* ── Marketplace seed product ID map ── */
+const CROP_SEED_IDS = {
+  apple:       71,
+  banana:      72,
+  blackgram:   73,
+  chickpea:    74,
+  coconut:     75,
+  coffee:      76,
+  cotton:      77,
+  grapes:      78,
+  jute:        79,
+  kidneybeans: 80,
+  lentil:      81,
+  maize:       82,
+  mango:       83,
+  mothbeans:   84,
+  mungbean:    85,
+  muskmelon:   86,
+  orange:      87,
+  papaya:      88,
+  pigeonpeas:  89,
+  pomegranate: 90,
+  rice:        91,
+  watermelon:  92,
+  sugarcane:   93,
+  wheat:       94,
+};
+
+function getMarketplaceLink(cropName) {
+  const id = CROP_SEED_IDS[cropName?.toLowerCase()];
+  return { seedId: id || null };
+}
+
+
 
 /* Dynamic "why this crop" reasons based on actual input values */
 function buildWhyReasons(cropName, N, P, K, ph, temp, humidity, rainfall) {
@@ -444,22 +503,22 @@ function CropCarousel() {
       </div>
 
       {/* Card body */}
-      <div key={animKey} className="anim-fade-in" style={{ display:"flex", gap:"0", flexWrap:"wrap" }}>
+      <div key={animKey} className="anim-fade-in" style={{ display:"flex", gap:"0" }}>
         {/* Image */}
-        <div style={{ position:"relative", width:"240px", minWidth:"200px", height:"220px", flexShrink:0, margin:"20px 0 20px 20px", borderRadius:"14px", overflow:"hidden", boxShadow:"0 6px 20px rgba(0,0,0,0.14)" }}>
+        <div style={{ position:"relative", width:"300px", minWidth:"260px", height:"260px", flexShrink:0, margin:"24px 0 24px 24px", borderRadius:"16px", overflow:"hidden", boxShadow:"0 8px 24px rgba(0,0,0,0.16)" }}>
           <img src={crop.img} alt={crop.name} style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform 0.6s ease" }}
             onMouseEnter={e => e.target.style.transform = "scale(1.06)"}
             onMouseLeave={e => e.target.style.transform = "scale(1)"}
           />
           <div style={{ position:"absolute", inset:0, background:"linear-gradient(to top, rgba(0,0,0,0.72) 0%, transparent 55%)" }} />
-          <div style={{ position:"absolute", bottom:"12px", left:"14px" }}>
-            <p style={{ color:"#fff", fontWeight:700, fontSize:"1.15rem", fontFamily:"'DM Serif Display',serif", margin:0 }}>{crop.name}</p>
-            <p style={{ color:"rgba(255,255,255,0.75)", fontSize:"0.7rem", margin:0 }}>{crop.shortDesc}</p>
+          <div style={{ position:"absolute", bottom:"14px", left:"16px" }}>
+            <p style={{ color:"#fff", fontWeight:700, fontSize:"1.25rem", fontFamily:"'DM Serif Display',serif", margin:0 }}>{crop.name}</p>
+            <p style={{ color:"rgba(255,255,255,0.75)", fontSize:"0.75rem", margin:0 }}>{crop.shortDesc}</p>
           </div>
         </div>
 
-        {/* Details */}
-        <div style={{ flex:1, minWidth:"200px", padding:"20px 20px 20px 20px", display:"flex", flexDirection:"column", gap:"12px", justifyContent:"center" }}>
+        {/* Details — 2 column grid for wider layout */}
+        <div style={{ flex:1, padding:"24px 28px", display:"grid", gridTemplateColumns:"1fr 1fr", gap:"16px 32px", alignContent:"center" }}>
           {[
             { icon:<Info style={{width:"13px",height:"13px"}} />, label:"DESCRIPTION",      text:crop.description,      color:"#1a6b3a" },
             { icon:<Target style={{width:"13px",height:"13px"}} />, label:"IDEAL CONDITIONS", text:crop.idealConditions, color:"#1565c0" },
@@ -467,8 +526,8 @@ function CropCarousel() {
             { icon:<Award style={{width:"13px",height:"13px"}} />,    label:"PRO TIPS",         text:crop.tips,             color:"#e65100" },
           ].map(({ icon, label, text, color }, i) => (
             <div key={label} className="anim-slide-in" style={{ animationDelay: `${i * 0.07}s` }}>
-              <p style={{ fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", color, display:"flex", alignItems:"center", gap:"4px", marginBottom:"2px" }}>{icon}{label}</p>
-              <p style={{ fontSize:"0.82rem", color:"#4b5563", lineHeight:1.55, margin:0 }}>{text}</p>
+              <p style={{ fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", color, display:"flex", alignItems:"center", gap:"4px", marginBottom:"4px" }}>{icon}{label}</p>
+              <p style={{ fontSize:"0.82rem", color:"#4b5563", lineHeight:1.6, margin:0 }}>{text}</p>
             </div>
           ))}
         </div>
@@ -499,24 +558,26 @@ function SoilTestBox() {
   return (
     <div style={{ background:"#fff", borderRadius:"20px", boxShadow:"0 2px 16px rgba(0,0,0,0.06)", border:"1px solid #eaeaea", overflow:"hidden" }}>
       {/* Header */}
-      <div style={{ background:"linear-gradient(135deg, #c8973a 0%, #e6b347 50%, #c8973a 100%)", backgroundSize:"200% auto", padding:"24px" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:"14px", marginBottom:"18px" }}>
-          <div style={{ background:"rgba(255,255,255,0.22)", padding:"10px", borderRadius:"12px", backdropFilter:"blur(6px)" }}>
-            <TestTube style={{ width:"22px", height:"22px", color:"#fff" }} />
-          </div>
-          <div>
-            <h2 className="serif" style={{ color:"#fff", margin:0, fontSize:"1.25rem", fontWeight:400 }}>Soil Testing Guide</h2>
-            <p style={{ color:"rgba(255,255,255,0.78)", fontSize:"0.8rem", margin:0 }}>Know your soil. Grow smarter.</p>
-          </div>
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"10px" }}>
-          {[["🔬","6+ Parameters","Per sample"],["💰","Free / ₹5–50","At govt. labs"],["📅","Every 2–3 yrs","Recommended"]].map(([ic,v,l]) => (
-            <div key={l} style={{ background:"rgba(255,255,255,0.18)", borderRadius:"12px", padding:"12px", textAlign:"center", backdropFilter:"blur(4px)" }}>
-              <div style={{ fontSize:"1.3rem", marginBottom:"4px" }}>{ic}</div>
-              <div style={{ fontWeight:700, color:"#fff", fontSize:"0.82rem" }}>{v}</div>
-              <div style={{ color:"rgba(255,255,255,0.72)", fontSize:"0.7rem" }}>{l}</div>
+      <div style={{ background:"linear-gradient(135deg, #c8973a 0%, #e6b347 50%, #c8973a 100%)", backgroundSize:"200% auto", padding:"24px 32px" }}>
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:"16px" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:"14px" }}>
+            <div style={{ background:"rgba(255,255,255,0.22)", padding:"10px", borderRadius:"12px", backdropFilter:"blur(6px)" }}>
+              <TestTube style={{ width:"22px", height:"22px", color:"#fff" }} />
             </div>
-          ))}
+            <div>
+              <h2 className="serif" style={{ color:"#fff", margin:0, fontSize:"1.25rem", fontWeight:400 }}>Soil Testing Guide</h2>
+              <p style={{ color:"rgba(255,255,255,0.78)", fontSize:"0.8rem", margin:0 }}>Know your soil. Grow smarter.</p>
+            </div>
+          </div>
+          <div style={{ display:"flex", gap:"12px" }}>
+            {[["🔬","6+ Parameters","Per sample"],["💰","Free / ₹5–50","At govt. labs"],["📅","Every 2–3 yrs","Recommended"]].map(([ic,v,l]) => (
+              <div key={l} style={{ background:"rgba(255,255,255,0.18)", borderRadius:"12px", padding:"12px 18px", textAlign:"center", backdropFilter:"blur(4px)", minWidth:"110px" }}>
+                <div style={{ fontSize:"1.2rem", marginBottom:"3px" }}>{ic}</div>
+                <div style={{ fontWeight:700, color:"#fff", fontSize:"0.82rem" }}>{v}</div>
+                <div style={{ color:"rgba(255,255,255,0.72)", fontSize:"0.7rem" }}>{l}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -714,26 +775,10 @@ function WhyThisCrop({ cropName, N, P, K, ph, temperature, humidity, rainfall, c
         </div>
         <div>
           <h3 className="serif" style={{ margin:0, fontSize:"1.05rem", color:"#14532d", fontWeight:400 }}>
-            Why <em>{cropName.charAt(0).toUpperCase()+cropName.slice(1)}</em>? — AI Reasoning
+            Why <em>{cropName.charAt(0).toUpperCase()+cropName.slice(1)}</em>? — ML Reasoning
           </h3>
           <p style={{ margin:0, fontSize:"0.73rem", color:"#16a34a" }}>Here is exactly why the model chose this crop for your conditions</p>
         </div>
-      </div>
-
-      {/* Confidence gauge */}
-      <div style={{ background:"#fff", borderRadius:"12px", padding:"14px 16px", marginBottom:"14px", border:"1px solid #bbf7d0" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"8px" }}>
-          <span style={{ fontSize:"0.78rem", fontWeight:600, color:"#374151" }}>Model Confidence Score</span>
-          <span style={{ fontWeight:800, color:"#16a34a", fontSize:"1rem" }}>{confPct}%</span>
-        </div>
-        <div style={{ background:"#e5e7eb", borderRadius:"99px", height:"8px", overflow:"hidden" }}>
-          <div className="progress-fill" style={{ height:"100%", width:`${confPct}%`, background:"linear-gradient(90deg,#16a34a,#4ade80)", borderRadius:"99px" }} />
-        </div>
-        <p style={{ fontSize:"0.7rem", color:"#6b7280", margin:"6px 0 0" }}>
-          {confPct >= 85 ? "Excellent match — this crop is highly suited to your exact conditions" :
-           confPct >= 60 ? "Good match — conditions are favourable, consider alternatives too" :
-           "Moderate match — review conditions and consult a local agronomist"}
-        </p>
       </div>
 
       {/* Reason chips */}
@@ -783,6 +828,16 @@ function RecommendationForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const resultRef = useRef(null);
+
+  const handleShopNow = (cropName) => {
+    const { seedId } = getMarketplaceLink(cropName);
+    if (seedId) {
+      sessionStorage.setItem('highlightProductId', String(seedId));
+    }
+    sessionStorage.setItem('highlightCropName', cropName.toLowerCase());
+    // App uses hash-based routing opened in new tab — open marketplace the same way
+    window.open(window.location.origin + '/#/marketplace', '_blank');
+  };
 
   const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -915,21 +970,20 @@ function RecommendationForm() {
               {/* Top row */}
               <div style={{ padding:"20px 22px 16px", display:"flex", alignItems:"flex-start", justifyContent:"space-between", flexWrap:"wrap", gap:"12px" }}>
                 <div>
-                  <p style={{ fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.1em", color:"#16a34a", textTransform:"uppercase", margin:"0 0 8px" }}>✦ AI Recommendation</p>
+                  <p style={{ fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.1em", color:"#16a34a", textTransform:"uppercase", margin:"0 0 8px" }}>✦ Best Recommendation</p>
                   <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
                     <span style={{ fontSize:"3rem", lineHeight:1 }}>{cropInfo.icon}</span>
-                    <h3 className="serif" style={{ margin:0, fontSize:"2rem", color:"#14532d", fontWeight:400, textTransform:"capitalize" }}>{result.recommended_crop}</h3>
-                  </div>
-                  {/* Confidence bar */}
-                  <div style={{ marginTop:"12px", width:"280px", maxWidth:"100%" }}>
-                    <div style={{ display:"flex", justifyContent:"space-between", marginBottom:"5px" }}>
-                      <span style={{ fontSize:"0.72rem", color:"#4b5563", fontWeight:600 }}>Confidence</span>
-                      <span style={{ fontSize:"0.85rem", fontWeight:800, color:"#16a34a" }}>{confPct}%</span>
+                    <div>
+                      <h3 className="serif" style={{ margin:"0 0 8px", fontSize:"2rem", color:"#14532d", fontWeight:400, textTransform:"capitalize" }}>{result.recommended_crop}</h3>
+                      <button
+                        onClick={() => handleShopNow(result.recommended_crop)}
+                        style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"linear-gradient(135deg,#1a6b3a,#2e9e56)", color:"#fff", textDecoration:"none", padding:"8px 16px", borderRadius:"10px", fontSize:"0.82rem", fontWeight:700, boxShadow:"0 3px 10px rgba(26,107,58,0.3)", transition:"all 0.2s", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}
+                        onMouseEnter={e => { e.currentTarget.style.transform="translateY(-1px)"; e.currentTarget.style.boxShadow="0 6px 16px rgba(26,107,58,0.4)"; }}
+                        onMouseLeave={e => { e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow="0 3px 10px rgba(26,107,58,0.3)"; }}>
+                        <ExternalLink style={{ width:"13px", height:"13px" }} />
+                        Shop Now — Marketplace
+                      </button>
                     </div>
-                    <div style={{ background:"#d1fae5", borderRadius:"99px", height:"8px", overflow:"hidden" }}>
-                      <div className="progress-fill" style={{ height:"100%", width:`${confPct}%`, background:"linear-gradient(90deg,#16a34a,#4ade80)", borderRadius:"99px" }} />
-                    </div>
-                    <p style={{ fontSize:"0.7rem", color:"#6b7280", margin:"5px 0 0" }}>{result.confidence_label}</p>
                   </div>
                 </div>
                 {/* Quick stats */}
@@ -992,16 +1046,12 @@ function RecommendationForm() {
               <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(200px,1fr))", gap:"10px" }}>
                 {result.alternatives.map((alt,i) => {
                   const ai = getCropInfo(alt.crop);
-                  const pct = Math.round(alt.confidence*100);
                   return (
                     <div key={alt.crop} className="hover-lift card-shimmer anim-slide-in" style={{ animationDelay:`${i*0.08}s`, display:"flex", alignItems:"center", gap:"12px", background:"#fff", borderRadius:"14px", padding:"12px 14px", border:"1px solid #e5e7eb", boxShadow:"0 1px 4px rgba(0,0,0,0.05)" }}>
                       <div style={{ width:"44px", height:"44px", background:"linear-gradient(135deg,#f0fdf4,#d1fae5)", borderRadius:"12px", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"1.5rem", flexShrink:0 }}>{ai.icon}</div>
                       <div style={{ flex:1, minWidth:0 }}>
                         <p style={{ fontWeight:700, color:"#1f2937", fontSize:"0.85rem", margin:"0 0 4px", textTransform:"capitalize" }}>{alt.crop}</p>
-                        <div style={{ background:"#e5e7eb", borderRadius:"99px", height:"6px", overflow:"hidden" }}>
-                          <div className="progress-fill" style={{ height:"100%", width:`${pct}%`, background:"linear-gradient(90deg,#86efac,#4ade80)" }} />
-                        </div>
-                        <p style={{ fontSize:"0.7rem", color:"#9ca3af", margin:"4px 0 0" }}>{pct}% confidence</p>
+                        <p style={{ fontSize:"0.72rem", color:"#6b7280", margin:0 }}>{ai.when} · {ai.season}</p>
                       </div>
                     </div>
                   );
@@ -1019,34 +1069,30 @@ function RecommendationForm() {
    MAIN PAGE
 ───────────────────────────────────────────── */
 export default function AgriShield() {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", h, { passive:true });
-    return () => window.removeEventListener("scroll", h);
-  }, []);
-
   return (
     <div style={{ minHeight:"100vh", background:"var(--c-mist)", fontFamily:"'DM Sans',sans-serif" }}>
       <GlobalStyles />
 
       {/* ── Navbar ── */}
       <nav style={{
-        background: scrolled ? "rgba(255,255,255,0.96)" : "rgba(255,255,255,0.85)",
-        backdropFilter:"blur(12px)",
-        borderBottom: scrolled ? "1px solid #e5e7eb" : "1px solid transparent",
-        padding:"0 24px", height:"56px", display:"flex", alignItems:"center", gap:"0",
+        background: "#fff",
+        borderBottom: "1px solid #d1fae5",
+        padding:"0 32px", height:"56px", display:"flex", alignItems:"center", justifyContent:"space-between",
         position:"sticky", top:0, zIndex:100,
-        transition:"all 0.3s ease",
-        boxShadow: scrolled ? "0 2px 12px rgba(0,0,0,0.08)" : "none",
       }}>
+        {/* Left: logo + name */}
         <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
-          <div className="anim-float" style={{ background:"linear-gradient(135deg,#1a6b3a,#2e9e56)", padding:"7px", borderRadius:"10px", boxShadow:"0 3px 10px rgba(26,107,58,0.3)" }}>
+          <div style={{ background:"#1a6b3a", padding:"8px", borderRadius:"10px", display:"flex", alignItems:"center", justifyContent:"center" }}>
             <Sprout style={{ width:"18px", height:"18px", color:"#fff" }} />
           </div>
-          <span className="serif" style={{ fontSize:"1.15rem", color:"#1a1a1a", fontWeight:400 }}>AgriShield</span>
-          <span style={{ fontSize:"0.65rem", background:"#f0fdf4", border:"1px solid #bbf7d0", color:"#16a34a", padding:"2px 8px", borderRadius:"99px", fontWeight:600, letterSpacing:"0.05em" }}>AI Powered</span>
+          <span style={{ fontSize:"1.1rem", fontWeight:700, color:"#1a6b3a", letterSpacing:"-0.01em", fontFamily:"'DM Sans',sans-serif" }}>AgriShield</span>
         </div>
+        {/* Right: back link */}
+        <a href="/" style={{ display:"flex", alignItems:"center", gap:"5px", fontSize:"0.85rem", fontWeight:500, color:"#1a6b3a", textDecoration:"none", transition:"opacity 0.2s" }}
+          onMouseEnter={e => e.currentTarget.style.opacity="0.7"}
+          onMouseLeave={e => e.currentTarget.style.opacity="1"}>
+          <ChevronLeft style={{ width:"15px", height:"15px" }} />Back to Home
+        </a>
       </nav>
 
       {/* ── Hero ── */}
@@ -1074,11 +1120,12 @@ export default function AgriShield() {
           </p>
 
           {/* Stats */}
-          <div className="anim-fade-up d3" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"12px", maxWidth:"400px", margin:"0 auto" }}>
+          <div className="anim-fade-up d3" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"12px", maxWidth:"520px", margin:"0 auto" }}>
             {[
-              { icon:BarChart3, val:97, suffix:"%", label:"Accuracy Rate" },
-              { icon:Sprout,    val:22, suffix:"+", label:"Crops Covered" },
-              { icon:Database,  val:2.2, suffix:"K", label:"Training Records" },
+              { icon:BarChart3, val:97,   suffix:"%", label:"Accuracy Rate" },
+              { icon:Sprout,    val:22,   suffix:"+", label:"Crops Covered" },
+              { icon:Database,  val:2.2,  suffix:"K", label:"Training Records" },
+              { icon:Activity,  val:7,    suffix:" NPK", label:"Parameters Used" },
             ].map(({ icon:Icon, val, suffix, label }) => (
               <div key={label} style={{ background:"rgba(0,0,0,0.35)", backdropFilter:"blur(10px)", border:"1px solid rgba(255,255,255,0.18)", borderRadius:"14px", padding:"16px 10px", textAlign:"center" }}>
                 <Icon style={{ width:"20px", height:"20px", color:"#4ade80", margin:"0 auto 6px", display:"block" }} />
@@ -1091,7 +1138,7 @@ export default function AgriShield() {
       </div>
 
       {/* ── Content ── */}
-      <div style={{ maxWidth:"960px", margin:"0 auto", padding:"28px 16px 48px", display:"flex", flexDirection:"column", gap:"20px" }}>
+      <div style={{ maxWidth:"1200px", margin:"0 auto", padding:"28px 32px 56px", display:"flex", flexDirection:"column", gap:"24px" }}>
         {/* Section labels */}
         {[
           { label:"01 — Available Crops", sub:"Browse crops and their ideal conditions", comp:<CropCarousel /> },
@@ -1108,17 +1155,6 @@ export default function AgriShield() {
           </div>
         ))}
       </div>
-
-      {/* ── Footer ── */}
-      <footer style={{ borderTop:"1px solid #e5e7eb", background:"#fff", padding:"20px 24px", textAlign:"center" }}>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:"8px", marginBottom:"4px" }}>
-          <div style={{ background:"linear-gradient(135deg,#1a6b3a,#2e9e56)", padding:"4px", borderRadius:"6px" }}>
-            <Sprout style={{ width:"12px", height:"12px", color:"#fff" }} />
-          </div>
-          <span style={{ fontSize:"0.78rem", fontWeight:600, color:"#374151" }}>AgriShield</span>
-        </div>
-        <p style={{ fontSize:"0.7rem", color:"#9ca3af", margin:0 }}>AI-powered crop recommendations · Data sourced from government agricultural datasets · XGBoost v7.0</p>
-      </footer>
     </div>
   );
 }

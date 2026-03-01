@@ -1495,27 +1495,61 @@ const MarketPlace = () => {
   const [notification, setNotification] = useState(null);
   const [highlightedProductId, setHighlightedProductId] = useState(null);
 
-  // Check for highlighted product from FarmingTips page
+  // Check for highlighted product from CropRecommendation page
   useEffect(() => {
+    // Inject flash-highlight CSS once
+    const styleId = 'flash-highlight-style';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent = `
+        @keyframes flashPulse {
+          0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.8), 0 0 0 0 rgba(34,197,94,0.4); }
+          30%  { box-shadow: 0 0 0 12px rgba(34,197,94,0.5), 0 0 32px 8px rgba(34,197,94,0.3); }
+          60%  { box-shadow: 0 0 0 6px rgba(34,197,94,0.3), 0 0 16px 4px rgba(34,197,94,0.15); }
+          100% { box-shadow: 0 0 0 0 rgba(34,197,94,0), 0 0 0 0 rgba(34,197,94,0); }
+        }
+        .flash-highlight {
+          animation: flashPulse 1s ease-out 3;
+          outline: 3px solid #22c55e !important;
+          outline-offset: 2px;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
     const productId = sessionStorage.getItem('highlightProductId');
+    const cropName  = sessionStorage.getItem('highlightCropName');
+
     if (productId) {
       const id = parseInt(productId);
       setHighlightedProductId(id);
-      // Clear the sessionStorage
+
+      // Filter to seeds category so the card is visible immediately
+      setSelectedCategory('seed');
+
+      // Clear sessionStorage
       sessionStorage.removeItem('highlightProductId');
-      // Scroll to the product after a short delay to ensure rendering
+      sessionStorage.removeItem('highlightCropName');
+
+      // If crop name was stored, pre-fill the search so only that seed shows
+      if (cropName) {
+        const displayName = cropName.charAt(0).toUpperCase() + cropName.slice(1);
+        setSearchQuery(displayName);
+      }
+
+      // Scroll to the highlighted product after render
       setTimeout(() => {
         const productElement = document.getElementById(`product-${id}`);
         if (productElement) {
           productElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          // Flash the product to draw attention
           productElement.classList.add('flash-highlight');
           setTimeout(() => {
             productElement.classList.remove('flash-highlight');
             setHighlightedProductId(null);
-          }, 3000);
+          }, 3500);
         }
-      }, 500);
+      }, 600);
     }
   }, []);
 
