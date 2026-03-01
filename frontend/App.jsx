@@ -123,7 +123,7 @@ const App = () => {
     } else if (link === 'govt-schemes') {
       window.open(window.location.origin + '/#/govt-schemes', '_blank');
     } else if (link === 'farming-tips') {
-      setCurrentPage('farming-tips');
+      window.open(window.location.origin + '/#/farming-tips', '_blank');
     } else if (link === 'marketplace') {
       window.open(window.location.origin + '/#/marketplace', '_blank');
     } else {

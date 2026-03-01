@@ -558,6 +558,9 @@ def is_clarification(msg: str):
 def is_compliment(msg: str):
     compliments = [
         "good job",
+        "good",
+        "superb",
+        "very well done",
         "you're helpful",
         "thank you",
         "thanks",
