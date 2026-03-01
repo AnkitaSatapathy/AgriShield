@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Cloud, Leaf, AlertTriangle, Camera, BookOpen, ShoppingCart, Building2, User, Menu, X, ArrowRight } from 'lucide-react';
+import { Cloud, Leaf, AlertTriangle, Camera, BookOpen, ShoppingCart, Building2, User, Menu, X, ArrowRight, Package, ClipboardList } from 'lucide-react';
 import RiskPrediction from './RiskPrediction';
 import DiseaseDetection from './DiseaseDetection';
 import CropRecommendation from './CropRecommendation';
 import Weather from './Weather';
 import FarmingTips from './FarmingTips';
 import SchemeCard from './SchemeCard';
-import MarketPlace from './MarketPlace';  
-
+import MarketPlace from './MarketPlace';
+import Profile from './Profile';
+import MyOrders from './MyOrders';
+import MyProducts from './MyProducts';
+import Login from './Login';
+import Signup from './Signup';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -36,6 +40,21 @@ const App = () => {
     }
     else if (window.location.hash === '#/marketplace') {
       setCurrentPage('marketplace');
+    }
+    else if (window.location.hash === '#/profile') {
+      setCurrentPage('profile');
+    }
+    else if (window.location.hash === '#/my-orders') {
+      setCurrentPage('my-orders');
+    }
+    else if (window.location.hash === '#/my-products') {
+      setCurrentPage('my-products');
+    }
+    else if (window.location.hash === '#/login') {
+      setCurrentPage('login');
+    }
+    else if (window.location.hash === '#/signup') {
+      setCurrentPage('signup');
     }
 
     const handleScroll = () => {
@@ -126,8 +145,10 @@ const App = () => {
       window.open(window.location.origin + '/#/farming-tips', '_blank');
     } else if (link === 'marketplace') {
       window.open(window.location.origin + '/#/marketplace', '_blank');
+    } else if (link === 'profile') {
+      window.open(window.location.origin + '/#/profile', '_blank');
     } else {
-      alert(`${link} page coming soon!\n(Currently only Risk Prediction, Crop Recommendation, Disease Detection, Weather Forecast, Farming Tips, Govt Schemes, and Marketplace are implemented)`);
+      alert(`${link} page coming soon!\n(Currently only Risk Prediction, Crop Recommendation, Disease Detection, Weather Forecast, Farming Tips, Govt Schemes, Marketplace, and Profile are implemented)`);
     }
   };
 
@@ -143,6 +164,103 @@ const App = () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
+
+  // If on Profile page, show only that component
+  if (currentPage === 'profile') {
+    return (
+      <div>
+        <nav className="fixed w-full z-50 bg-white shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <button
+                onClick={goToHome}
+                className="flex items-center space-x-2 cursor-pointer"
+              >
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
+                  <Leaf className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  AgriShield
+                </span>
+              </button>
+
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => { window.location.hash = '#/my-products'; setCurrentPage('my-products'); }}
+                  className="px-4 py-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition flex items-center space-x-2 font-medium"
+                >
+                  <Package className="w-5 h-5" />
+                  <span>My Products</span>
+                </button>
+                <button
+                  onClick={goToHome}
+                  className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
+                >
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <span>Back to Home</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+        <Profile onBack={goToHome} />
+      </div>
+    );
+  }
+
+  // If on My Orders page, show only that component
+  if (currentPage === 'my-orders') {
+    return (
+      <div>
+        <nav className="fixed w-full z-50 bg-white shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
+                  <Leaf className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  AgriShield
+                </span>
+              </button>
+              <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                <ArrowRight className="w-4 h-4 rotate-180" />
+                <span>Back to Home</span>
+              </button>
+            </div>
+          </div>
+        </nav>
+        <MyOrders onBack={goToHome} />
+      </div>
+    );
+  }
+
+  // If on My Products page, show only that component
+  if (currentPage === 'my-products') {
+    return (
+      <div>
+        <nav className="fixed w-full z-50 bg-white shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
+                  <Leaf className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  AgriShield
+                </span>
+              </button>
+              <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                <ArrowRight className="w-4 h-4 rotate-180" />
+                <span>Back to Home</span>
+              </button>
+            </div>
+          </div>
+        </nav>
+        <MyProducts onBack={goToHome} />
+      </div>
+    );
+  }
 
   // If on Risk Prediction page, show only that component
   if (currentPage === 'risk-prediction') {
@@ -391,6 +509,67 @@ const App = () => {
     );
   }
 
+  // If on Login page, show only that component
+  if (currentPage === 'login') {
+    return (
+      <div>
+        <nav className="fixed w-full z-50 bg-white shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
+                  <Leaf className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  AgriShield
+                </span>
+              </button>
+              <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                <ArrowRight className="w-4 h-4 rotate-180" />
+                <span>Back to Home</span>
+              </button>
+            </div>
+          </div>
+        </nav>
+        <Login
+          onBack={goToHome}
+          onLoginSuccess={() => { window.location.hash = '#/'; setCurrentPage('home'); }}
+          onSignupClick={() => { window.location.hash = '#/signup'; setCurrentPage('signup'); }}
+        />
+      </div>
+    );
+  }
+
+  // If on Signup page, show only that component
+  if (currentPage === 'signup') {
+    return (
+      <div>
+        <nav className="fixed w-full z-50 bg-white shadow-lg">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
+                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
+                  <Leaf className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  AgriShield
+                </span>
+              </button>
+              <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                <ArrowRight className="w-4 h-4 rotate-180" />
+                <span>Back to Home</span>
+              </button>
+            </div>
+          </div>
+        </nav>
+        <Signup
+          onBack={goToHome}
+          onLoginClick={() => { window.location.hash = '#/login'; setCurrentPage('login'); }}
+        />
+      </div>
+    );
+  }
+
   // Main Home Page
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-emerald-50">
@@ -412,13 +591,20 @@ const App = () => {
               <a href="#about" className="text-gray-700 hover:text-green-600 transition">About</a>
               <a href="#features" className="text-gray-700 hover:text-green-600 transition">Features</a>
               <a href="#contact" className="text-gray-700 hover:text-green-600 transition">Contact</a>
+              <a href="#/my-products" onClick={(e) => { e.preventDefault(); window.open(window.location.origin + '/#/my-products', '_blank'); }} className="text-gray-700 hover:text-green-600 transition">My Products</a>
             </div>
 
             <div className="hidden md:flex space-x-4">
-              <button className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition">
+              <button
+                onClick={() => { window.location.hash = '#/login'; setCurrentPage('login'); }}
+                className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition"
+              >
                 Login
               </button>
-              <button className="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:shadow-lg transition">
+              <button
+                onClick={() => { window.location.hash = '#/signup'; setCurrentPage('signup'); }}
+                className="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:shadow-lg transition"
+              >
                 Sign Up
               </button>
             </div>
@@ -440,10 +626,17 @@ const App = () => {
               <a href="#about" className="block text-gray-700 hover:text-green-600">About</a>
               <a href="#features" className="block text-gray-700 hover:text-green-600">Features</a>
               <a href="#contact" className="block text-gray-700 hover:text-green-600">Contact</a>
-              <button className="w-full px-4 py-2 text-green-600 border border-green-600 rounded-lg">
+              <a href="#/my-products" onClick={(e) => { e.preventDefault(); window.open(window.location.origin + '/#/my-products', '_blank'); }} className="block text-gray-700 hover:text-green-600">My Products</a>
+              <button
+                onClick={() => { window.location.hash = '#/login'; setCurrentPage('login'); setMenuOpen(false); }}
+                className="w-full px-4 py-2 text-green-600 border border-green-600 rounded-lg"
+              >
                 Login
               </button>
-              <button className="w-full px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg">
+              <button
+                onClick={() => { window.location.hash = '#/signup'; setCurrentPage('signup'); setMenuOpen(false); }}
+                className="w-full px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg"
+              >
                 Sign Up
               </button>
             </div>

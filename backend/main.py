@@ -86,6 +86,20 @@ app.include_router(crop_recommendation_router)
 app.include_router(schemes_router)
 app.include_router(chatbot_router)
 
+try:
+    from user_api import router as user_router
+    app.include_router(user_router)
+    print("✅ User API router included successfully")
+except Exception as e:
+    print(f"⚠️ User API router inclusion failed: {e}")
+
+try:
+    from auth_api import router as auth_router
+    app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
+    print("✅ Auth API router included successfully")
+except Exception as e:
+    print(f"⚠️ Auth API router inclusion failed: {e}")
+
 # ============================================================================
 # INITIALIZE WEATHER SERVICES
 # ============================================================================
