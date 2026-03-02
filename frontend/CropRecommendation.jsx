@@ -952,18 +952,6 @@ function RecommendationForm() {
       {/* ── RESULTS ── */}
       {result && (
         <div ref={resultRef} style={{ borderTop:"1px solid #f3f4f6" }}>
-          {/* API Warnings */}
-          {result.warnings?.length > 0 && (
-            <div style={{ margin:"16px 24px 0", background:"#fffbeb", border:"1px solid #fcd34d", borderRadius:"14px", padding:"14px 16px", display:"flex", flexDirection:"column", gap:"8px" }} className="anim-fade-in">
-              {result.warnings.map((w,i) => (
-                <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:"8px" }}>
-                  <AlertTriangle style={{ width:"14px", height:"14px", color:"#d97706", flexShrink:0, marginTop:"2px" }} />
-                  <p style={{ fontSize:"0.75rem", color:"#92400e", margin:0 }}>{w}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
           {/* Hero result card */}
           <div style={{ margin:"16px 24px 0" }} className="anim-scale-in">
             <div style={{ background:"linear-gradient(135deg, #f0fdf4, #ecfdf5, #f0fdf4)", border:"2px solid #86efac", borderRadius:"20px", overflow:"hidden", boxShadow:"0 4px 20px rgba(22,163,74,0.12)" }}>
@@ -1088,7 +1076,19 @@ export default function AgriShield() {
           <span style={{ fontSize:"1.1rem", fontWeight:700, color:"#1a6b3a", letterSpacing:"-0.01em", fontFamily:"'DM Sans',sans-serif" }}>AgriShield</span>
         </div>
         {/* Right: back link */}
-        <a href="/" style={{ display:"flex", alignItems:"center", gap:"5px", fontSize:"0.85rem", fontWeight:500, color:"#1a6b3a", textDecoration:"none", transition:"opacity 0.2s" }}
+        <a
+          href="#"
+          onClick={e => {
+            e.preventDefault();
+            if (window.opener && !window.opener.closed) {
+              window.opener.postMessage({ scrollToSection: 'features' }, window.location.origin);
+              window.opener.focus();
+              window.close();
+            } else {
+              window.location.href = '/#features';
+            }
+          }}
+          style={{ display:"flex", alignItems:"center", gap:"5px", fontSize:"0.85rem", fontWeight:500, color:"#1a6b3a", textDecoration:"none", transition:"opacity 0.2s" }}
           onMouseEnter={e => e.currentTarget.style.opacity="0.7"}
           onMouseLeave={e => e.currentTarget.style.opacity="1"}>
           <ChevronLeft style={{ width:"15px", height:"15px" }} />Back to Home
