@@ -198,7 +198,7 @@ function FarmingTips() {
           name: "Vermicompost",
           dosage: "5 tons/ha",
           timing: "Mix with soil before transplanting",
-          shopProductId: 12
+          shopProductId: 42
         },
         {
           name: "Muriate of Potash",
@@ -240,7 +240,7 @@ function FarmingTips() {
           name: "Vermicompost",
           dosage: "5 tons/ha",
           timing: "Mix with soil before planting",
-          shopProductId: 12
+          shopProductId: 42
         }
       ]
     },
@@ -399,9 +399,12 @@ function FarmingTips() {
 
   const filteredTips = displayedTips;
 
-  // Navigate to shop with product filter
-  const goToShop = (productId) => {
+  // Navigate to shop with product highlight
+  // productId: the product's id in MarketPlace
+  // category: 'fertilizer' | 'organic' | 'seed' | 'pesticide'
+  const goToShop = (productId, category = 'fertilizer') => {
     sessionStorage.setItem('highlightProductId', productId);
+    sessionStorage.setItem('highlightCategory', category);
     window.location.hash = '#/marketplace';
     window.location.reload();
   };
@@ -556,9 +559,9 @@ function FarmingTips() {
               </div>
               <button 
                 className="get-fertilizer-btn"
-                onClick={() => goToShop(2)}
+                onClick={() => goToShop(2, 'fertilizer')}
               >
-                🛒 Get This Product
+                🛒 View in Marketplace
               </button>
             </div>
           </div>
@@ -587,9 +590,9 @@ function FarmingTips() {
               </div>
               <button 
                 className="get-fertilizer-btn"
-                onClick={() => goToShop(3)}
+                onClick={() => goToShop(3, 'fertilizer')}
               >
-                🛒 Get This Product
+                🛒 View in Marketplace
               </button>
             </div>
           </div>
@@ -618,9 +621,9 @@ function FarmingTips() {
               </div>
               <button 
                 className="get-fertilizer-btn"
-                onClick={() => goToShop(12)}
+                onClick={() => goToShop(42, 'organic')}
               >
-                🛒 Get This Product
+                🛒 View in Marketplace
               </button>
             </div>
           </div>
@@ -656,6 +659,41 @@ function FarmingTips() {
                   </li>
                 ))}
               </ul>
+
+              {/* Recommended Fertilizers inside Modal */}
+              <h3 className="detailed-tips-heading modal-fertilizers-heading">
+                🌿 Recommended Fertilizers
+              </h3>
+              <div className="modal-fertilizers-grid">
+                {selectedTip.recommendedFertilizers.map((fertilizer, index) => (
+                  <div key={index} className="modal-fertilizer-card">
+                    <div className="modal-fertilizer-top">
+                      <span className="modal-fertilizer-index">{index + 1}</span>
+                      <h4 className="modal-fertilizer-name">{fertilizer.name}</h4>
+                    </div>
+                    <div className="modal-fertilizer-details">
+                      <div className="modal-detail-row">
+                        <span className="modal-detail-label">📦 Dosage:</span>
+                        <span className="modal-detail-value">{fertilizer.dosage}</span>
+                      </div>
+                      <div className="modal-detail-row">
+                        <span className="modal-detail-label">⏱️ Timing:</span>
+                        <span className="modal-detail-value">{fertilizer.timing}</span>
+                      </div>
+                    </div>
+                    <button
+                      className="modal-fertilizer-btn"
+                      onClick={() => {
+                        // Determine category: Vermicompost (id 42) is organic, rest are fertilizer
+                        const category = fertilizer.shopProductId === 42 ? 'organic' : 'fertilizer';
+                        goToShop(fertilizer.shopProductId, category);
+                      }}
+                    >
+                      🛒 View in Marketplace
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -875,6 +913,7 @@ const farmingTipsStyles = `
   max-width: 600px;
   margin: 0 auto;
   animation: slideInPage 0.8s ease-out 0.1s both;
+  background: transparent;
 }
 
 .search-container {
@@ -946,7 +985,7 @@ const farmingTipsStyles = `
   position: relative;
   z-index: 1;
   animation: slideInPage 0.8s ease-out;
-  background: linear-gradient(135deg, rgba(15, 40, 32, 0.03) 0%, rgba(27, 174, 96, 0.02) 100%);
+  background: transparent;
 }
 
 .tips-header {
@@ -1375,6 +1414,10 @@ const farmingTipsStyles = `
   font-weight: 700;
 }
 
+.modal-fertilizers-heading {
+  margin-top: 28px;
+}
+
 .detailed-tips-list {
   list-style: none;
   padding: 0;
@@ -1422,6 +1465,113 @@ const farmingTipsStyles = `
   line-height: 1.5;
   flex: 1;
   font-weight: 500;
+}
+
+/* Modal Fertilizers Grid */
+.modal-fertilizers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.modal-fertilizer-card {
+  background: linear-gradient(135deg, #f0fff0 0%, #f8faf8 100%);
+  border: 2px solid rgba(39, 174, 96, 0.25);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(27, 125, 63, 0.07);
+}
+
+.modal-fertilizer-card:hover {
+  transform: translateY(-4px);
+  border-color: #27ae60;
+  box-shadow: 0 10px 25px rgba(39, 174, 96, 0.18);
+}
+
+.modal-fertilizer-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-fertilizer-index {
+  background: linear-gradient(135deg, #27ae60 0%, #1b7d3f 100%);
+  color: white;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.78rem;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(27, 125, 63, 0.3);
+}
+
+.modal-fertilizer-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.modal-fertilizer-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.modal-detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.modal-detail-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #27ae60;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.modal-detail-value {
+  font-size: 0.78rem;
+  color: #374151;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.modal-fertilizer-btn {
+  width: 100%;
+  padding: 9px 12px;
+  background: linear-gradient(135deg, #1b7d3f 0%, #27ae60 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid rgba(39, 174, 96, 0.4);
+  margin-top: auto;
+}
+
+.modal-fertilizer-btn:hover {
+  background: linear-gradient(135deg, #27ae60 0%, #1b7d3f 100%);
+  transform: scale(1.06) translateY(-2px);
+  box-shadow: 0 6px 16px rgba(39, 174, 96, 0.5);
 }
 
 /* Recommended Fertilizers Section */
@@ -1702,6 +1852,10 @@ const farmingTipsStyles = `
   .fertilizers-showcase-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .modal-fertilizers-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
@@ -1768,6 +1922,10 @@ const farmingTipsStyles = `
   .fertilizers-showcase-grid {
     grid-template-columns: 1fr;
     gap: 15px;
+  }
+
+  .modal-fertilizers-grid {
+    grid-template-columns: 1fr;
   }
 
   .modal-header {
@@ -1861,6 +2019,10 @@ const farmingTipsStyles = `
   .modal-title {
     font-size: 1.6rem;
   }
+
+  .modal-fertilizers-grid {
+    grid-template-columns: 1fr;
+  }
 }
   .farming-video {
   width: 100%;
@@ -1890,5 +2052,79 @@ const farmingTipsStyles = `
   background: linear-gradient(135deg, #1b7d3f 0%, #155c30 100%);
 }
 `;
+
+// ─── MARKETPLACE PATCH NOTE ────────────────────────────────────────────────
+// In MarketPlace.jsx, replace the existing useEffect that reads sessionStorage
+// with the updated version below. This correctly handles fertilizer/organic
+// categories (not just seeds) when navigating from FarmingTips.
+//
+// REPLACE the block starting with:
+//   useEffect(() => {
+//     // Inject flash-highlight CSS once
+//
+// WITH:
+//
+// useEffect(() => {
+//   const styleId = 'flash-highlight-style';
+//   if (!document.getElementById(styleId)) {
+//     const style = document.createElement('style');
+//     style.id = styleId;
+//     style.textContent = `
+//       @keyframes flashPulse {
+//         0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.8), 0 0 0 0 rgba(34,197,94,0.4); }
+//         30%  { box-shadow: 0 0 0 12px rgba(34,197,94,0.5), 0 0 32px 8px rgba(34,197,94,0.3); }
+//         60%  { box-shadow: 0 0 0 6px rgba(34,197,94,0.3), 0 0 16px 4px rgba(34,197,94,0.15); }
+//         100% { box-shadow: 0 0 0 0 rgba(34,197,94,0), 0 0 0 0 rgba(34,197,94,0); }
+//       }
+//       .flash-highlight {
+//         animation: flashPulse 1s ease-out 3;
+//         outline: 3px solid #22c55e !important;
+//         outline-offset: 2px;
+//       }
+//     `;
+//     document.head.appendChild(style);
+//   }
+//
+//   const productId = sessionStorage.getItem('highlightProductId');
+//   const category  = sessionStorage.getItem('highlightCategory'); // NEW: 'fertilizer' | 'organic' | 'seed' etc.
+//   const cropName  = sessionStorage.getItem('highlightCropName');
+//
+//   if (productId) {
+//     const id = parseInt(productId);
+//     setHighlightedProductId(id);
+//
+//     // Set correct category filter so the card is visible
+//     if (category) {
+//       setSelectedCategory(category);
+//     } else {
+//       setSelectedCategory('all');
+//     }
+//
+//     // Clear sessionStorage
+//     sessionStorage.removeItem('highlightProductId');
+//     sessionStorage.removeItem('highlightCategory');
+//     sessionStorage.removeItem('highlightCropName');
+//
+//     // If crop name stored, pre-fill search
+//     if (cropName) {
+//       const displayName = cropName.charAt(0).toUpperCase() + cropName.slice(1);
+//       setSearchQuery(displayName);
+//     }
+//
+//     // Scroll to highlighted product after render
+//     setTimeout(() => {
+//       const productElement = document.getElementById(`product-${id}`);
+//       if (productElement) {
+//         productElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+//         productElement.classList.add('flash-highlight');
+//         setTimeout(() => {
+//           productElement.classList.remove('flash-highlight');
+//           setHighlightedProductId(null);
+//         }, 3500);
+//       }
+//     }, 600);
+//   }
+// }, []);
+// ─── END MARKETPLACE PATCH NOTE ─────────────────────────────────────────────
 
 export default FarmingTips;

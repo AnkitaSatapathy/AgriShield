@@ -1495,7 +1495,7 @@ const MarketPlace = () => {
   const [notification, setNotification] = useState(null);
   const [highlightedProductId, setHighlightedProductId] = useState(null);
 
-  // Check for highlighted product from CropRecommendation page
+ // Check for highlighted product from FarmingTips or CropRecommendation page
   useEffect(() => {
     // Inject flash-highlight CSS once
     const styleId = 'flash-highlight-style';
@@ -1519,20 +1519,27 @@ const MarketPlace = () => {
     }
 
     const productId = sessionStorage.getItem('highlightProductId');
+    const category  = sessionStorage.getItem('highlightCategory'); // 'fertilizer' | 'organic' | 'seed' | 'pesticide'
     const cropName  = sessionStorage.getItem('highlightCropName');
 
     if (productId) {
       const id = parseInt(productId);
       setHighlightedProductId(id);
 
-      // Filter to seeds category so the card is visible immediately
-      setSelectedCategory('seed');
+      // Set category filter so the highlighted product card is visible immediately
+      if (category) {
+        setSelectedCategory(category);
+      } else {
+        // Legacy fallback: if no category stored, show all products
+        setSelectedCategory('all');
+      }
 
       // Clear sessionStorage
       sessionStorage.removeItem('highlightProductId');
+      sessionStorage.removeItem('highlightCategory');
       sessionStorage.removeItem('highlightCropName');
 
-      // If crop name was stored, pre-fill the search so only that seed shows
+      // If crop name was stored, pre-fill the search
       if (cropName) {
         const displayName = cropName.charAt(0).toUpperCase() + cropName.slice(1);
         setSearchQuery(displayName);
