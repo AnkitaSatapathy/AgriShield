@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cloud, Leaf, AlertTriangle, Camera, BookOpen, ShoppingCart, Building2, User, Menu, X, ArrowRight, Package, ClipboardList } from 'lucide-react';
+import { Cloud, Leaf, AlertTriangle, Camera, BookOpen, ShoppingCart, Building2, User, Menu, X, ArrowRight, Package, ClipboardList, LogOut } from 'lucide-react';
 import RiskPrediction from './RiskPrediction';
 import DiseaseDetection from './DiseaseDetection';
 import CropRecommendation from './CropRecommendation';
@@ -13,12 +13,87 @@ import MyProducts from './MyProducts';
 import Login from './Login';
 import Signup from './Signup';
 
+// ─── Avatar helpers ───────────────────────────────────────────────────────────
+const AVATAR_GRADIENTS = [
+  ['#10b981', '#065f46'],
+  ['#3b82f6', '#1e40af'],
+  ['#f59e0b', '#92400e'],
+  ['#ec4899', '#9d174d'],
+  ['#8b5cf6', '#5b21b6'],
+  ['#14b8a6', '#115e59'],
+  ['#f97316', '#9a3412'],
+];
+const getAvatarGradient = (seed = '') => {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
+};
+const getInitials = (name = '') => {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '?';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+const UserAvatar = ({ name = '', size = 36 }) => {
+  const [from, to] = getAvatarGradient(name || '?');
+  return (
+    <div style={{
+      width: size, height: size,
+      background: `linear-gradient(135deg, ${from}, ${to})`,
+      fontSize: Math.round(size * 0.36), borderRadius: '50%',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      color: '#fff', fontWeight: 700, letterSpacing: '0.04em', flexShrink: 0,
+      boxShadow: '0 0 0 2px rgba(255,255,255,0.3), 0 2px 8px rgba(0,0,0,0.15)',
+      userSelect: 'none',
+    }}>
+      {getInitials(name)}
+    </div>
+  );
+};
+// ─────────────────────────────────────────────────────────────────────────────
+
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  // ── NEW: auth state ────────────────────────────────────────────────────────
+  const [user, setUser] = useState(null); // { user_id, token, userType, name }
+
+  const handleLoginSuccess = async (data) => {
+    // Fetch name from backend so avatar has real initials
+    let name = '';
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/api/users/${data.user_id}`, {
+        headers: { Authorization: `Bearer ${data.token}` },
+      });
+      if (res.ok) name = (await res.json()).name || '';
+    } catch { /* non-fatal */ }
+    localStorage.setItem('token',     data.token);
+    localStorage.setItem('user_id',   data.user_id);
+    localStorage.setItem('userType',  data.userType);
+    localStorage.setItem('user_name', name);
+    setUser({ token: data.token, user_id: data.user_id, userType: data.userType, name });
+    window.location.hash = '#/';
+    setCurrentPage('home');
+  };
+
+  const handleLogout = () => {
+    ['token', 'user_id', 'userType', 'user_name'].forEach(k => localStorage.removeItem(k));
+    setUser(null);
+    window.location.hash = '#/';
+    setCurrentPage('home');
+  };
+  // ──────────────────────────────────────────────────────────────────────────
+
   useEffect(() => {
+    // Restore session on refresh
+    const token    = localStorage.getItem('token');
+    const user_id  = localStorage.getItem('user_id');
+    const userType = localStorage.getItem('userType') || '';
+    const name     = localStorage.getItem('user_name') || '';
+    if (token && user_id) setUser({ token, user_id, userType, name });
+
     // Handle hash-based routing on mount
     if (window.location.hash === '#/risk-prediction') {
       setCurrentPage('risk-prediction');
@@ -153,13 +228,10 @@ const App = () => {
   };
 
   const goToHome = () => {
-    // If this window was opened by another window (it's a child window from window.open),
-    // close it and focus the parent window
     if (window.opener && window.opener !== window) {
       window.opener.focus();
       window.close();
     } else {
-      // If this is the original window, just navigate to home
       setCurrentPage('home');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -172,10 +244,7 @@ const App = () => {
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button
-                onClick={goToHome}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
                 <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
                   <Leaf className="w-6 h-6 text-white" />
                 </div>
@@ -183,7 +252,6 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-
               <div className="flex items-center space-x-4">
                 <button
                   onClick={() => { window.location.hash = '#/my-products'; setCurrentPage('my-products'); }}
@@ -192,6 +260,13 @@ const App = () => {
                   <Package className="w-5 h-5" />
                   <span>My Products</span>
                 </button>
+                {/* ── NEW: avatar in profile nav ── */}
+                {user && (
+                  <div className="flex items-center space-x-2">
+                    <UserAvatar name={user.name || '?'} size={34} />
+                    <span className="hidden sm:block text-sm font-semibold text-gray-700">{user.name}</span>
+                  </div>
+                )}
                 <button
                   onClick={goToHome}
                   className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
@@ -223,10 +298,13 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-              <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
-                <ArrowRight className="w-4 h-4 rotate-180" />
-                <span>Back to Home</span>
-              </button>
+              <div className="flex items-center space-x-3">
+                {user && <UserAvatar name={user.name || '?'} size={34} />}
+                <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <span>Back to Home</span>
+                </button>
+              </div>
             </div>
           </div>
         </nav>
@@ -250,10 +328,13 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-              <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
-                <ArrowRight className="w-4 h-4 rotate-180" />
-                <span>Back to Home</span>
-              </button>
+              <div className="flex items-center space-x-3">
+                {user && <UserAvatar name={user.name || '?'} size={34} />}
+                <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <span>Back to Home</span>
+                </button>
+              </div>
             </div>
           </div>
         </nav>
@@ -266,14 +347,10 @@ const App = () => {
   if (currentPage === 'risk-prediction') {
     return (
       <div>
-        {/* Navigation for Risk Prediction Page */}
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button
-                onClick={goToHome}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
                 <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
                   <Leaf className="w-6 h-6 text-white" />
                 </div>
@@ -281,18 +358,16 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-
-              <button
-                onClick={goToHome}
-                className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
-              >
-                <ArrowRight className="w-4 h-4 rotate-180" />
-                <span>Back to Home</span>
-              </button>
+              <div className="flex items-center space-x-3">
+                {user && <UserAvatar name={user.name || '?'} size={34} />}
+                <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <span>Back to Home</span>
+                </button>
+              </div>
             </div>
           </div>
         </nav>
-
         <RiskPrediction />
       </div>
     );
@@ -302,14 +377,10 @@ const App = () => {
   if (currentPage === 'disease-detection') {
     return (
       <div>
-        {/* Navigation for Disease Detection Page */}
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button
-                onClick={goToHome}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
                 <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
                   <Leaf className="w-6 h-6 text-white" />
                 </div>
@@ -317,18 +388,16 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-
-              <button
-                onClick={goToHome}
-                className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
-              >
-                <ArrowRight className="w-4 h-4 rotate-180" />
-                <span>Back to Home</span>
-              </button>
+              <div className="flex items-center space-x-3">
+                {user && <UserAvatar name={user.name || '?'} size={34} />}
+                <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <span>Back to Home</span>
+                </button>
+              </div>
             </div>
           </div>
         </nav>
-
         <DiseaseDetection />
       </div>
     );
@@ -338,14 +407,10 @@ const App = () => {
   if (currentPage === 'crop-recommendation') {
     return (
       <div>
-        {/* Navigation for Crop Recommendation Page */}
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button
-                onClick={goToHome}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
                 <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
                   <Leaf className="w-6 h-6 text-white" />
                 </div>
@@ -353,10 +418,10 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
+              {user && <UserAvatar name={user.name || '?'} size={34} />}
             </div>
           </div>
         </nav>
-
         <CropRecommendation onBack={goToHome} />
       </div>
     );
@@ -369,10 +434,7 @@ const App = () => {
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button
-                onClick={goToHome}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
                 <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
                   <Leaf className="w-6 h-6 text-white" />
                 </div>
@@ -380,18 +442,16 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-
-              <button
-                onClick={goToHome}
-                className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
-              >
-                <ArrowRight className="w-4 h-4 rotate-180" />
-                <span>Back to Home</span>
-              </button>
+              <div className="flex items-center space-x-3">
+                {user && <UserAvatar name={user.name || '?'} size={34} />}
+                <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <span>Back to Home</span>
+                </button>
+              </div>
             </div>
           </div>
         </nav>
-
         <div className="pt-16">
           <Weather />
         </div>
@@ -403,14 +463,10 @@ const App = () => {
   if (currentPage === 'govt-schemes') {
     return (
       <div>
-        {/* Navigation for Govt Schemes Page */}
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button
-                onClick={goToHome}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
                 <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
                   <Leaf className="w-6 h-6 text-white" />
                 </div>
@@ -418,21 +474,18 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-
-              <button
-                onClick={goToHome}
-                className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
-              >
-                <ArrowRight className="w-4 h-4 rotate-180" />
-                <span>Back to Home</span>
-              </button>
+              <div className="flex items-center space-x-3">
+                {user && <UserAvatar name={user.name || '?'} size={34} />}
+                <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <span>Back to Home</span>
+                </button>
+              </div>
             </div>
           </div>
         </nav>
-
         <SchemeCard onBack={goToHome} />
       </div>
-
     );
   }
 
@@ -440,14 +493,10 @@ const App = () => {
   if (currentPage === 'farming-tips') {
     return (
       <div>
-        {/* Navigation for farming tips Page */}
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button
-                onClick={goToHome}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
                 <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
                   <Leaf className="w-6 h-6 text-white" />
                 </div>
@@ -455,21 +504,18 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-
-              <button
-                onClick={goToHome}
-                className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
-              >
-                <ArrowRight className="w-4 h-4 rotate-180" />
-                <span>Back to Home</span>
-              </button>
+              <div className="flex items-center space-x-3">
+                {user && <UserAvatar name={user.name || '?'} size={34} />}
+                <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <span>Back to Home</span>
+                </button>
+              </div>
             </div>
           </div>
         </nav>
-
         <FarmingTips />
       </div>
-
     );
   }
 
@@ -477,14 +523,10 @@ const App = () => {
   if (currentPage === 'marketplace') {
     return (
       <div>
-        {/* Navigation for Marketplace Page */}
         <nav className="fixed w-full z-50 bg-white shadow-lg">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <button
-                onClick={goToHome}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
+              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
                 <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
                   <Leaf className="w-6 h-6 text-white" />
                 </div>
@@ -492,18 +534,16 @@ const App = () => {
                   AgriShield
                 </span>
               </button>
-
-              <button
-                onClick={goToHome}
-                className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2"
-              >
-                <ArrowRight className="w-4 h-4 rotate-180" />
-                <span>Back to Home</span>
-              </button>
+              <div className="flex items-center space-x-3">
+                {user && <UserAvatar name={user.name || '?'} size={34} />}
+                <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
+                  <ArrowRight className="w-4 h-4 rotate-180" />
+                  <span>Back to Home</span>
+                </button>
+              </div>
             </div>
           </div>
         </nav>
-
         <MarketPlace />
       </div>
     );
@@ -533,7 +573,7 @@ const App = () => {
         </nav>
         <Login
           onBack={goToHome}
-          onLoginSuccess={() => { window.location.hash = '#/'; setCurrentPage('home'); }}
+          onLoginSuccess={handleLoginSuccess}
           onSignupClick={() => { window.location.hash = '#/signup'; setCurrentPage('signup'); }}
         />
       </div>
@@ -594,25 +634,48 @@ const App = () => {
               <a href="#/my-products" onClick={(e) => { e.preventDefault(); window.open(window.location.origin + '/#/my-products', '_blank'); }} className="text-gray-700 hover:text-green-600 transition">My Products</a>
             </div>
 
-            <div className="hidden md:flex space-x-4">
-              <button
-                onClick={() => { window.location.hash = '#/login'; setCurrentPage('login'); }}
-                className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => { window.location.hash = '#/signup'; setCurrentPage('signup'); }}
-                className="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:shadow-lg transition"
-              >
-                Sign Up
-              </button>
+            {/* ── NEW: avatar when logged in, login/signup buttons when not ── */}
+            <div className="hidden md:flex items-center space-x-3">
+              {user ? (
+                <>
+                  <button
+                    onClick={() => { window.location.hash = '#/profile'; setCurrentPage('profile'); }}
+                    className="flex items-center space-x-2 group"
+                    title="My Profile"
+                  >
+                    <UserAvatar name={user.name || '?'} size={36} />
+                    <div className="text-left leading-tight">
+                      <p className="text-sm font-semibold text-gray-800 group-hover:text-green-600 transition">{user.name || 'Farmer'}</p>
+                      <p className="text-xs text-gray-400 capitalize">{user.userType}</p>
+                    </div>
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-1 px-3 py-2 text-red-500 hover:bg-red-50 rounded-lg transition text-sm font-medium"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span>Logout</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => { window.location.hash = '#/login'; setCurrentPage('login'); }}
+                    className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => { window.location.hash = '#/signup'; setCurrentPage('signup'); }}
+                    className="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:shadow-lg transition"
+                  >
+                    Sign Up
+                  </button>
+                </>
+              )}
             </div>
 
-            <button
-              className="md:hidden"
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
+            <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
               {menuOpen ? <X /> : <Menu />}
             </button>
           </div>
@@ -627,18 +690,46 @@ const App = () => {
               <a href="#features" className="block text-gray-700 hover:text-green-600">Features</a>
               <a href="#contact" className="block text-gray-700 hover:text-green-600">Contact</a>
               <a href="#/my-products" onClick={(e) => { e.preventDefault(); window.open(window.location.origin + '/#/my-products', '_blank'); }} className="block text-gray-700 hover:text-green-600">My Products</a>
-              <button
-                onClick={() => { window.location.hash = '#/login'; setCurrentPage('login'); setMenuOpen(false); }}
-                className="w-full px-4 py-2 text-green-600 border border-green-600 rounded-lg"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => { window.location.hash = '#/signup'; setCurrentPage('signup'); setMenuOpen(false); }}
-                className="w-full px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg"
-              >
-                Sign Up
-              </button>
+
+              {/* ── NEW: mobile auth section ── */}
+              {user ? (
+                <>
+                  <div className="flex items-center space-x-3 py-2 border-t border-gray-100">
+                    <UserAvatar name={user.name || '?'} size={40} />
+                    <div>
+                      <p className="font-semibold text-gray-800">{user.name || 'Farmer'}</p>
+                      <p className="text-xs text-gray-400 capitalize">{user.userType}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => { window.location.hash = '#/profile'; setCurrentPage('profile'); setMenuOpen(false); }}
+                    className="w-full px-4 py-2 text-green-600 border border-green-600 rounded-lg"
+                  >
+                    My Profile
+                  </button>
+                  <button
+                    onClick={() => { handleLogout(); setMenuOpen(false); }}
+                    className="w-full px-4 py-2 text-red-500 border border-red-400 rounded-lg"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => { window.location.hash = '#/login'; setCurrentPage('login'); setMenuOpen(false); }}
+                    className="w-full px-4 py-2 text-green-600 border border-green-600 rounded-lg"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => { window.location.hash = '#/signup'; setCurrentPage('signup'); setMenuOpen(false); }}
+                    className="w-full px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg"
+                  >
+                    Sign Up
+                  </button>
+                </>
+              )}
             </div>
           </div>
         )}
@@ -659,6 +750,19 @@ const App = () => {
               <p className="text-xl text-gray-600">
                 Predict crop failures, detect diseases, get weather alerts, and make data-driven farming decisions with AgriShield's intelligent platform.
               </p>
+
+              {/* ── NEW: welcome banner when logged in ── */}
+              {user && (
+                <div className="flex items-center space-x-4 bg-green-50 border border-green-200 rounded-2xl px-5 py-4">
+                  <UserAvatar name={user.name || '?'} size={52} />
+                  <div>
+                    <p className="text-xs text-green-600 font-bold uppercase tracking-widest mb-0.5">Welcome back</p>
+                    <p className="text-xl font-bold text-gray-800">{user.name || 'Farmer'} 👋</p>
+                    <p className="text-sm text-gray-400 capitalize">{user.userType} account</p>
+                  </div>
+                </div>
+              )}
+
               <div className="flex flex-wrap gap-4">
                 <button onClick={scrollToFeatures} className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:shadow-xl transition flex items-center space-x-2 group">
                   <span>Get Started</span>

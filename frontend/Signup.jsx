@@ -1,173 +1,393 @@
-import React, { useState } from 'react';
-import { User, Phone, Lock, ChevronDown, ArrowRight, UserPlus } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { User, Phone, Lock, ArrowRight, Leaf, Eye, EyeOff, ShoppingCart, Wheat, ArrowLeftRight } from 'lucide-react';
+import { UserAvatar } from './Login';
 
-const Signup = ({ onBack, onLoginClick }) => {
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const USER_TYPES = [
+  { value: 'buyer',  label: 'Buyer',  desc: 'Purchase farm products', Icon: ShoppingCart },
+  { value: 'seller', label: 'Seller', desc: 'List & sell produce',     Icon: Wheat },
+  { value: 'both',   label: 'Both',   desc: 'Buy and sell',            Icon: ArrowLeftRight },
+];
+
+// ─── Phone formatter ──────────────────────────────────────────────────────────
+
+const formatPhone = (raw) => {
+  const digits = raw.replace(/\D/g, '').slice(0, 10);
+  if (digits.length === 0) return '';
+  if (digits.length <= 5) return digits;
+  return `${digits.slice(0, 5)} ${digits.slice(5)}`;
+};
+
+const isValidPhone = (formatted) => formatted.replace(/\D/g, '').length === 10;
+
+// ─── Password strength ────────────────────────────────────────────────────────
+
+const getPasswordStrength = (pwd) => {
+  if (!pwd) return null;
+  const hasUpper   = /[A-Z]/.test(pwd);
+  const hasLower   = /[a-z]/.test(pwd);
+  const hasNumber  = /[0-9]/.test(pwd);
+  const hasSymbol  = /[^A-Za-z0-9]/.test(pwd);
+  const long       = pwd.length >= 8;
+  const score = [hasUpper, hasLower, hasNumber, hasSymbol, long].filter(Boolean).length;
+  if (pwd.length < 6) return { level: 'Weak',   color: '#ef4444', width: '25%' };
+  if (score <= 2)     return { level: 'Weak',   color: '#ef4444', width: '30%' };
+  if (score === 3)    return { level: 'Fair',   color: '#f59e0b', width: '55%' };
+  if (score === 4)    return { level: 'Good',   color: '#10b981', width: '78%' };
+  return               { level: 'Strong', color: '#22c55e', width: '100%' };
+};
+
+// ─── Validation ───────────────────────────────────────────────────────────────
+
+const validateField = (name, value) => {
+  switch (name) {
+    case 'fullName': {
+      if (!value.trim()) return 'Full name is required.';
+      if (value.trim().length < 2) return 'Name must be at least 2 characters.';
+      if (!/^[A-Za-z\s'.'-]+$/.test(value)) return 'Name can only contain letters and spaces.';
+      return '';
+    }
+    case 'phone': {
+      if (!value) return 'Phone number is required.';
+      if (!isValidPhone(value)) return 'Enter a valid 10-digit phone number.';
+      return '';
+    }
+    case 'password': {
+      if (!value) return 'Password is required.';
+      if (value.length < 6) return 'Password must be at least 6 characters.';
+      return '';
+    }
+    default: return '';
+  }
+};
+
+// ─── Signup component ─────────────────────────────────────────────────────────
+
+const Signup = ({ onLoginClick }) => {
   const [formData, setFormData] = useState({
-    fullName: '',
-    phone: '',
-    password: '',
-    userType: 'buyer'
+    fullName: '', phone: '', password: '', userType: 'buyer',
   });
-
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [errorMsg, setErrorMsg]   = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [fieldErrors, setFieldErrors]   = useState({ fullName: '', phone: '', password: '' });
+  const [touched, setTouched]           = useState({ fullName: false, phone: false, password: false });
+
+  const nameRef = useRef(null);
+
+  useEffect(() => {
+    // Autofocus full-name field on mount
+    if (nameRef.current) nameRef.current.focus();
+  }, []);
+
+  // ── Field change handlers ──────────────────────────────────────────────────
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrorMsg("");
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrorMsg('');
+    if (touched[name]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
+    }
   };
+
+  const handlePhoneChange = (e) => {
+    const formatted = formatPhone(e.target.value);
+    setFormData((prev) => ({ ...prev, phone: formatted }));
+    setErrorMsg('');
+    if (touched.phone) {
+      setFieldErrors((prev) => ({ ...prev, phone: validateField('phone', formatted) }));
+    }
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    setTouched((prev) => ({ ...prev, [name]: true }));
+    setFieldErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
+  };
+
+  // ── Derived state ──────────────────────────────────────────────────────────
+
+  const strength = getPasswordStrength(formData.password);
+
+  const isFormValid =
+    !validateField('fullName', formData.fullName) &&
+    !validateField('phone',    formData.phone)    &&
+    !validateField('password', formData.password);
+
+  const hasName = formData.fullName.trim().length > 0;
+
+  // ── Submit ─────────────────────────────────────────────────────────────────
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Mark all fields as touched and validate
+    setTouched({ fullName: true, phone: true, password: true });
+    const errors = {
+      fullName: validateField('fullName', formData.fullName),
+      phone:    validateField('phone',    formData.phone),
+      password: validateField('password', formData.password),
+    };
+    setFieldErrors(errors);
+    if (Object.values(errors).some(Boolean)) return;
+
     setIsLoading(true);
-    setErrorMsg("");
+    setErrorMsg('');
+
+    // Build phone for API: strip spaces, prepend +91
+    const rawPhone   = formData.phone.replace(/\s/g, '');
+    const phoneForApi = rawPhone.startsWith('+91') ? rawPhone : `+91${rawPhone}`;
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
+      const response = await fetch('http://127.0.0.1:8000/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, phone: phoneForApi }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
-        alert("Account created successfully! Please log in.");
-        if (onLoginClick) onLoginClick();
+        if (onLoginClick) onLoginClick({ signupSuccess: true, name: formData.fullName });
       } else {
-        setErrorMsg(data.detail || "Failed to create account. Please try again.");
+        setErrorMsg(data.detail || 'Failed to create account. Please try again.');
       }
-    } catch (err) {
-      console.error(err);
-      setErrorMsg("Network error. Could not connect to the server.");
+    } catch {
+      setErrorMsg('Network error. Is the backend running on port 8000?');
     } finally {
       setIsLoading(false);
     }
   };
 
+  // ── Field style helper ─────────────────────────────────────────────────────
+
+  const inputClass = (name) =>
+    `w-full border text-white placeholder-white/25 rounded-xl py-3.5 text-sm focus:outline-none transition-all ${
+      touched[name] && fieldErrors[name]
+        ? 'border-red-500/60 bg-red-500/5 focus:border-red-500/80'
+        : 'border-white/10 focus:border-emerald-500/60 focus:bg-white/10'
+    }`;
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+
   return (
-    <div className="min-h-screen relative flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-      {/* Background Image with Overlay */}
-      <div
-        className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1592982537447-6f2a6a0c5c1b?q=80&w=2070&auto=format&fit=crop')" }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-tr from-green-900/80 via-emerald-800/70 to-blue-900/80 backdrop-blur-sm"></div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f2d1a] via-[#1a4a2e] to-[#0d3b22] px-4 py-10 relative overflow-hidden">
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-green-400/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 opacity-5"
+        style={{ backgroundImage: 'linear-gradient(#4ade80 1px, transparent 1px), linear-gradient(90deg, #4ade80 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
 
-      <div className="relative z-10 max-w-md w-full mx-auto animate-fade-in-down">
-        <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-white/20 transform transition-all duration-300 hover:shadow-emerald-500/20">
-
-          <div className="bg-gradient-to-br from-green-600 to-emerald-700 p-8 text-center relative overflow-hidden">
-            {/* Decorative circles */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl translate-x-12 -translate-y-12"></div>
-            <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full blur-2xl -translate-x-12 translate-y-12"></div>
-
-            <div className="flex justify-center mb-4 relative z-10">
-              <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-md shadow-inner border border-white/30 transform transition-transform hover:scale-105 duration-300">
-                <UserPlus className="w-10 h-10 text-white" />
-              </div>
-            </div>
-            <h2 className="text-3xl font-extrabold text-white relative z-10 tracking-tight">Create Account</h2>
-            <p className="mt-2 text-green-50 relative z-10 font-medium tracking-wide">Join the AgriShield community</p>
+      <div className="relative w-full max-w-[460px]">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-green-600 shadow-lg shadow-emerald-500/30 mb-4">
+            <Leaf className="w-8 h-8 text-white" />
           </div>
+          <h1 className="text-3xl font-black text-white tracking-tight" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+            AgriShield
+          </h1>
+          <p className="text-emerald-400/80 text-sm font-medium mt-1 tracking-widest uppercase">Join the Community</p>
+        </div>
 
-          <div className="p-8">
-            {errorMsg && (
-              <div className="mb-6 p-4 bg-red-50/80 border border-red-200 rounded-xl flex items-start text-red-600">
-                <div className="mt-0.5 mr-3">
-                  <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <p className="text-sm font-medium">{errorMsg}</p>
-              </div>
-            )}
+        <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-2xl">
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-
-              <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5 transition-colors group-focus-within:text-green-600">Full Name</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400 group-focus-within:text-green-500 transition-colors" />
-                  </div>
-                  <input
-                    type="text"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    className="pl-11 w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white outline-none transition-all duration-300 shadow-sm"
-                    placeholder="John Doe"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5 transition-colors group-focus-within:text-green-600">Phone Number</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Phone className="h-5 w-5 text-gray-400 group-focus-within:text-green-500 transition-colors" />
-                  </div>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="pl-11 w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white outline-none transition-all duration-300 shadow-sm"
-                    placeholder="+91 9876543210"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="group">
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5 transition-colors group-focus-within:text-green-600">Password</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400 group-focus-within:text-green-500 transition-colors" />
-                  </div>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="pl-11 w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent focus:bg-white outline-none transition-all duration-300 shadow-sm"
-                    placeholder="••••••••"
-                    required
-                  />
-                </div>
-              </div>
-
-
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full mt-2 py-3.5 px-4 flex justify-center items-center rounded-xl font-bold text-lg transition-all duration-300 transform hover:-translate-y-0.5 ${isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-500 hover:to-emerald-500 hover:shadow-lg shadow-green-500/30'}`}
-              >
-                {isLoading ? "Creating Account..." : "Sign Up"}
-                {!isLoading && <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />}
-              </button>
-            </form>
-
-            <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-              <p className="text-base text-gray-600 font-medium">
-                Already have an account?{' '}
-                <button onClick={onLoginClick} className="font-bold text-green-600 hover:text-green-500 transition-colors relative after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-green-600 after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left">
-                  Log in here
-                </button>
+          {/* ── Live avatar preview ── */}
+          <div className="flex items-center gap-4 mb-7">
+            <div className="relative">
+              <UserAvatar name={formData.fullName || '?'} size={64} />
+              {hasName && (
+                <span className="absolute inset-0 rounded-full animate-ping opacity-20 bg-emerald-400 pointer-events-none" />
+              )}
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-white leading-tight">
+                {hasName ? formData.fullName : 'Create Account'}
+              </h2>
+              <p className="text-emerald-300/60 text-sm mt-0.5">
+                {hasName ? 'This will be your profile photo' : 'Fill in your details to get started'}
               </p>
             </div>
           </div>
-        </div>
 
-        {/* Back Button */}
-        <div className="mt-6 text-center">
-          <button onClick={onBack} className="text-white/80 hover:text-white font-medium transition-colors backdrop-blur-sm px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 border border-white/10">
-            ← Back to Home
-          </button>
+          {errorMsg && (
+            <div className="mb-5 px-4 py-3 bg-red-500/15 border border-red-500/30 rounded-xl text-red-300 text-sm font-medium flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
+              {errorMsg}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+
+            {/* Full Name */}
+            <div>
+              <label className="block text-emerald-200/80 text-xs font-semibold uppercase tracking-widest mb-2">
+                Full Name
+              </label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/60" />
+                <input
+                  ref={nameRef}
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="e.g. Barsha Panda"
+                  required
+                  className={`${inputClass('fullName')} pl-11 pr-4`}
+                  style={!(touched.fullName && fieldErrors.fullName) ? { background: 'rgba(255,255,255,0.06)' } : {}}
+                />
+              </div>
+              {touched.fullName && fieldErrors.fullName && (
+                <p className="mt-1.5 text-red-400 text-xs flex items-center gap-1.5">
+                  <span>❌</span> {fieldErrors.fullName}
+                </p>
+              )}
+            </div>
+
+            {/* Phone */}
+            <div>
+              <label className="block text-emerald-200/80 text-xs font-semibold uppercase tracking-widest mb-2">
+                Phone Number
+              </label>
+              <div className="relative">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/60" />
+                <span className="absolute left-10 top-1/2 -translate-y-1/2 text-emerald-400/60 text-sm font-medium pointer-events-none select-none">
+                  +91
+                </span>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handlePhoneChange}
+                  onBlur={handleBlur}
+                  placeholder="98765 43210"
+                  required
+                  className={`${inputClass('phone')} pl-[4.5rem] pr-4`}
+                  style={!(touched.phone && fieldErrors.phone) ? { background: 'rgba(255,255,255,0.06)' } : {}}
+                />
+              </div>
+              {touched.phone && fieldErrors.phone && (
+                <p className="mt-1.5 text-red-400 text-xs flex items-center gap-1.5">
+                  <span>❌</span> {fieldErrors.phone}
+                </p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="block text-emerald-200/80 text-xs font-semibold uppercase tracking-widest mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/60" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="••••••••"
+                  required
+                  className={`${inputClass('password')} pl-11 pr-12`}
+                  style={!(touched.password && fieldErrors.password) ? { background: 'rgba(255,255,255,0.06)' } : {}}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400/60 hover:text-emerald-300 transition-colors"
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+
+              {/* Password strength indicator */}
+              {formData.password && strength && (
+                <div className="mt-2.5">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs text-white/40">Password strength</span>
+                    <span className="text-xs font-semibold" style={{ color: strength.color }}>
+                      {strength.level}
+                    </span>
+                  </div>
+                  <div className="w-full h-1 rounded-full bg-white/10 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{ width: strength.width, background: strength.color }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {touched.password && fieldErrors.password && (
+                <p className="mt-1.5 text-red-400 text-xs flex items-center gap-1.5">
+                  <span>❌</span> {fieldErrors.password}
+                </p>
+              )}
+            </div>
+
+            {/* User Type */}
+            <div>
+              <label className="block text-emerald-200/80 text-xs font-semibold uppercase tracking-widest mb-3">
+                I want to
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {USER_TYPES.map(({ value, label, desc, Icon }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setFormData((prev) => ({ ...prev, userType: value }))}
+                    className={`py-3 px-2 rounded-xl border text-center transition-all active:scale-[0.97] ${
+                      formData.userType === value
+                        ? 'bg-emerald-500/20 border-emerald-500/60 text-emerald-300'
+                        : 'border-white/10 text-white/50 hover:border-white/20 hover:text-white/70'
+                    }`}
+                    style={formData.userType !== value ? { background: 'rgba(255,255,255,0.04)' } : {}}
+                  >
+                    <Icon
+                      className={`w-4 h-4 mx-auto mb-1.5 ${
+                        formData.userType === value ? 'text-emerald-400' : 'text-white/30'
+                      }`}
+                    />
+                    <div className="font-bold text-sm">{label}</div>
+                    <div className="text-xs opacity-70 mt-0.5 leading-tight">{desc}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading || !isFormValid}
+              className="w-full mt-2 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold text-base tracking-wide flex items-center justify-center gap-2 hover:from-emerald-400 hover:to-green-500 transition-all hover:shadow-lg hover:shadow-emerald-500/30 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+            >
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                  </svg>
+                  Creating Account...
+                </span>
+              ) : (
+                <>Create Account <ArrowRight className="w-4 h-4" /></>
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 pt-6 border-t border-white/8 text-center">
+            <p className="text-white/50 text-sm">
+              Already have an account?{' '}
+              <button
+                onClick={() => onLoginClick && onLoginClick()}
+                className="text-emerald-400 font-semibold hover:text-emerald-300 transition-colors"
+              >
+                Sign in
+              </button>
+            </p>
+          </div>
         </div>
       </div>
     </div>

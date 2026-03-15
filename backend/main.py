@@ -70,10 +70,14 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
+    # Wildcard "*" blocks credentials (JWT). Must list origins explicitly.
     allow_origins=[
-        "*", # Allow all origins for development to fix CORS issues with dynamic ports
+        "http://localhost:5173",   # Vite dev server (what the browser sends as Origin)
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
     ],
-    allow_credentials=True,
+    allow_credentials=True,        # Required so Authorization: Bearer <token> is forwarded
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
     max_age=600,
@@ -93,12 +97,16 @@ try:
 except Exception as e:
     print(f"⚠️ User API router inclusion failed: {e}")
 
+from auth_api import router as auth_router   # FIX: import outside try so errors are visible
+app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
+print("✅ Auth API router included successfully")
+
 try:
-    from auth_api import router as auth_router
-    app.include_router(auth_router, prefix="/api/auth", tags=["Auth"])
-    print("✅ Auth API router included successfully")
+    from marketplace_api import router as marketplace_router
+    app.include_router(marketplace_router)
+    print("✅ Marketplace API router included successfully")
 except Exception as e:
-    print(f"⚠️ Auth API router inclusion failed: {e}")
+    print(f"⚠️ Marketplace API router inclusion failed: {e}")
 
 # ============================================================================
 # INITIALIZE WEATHER SERVICES
@@ -826,6 +834,37 @@ async def internal_error_handler(request, exc):
         }
     )
 
+
+# ============================================================================
+# MARKETPLACE ENDPOINTS  
+# Fixes: GET /api/marketplace/products/seller/{user_id} 404
+# ============================================================================
+
+from database import get_products_collection as _get_products_col
+
+@app.get("/api/marketplace/products/seller/{user_id}", tags=["Marketplace"])
+async def get_seller_products(user_id: str):
+    products_col = _get_products_col()
+    if products_col is None:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    items = list(products_col.find({"seller_id": user_id}))
+    for item in items:
+        if "_id" in item:
+            item["id"] = str(item["_id"])
+            del item["_id"]
+    return items
+
+@app.get("/api/marketplace/products", tags=["Marketplace"])
+async def get_all_products():
+    products_col = _get_products_col()
+    if products_col is None:
+        raise HTTPException(status_code=503, detail="Database unavailable")
+    items = list(products_col.find({}))
+    for item in items:
+        if "_id" in item:
+            item["id"] = str(item["_id"])
+            del item["_id"]
+    return {"products": items, "count": len(items)}
 
 # ============================================================================
 # STARTUP EVENT
