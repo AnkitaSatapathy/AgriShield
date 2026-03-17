@@ -166,7 +166,6 @@ const Login = ({ onSignupClick, onLoginSuccess, signupToast }) => {
 
       localStorage.setItem('token',    data.token);
       localStorage.setItem('user_id',  data.user_id);
-      localStorage.setItem('userType', data.userType);
 
       try {
         const profileRes = await fetch(`http://127.0.0.1:8000/api/users/${data.user_id}`, {

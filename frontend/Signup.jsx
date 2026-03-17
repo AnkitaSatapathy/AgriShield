@@ -1,14 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, Phone, Lock, ArrowRight, Leaf, Eye, EyeOff, ShoppingCart, Wheat, ArrowLeftRight } from 'lucide-react';
+import { User, Phone, Lock, ArrowRight, Leaf, Eye, EyeOff } from 'lucide-react';
 import { UserAvatar } from './Login';
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const USER_TYPES = [
-  { value: 'buyer',  label: 'Buyer',  desc: 'Purchase farm products', Icon: ShoppingCart },
-  { value: 'seller', label: 'Seller', desc: 'List & sell produce',     Icon: Wheat },
-  { value: 'both',   label: 'Both',   desc: 'Buy and sell',            Icon: ArrowLeftRight },
-];
 
 // ─── Phone formatter ──────────────────────────────────────────────────────────
 
@@ -66,7 +58,7 @@ const validateField = (name, value) => {
 
 const Signup = ({ onLoginClick }) => {
   const [formData, setFormData] = useState({
-    fullName: '', phone: '', password: '', userType: 'buyer',
+    fullName: '', phone: '', password: '',
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg]   = useState('');
@@ -328,35 +320,6 @@ const Signup = ({ onLoginClick }) => {
               )}
             </div>
 
-            {/* User Type */}
-            <div>
-              <label className="block text-emerald-200/80 text-xs font-semibold uppercase tracking-widest mb-3">
-                I want to
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {USER_TYPES.map(({ value, label, desc, Icon }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => setFormData((prev) => ({ ...prev, userType: value }))}
-                    className={`py-3 px-2 rounded-xl border text-center transition-all active:scale-[0.97] ${
-                      formData.userType === value
-                        ? 'bg-emerald-500/20 border-emerald-500/60 text-emerald-300'
-                        : 'border-white/10 text-white/50 hover:border-white/20 hover:text-white/70'
-                    }`}
-                    style={formData.userType !== value ? { background: 'rgba(255,255,255,0.04)' } : {}}
-                  >
-                    <Icon
-                      className={`w-4 h-4 mx-auto mb-1.5 ${
-                        formData.userType === value ? 'text-emerald-400' : 'text-white/30'
-                      }`}
-                    />
-                    <div className="font-bold text-sm">{label}</div>
-                    <div className="text-xs opacity-70 mt-0.5 leading-tight">{desc}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
 
             <button
               type="submit"

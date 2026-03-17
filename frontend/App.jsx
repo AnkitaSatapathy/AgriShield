@@ -604,7 +604,6 @@ const App = () => {
                     <UserAvatar name={user.name || '?'} size={36} />
                     <div className="text-left leading-tight">
                       <p className="text-sm font-semibold text-gray-800 group-hover:text-green-600 transition">{user.name || 'Farmer'}</p>
-                      <p className="text-xs text-gray-400 capitalize">{user.userType}</p>
                     </div>
                   </button>
                   <button
@@ -655,7 +654,6 @@ const App = () => {
                     <UserAvatar name={user.name || '?'} size={40} />
                     <div>
                       <p className="font-semibold text-gray-800">{user.name || 'Farmer'}</p>
-                      <p className="text-xs text-gray-400 capitalize">{user.userType}</p>
                     </div>
                   </div>
                   <button
@@ -715,7 +713,6 @@ const App = () => {
                   <div>
                     <p className="text-xs text-green-600 font-bold uppercase tracking-widest mb-0.5">Welcome back</p>
                     <p className="text-xl font-bold text-gray-800">{user.name || 'Farmer'} 👋</p>
-                    <p className="text-sm text-gray-400 capitalize">{user.userType} account</p>
                   </div>
                 </div>
               )}
