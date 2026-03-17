@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cloud, Leaf, AlertTriangle, Camera, BookOpen, ShoppingCart, Building2, User, Menu, X, ArrowRight, Package, ClipboardList, LogOut } from 'lucide-react';
+import { Cloud, Leaf, AlertTriangle, Camera, BookOpen, ShoppingCart, Building2, User, Menu, X, ArrowRight, LogOut } from 'lucide-react';
 import RiskPrediction from './RiskPrediction';
 import DiseaseDetection from './DiseaseDetection';
 import CropRecommendation from './CropRecommendation';
@@ -9,7 +9,6 @@ import SchemeCard from './SchemeCard';
 import MarketPlace from './MarketPlace';
 import Profile from './Profile';
 import MyOrders from './MyOrders';
-import MyProducts from './MyProducts';
 import Login from './Login';
 import Signup from './Signup';
 
@@ -121,9 +120,6 @@ const App = () => {
     }
     else if (window.location.hash === '#/my-orders') {
       setCurrentPage('my-orders');
-    }
-    else if (window.location.hash === '#/my-products') {
-      setCurrentPage('my-products');
     }
     else if (window.location.hash === '#/login') {
       setCurrentPage('login');
@@ -253,13 +249,6 @@ const App = () => {
                 </span>
               </button>
               <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => { window.location.hash = '#/my-products'; setCurrentPage('my-products'); }}
-                  className="px-4 py-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition flex items-center space-x-2 font-medium"
-                >
-                  <Package className="w-5 h-5" />
-                  <span>My Products</span>
-                </button>
                 {/* ── NEW: avatar in profile nav ── */}
                 {user && (
                   <div className="flex items-center space-x-2">
@@ -309,36 +298,6 @@ const App = () => {
           </div>
         </nav>
         <MyOrders onBack={goToHome} />
-      </div>
-    );
-  }
-
-  // If on My Products page, show only that component
-  if (currentPage === 'my-products') {
-    return (
-      <div>
-        <nav className="fixed w-full z-50 bg-white shadow-lg">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <button onClick={goToHome} className="flex items-center space-x-2 cursor-pointer">
-                <div className="bg-gradient-to-r from-green-600 to-emerald-600 p-2 rounded-lg">
-                  <Leaf className="w-6 h-6 text-white" />
-                </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                  AgriShield
-                </span>
-              </button>
-              <div className="flex items-center space-x-3">
-                {user && <UserAvatar name={user.name || '?'} size={34} />}
-                <button onClick={goToHome} className="px-4 py-2 text-green-600 hover:bg-green-50 rounded-lg transition flex items-center space-x-2">
-                  <ArrowRight className="w-4 h-4 rotate-180" />
-                  <span>Back to Home</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </nav>
-        <MyProducts onBack={goToHome} />
       </div>
     );
   }
@@ -631,7 +590,6 @@ const App = () => {
               <a href="#about" className="text-gray-700 hover:text-green-600 transition">About</a>
               <a href="#features" className="text-gray-700 hover:text-green-600 transition">Features</a>
               <a href="#contact" className="text-gray-700 hover:text-green-600 transition">Contact</a>
-              <a href="#/my-products" onClick={(e) => { e.preventDefault(); window.open(window.location.origin + '/#/my-products', '_blank'); }} className="text-gray-700 hover:text-green-600 transition">My Products</a>
             </div>
 
             {/* ── NEW: avatar when logged in, login/signup buttons when not ── */}
@@ -689,7 +647,6 @@ const App = () => {
               <a href="#about" className="block text-gray-700 hover:text-green-600">About</a>
               <a href="#features" className="block text-gray-700 hover:text-green-600">Features</a>
               <a href="#contact" className="block text-gray-700 hover:text-green-600">Contact</a>
-              <a href="#/my-products" onClick={(e) => { e.preventDefault(); window.open(window.location.origin + '/#/my-products', '_blank'); }} className="block text-gray-700 hover:text-green-600">My Products</a>
 
               {/* ── NEW: mobile auth section ── */}
               {user ? (
