@@ -143,6 +143,11 @@ async def get_buyer_orders(buyer_id: str):
     orders = list(orders_db.find({"buyer_id": buyer_id}).sort("created_at", -1))
     return [objectid_to_str(o) for o in orders]
 
+@router.get("/orders/user/{user_id}", response_model=List[OrderResponse])
+async def get_user_orders(user_id: str):
+    """Alias for buyer orders — used by the MyOrders frontend component"""
+    return await get_buyer_orders(user_id)
+
 @router.get("/orders/seller/{seller_id}", response_model=List[OrderResponse])
 async def get_seller_orders(seller_id: str):
     """Retrieve all orders received by a specific seller"""
