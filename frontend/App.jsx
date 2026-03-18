@@ -56,7 +56,7 @@ const App = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // ── NEW: auth state ────────────────────────────────────────────────────────
+  // ── auth state ────────────────────────────────────────────────────────────
   const [user, setUser] = useState(null); // { user_id, token, userType, name }
 
   const handleLoginSuccess = async (data) => {
@@ -73,8 +73,17 @@ const App = () => {
     localStorage.setItem('userType',  data.userType);
     localStorage.setItem('user_name', name);
     setUser({ token: data.token, user_id: data.user_id, userType: data.userType, name });
-    window.location.hash = '#/';
-    setCurrentPage('home');
+
+    // ── FIX: If user came from marketplace checkout (pendingCart in sessionStorage),
+    // send them back to marketplace so the cart auto-resumes checkout ──────────
+    const pendingCart = sessionStorage.getItem('pendingCart');
+    if (pendingCart) {
+      window.location.hash = '#/marketplace';
+      setCurrentPage('marketplace');
+    } else {
+      window.location.hash = '#/';
+      setCurrentPage('home');
+    }
   };
 
   const handleLogout = () => {
@@ -249,7 +258,6 @@ const App = () => {
                 </span>
               </button>
               <div className="flex items-center space-x-4">
-                {/* ── NEW: avatar in profile nav ── */}
                 {user && (
                   <div className="flex items-center space-x-2">
                     <UserAvatar name={user.name || '?'} size={34} />
@@ -478,7 +486,8 @@ const App = () => {
     );
   }
 
-  // If on Marketplace page, show only that component
+  // ── FIX: Marketplace now receives navigation callbacks so the auth gate
+  // uses App's real page-switching instead of window.location.href ────────────
   if (currentPage === 'marketplace') {
     return (
       <div>
@@ -503,7 +512,20 @@ const App = () => {
             </div>
           </div>
         </nav>
-        <MarketPlace />
+        <MarketPlace
+          onNavigateLogin={() => {
+            window.location.hash = '#/login';
+            setCurrentPage('login');
+          }}
+          onNavigateSignup={() => {
+            window.location.hash = '#/signup';
+            setCurrentPage('signup');
+          }}
+          onNavigateOrders={() => {
+            window.location.hash = '#/my-orders';
+            setCurrentPage('my-orders');
+          }}
+        />
       </div>
     );
   }
@@ -592,7 +614,6 @@ const App = () => {
               <a href="#contact" className="text-gray-700 hover:text-green-600 transition">Contact</a>
             </div>
 
-            {/* ── NEW: avatar when logged in, login/signup buttons when not ── */}
             <div className="hidden md:flex items-center space-x-3">
               {user ? (
                 <>
@@ -647,7 +668,6 @@ const App = () => {
               <a href="#features" className="block text-gray-700 hover:text-green-600">Features</a>
               <a href="#contact" className="block text-gray-700 hover:text-green-600">Contact</a>
 
-              {/* ── NEW: mobile auth section ── */}
               {user ? (
                 <>
                   <div className="flex items-center space-x-3 py-2 border-t border-gray-100">
@@ -706,7 +726,6 @@ const App = () => {
                 Predict crop failures, detect diseases, get weather alerts, and make data-driven farming decisions with AgriShield's intelligent platform.
               </p>
 
-              {/* ── NEW: welcome banner when logged in ── */}
               {user && (
                 <div className="flex items-center space-x-4 bg-green-50 border border-green-200 rounded-2xl px-5 py-4">
                   <UserAvatar name={user.name || '?'} size={52} />

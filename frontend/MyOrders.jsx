@@ -14,6 +14,18 @@ const STATUS_CONFIG = {
     className: 'bg-yellow-500/20 border-yellow-500/40 text-yellow-300',
     dot: 'bg-yellow-400',
   },
+  accepted: {
+    label: 'Accepted',
+    icon: CheckCircle,
+    className: 'bg-blue-500/20 border-blue-500/40 text-blue-300',
+    dot: 'bg-blue-400',
+  },
+  rejected: {
+    label: 'Rejected',
+    icon: XCircle,
+    className: 'bg-red-500/20 border-red-500/40 text-red-300',
+    dot: 'bg-red-400',
+  },
   cancelled: {
     label: 'Cancelled',
     icon: XCircle,
@@ -28,23 +40,40 @@ const formatDate = (dateStr) => {
   return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 };
 
-const MyOrders = () => {
+const MyOrders = ({ onBack }) => {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const userId = localStorage.getItem('user_id') || 'user_1234';
+  const userId = localStorage.getItem('user_id');
 
   useEffect(() => {
     const fetchOrders = async () => {
       setIsLoading(true);
       setError(false);
+      if (!userId) {
+        setIsLoading(false);
+        setError('not-logged-in');
+        return;
+      }
       const token = localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/marketplace/orders/user/${userId}`, { headers });
+        const res = await fetch(`http://127.0.0.1:8000/api/marketplace/orders/buyer/${userId}`, { headers });
         if (res.ok) {
-          setOrders(await res.json());
+          const raw = await res.json();
+          // Normalize backend field names to what the UI expects
+          const normalized = raw.map(o => ({
+            ...o,
+            status: (o.order_status || o.status || 'pending').toLowerCase(),
+            price: o.total_amount ?? o.price ?? 0,
+            order_date: o.created_at || o.order_date,
+            product_name: o.product_name || `Order #${(o.id || '').slice(-6)}`,
+            image_url: o.image_url || null,
+            unit: o.unit || 'units',
+            quantity: o.quantity || 1,
+          }));
+          setOrders(normalized);
         } else {
           setError(true);
         }
@@ -101,7 +130,16 @@ const MyOrders = () => {
         )}
 
         {/* Error */}
-        {!isLoading && error && (
+        {!isLoading && error === 'not-logged-in' && (
+          <div className="text-center py-24 bg-white/3 border border-white/8 rounded-3xl">
+            <div className="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-5">
+              <ShoppingCart className="w-10 h-10 text-white/20" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Please log in</h3>
+            <p className="text-white/40 text-sm">Log in to view your order history.</p>
+          </div>
+        )}
+        {!isLoading && error && error !== 'not-logged-in' && (
           <div className="text-center py-24 bg-red-500/5 border border-red-500/15 rounded-3xl">
             <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <XCircle className="w-8 h-8 text-red-400/60" />

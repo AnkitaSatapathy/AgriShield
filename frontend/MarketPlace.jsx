@@ -1,12 +1,266 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import CheckoutModal from './CheckoutModal';
 import { 
   ShoppingCart, Package, Leaf, Droplets, Shield, 
   Search, Filter, Star, TrendingUp, CheckCircle,
   XCircle, Plus, Minus, ShoppingBag, AlertCircle,
-  Sprout, Users, Award, Truck, Loader2, MapPin, DollarSign
+  Sprout, Users, Award, Truck, Loader2, MapPin, DollarSign,
+  ArrowRight, User,
+  Lock, LogIn, UserPlus,
+  Phone, IndianRupee,
+  Eye, EyeOff
 } from 'lucide-react';
 
-const MarketPlace = () => {
+
+// ─── Inline Login/Signup Modal (used when no onNavigateLogin prop is passed) ──
+const InlineAuthModal = ({ mode: initialMode = 'login', onSuccess, onClose }) => {
+  const [mode, setMode] = useState(initialMode); // 'login' | 'signup'
+  // Login state
+  const [loginData, setLoginData] = useState({ phone: '', password: '' });
+  const [loginError, setLoginError] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [showPwd, setShowPwd] = useState(false);
+  // Signup state
+  const [signupData, setSignupData] = useState({ fullName: '', phone: '', password: '', userType: 'buyer' });
+  const [signupError, setSignupError] = useState('');
+  const [signupLoading, setSignupLoading] = useState(false);
+
+  const formatPhone = (raw) => {
+    const d = raw.replace(/\D/g, '').slice(0, 10);
+    return d.length <= 5 ? d : `${d.slice(0,5)} ${d.slice(5)}`;
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginLoading(true); setLoginError('');
+    const raw = loginData.phone.replace(/\s/g, '');
+    const phone = raw.startsWith('+91') ? raw : `+91${raw}`;
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, password: loginData.password })
+      });
+      const data = await res.json();
+      if (!res.ok) { setLoginError(data.detail || 'Invalid credentials.'); return; }
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user_id', data.user_id);
+      // Fetch name
+      try {
+        const pr = await fetch(`http://127.0.0.1:8000/api/users/${data.user_id}`, {
+          headers: { Authorization: `Bearer ${data.token}` }
+        });
+        if (pr.ok) { const p = await pr.json(); localStorage.setItem('user_name', p.name || ''); }
+      } catch {}
+      if (onSuccess) onSuccess(data);
+    } catch { setLoginError('Network error. Is the backend running?'); }
+    finally { setLoginLoading(false); }
+  };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setSignupLoading(true); setSignupError('');
+    const raw = signupData.phone.replace(/\s/g, '');
+    const phone = raw.startsWith('+91') ? raw : `+91${raw}`;
+    try {
+      const res = await fetch('http://127.0.0.1:8000/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...signupData, phone })
+      });
+      const data = await res.json();
+      if (!res.ok) { setSignupError(data.detail || 'Signup failed. Try again.'); return; }
+      // Auto-login after signup
+      const lr = await fetch('http://127.0.0.1:8000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, password: signupData.password })
+      });
+      const ld = await lr.json();
+      if (lr.ok) {
+        localStorage.setItem('token', ld.token);
+        localStorage.setItem('user_id', ld.user_id);
+        localStorage.setItem('user_name', signupData.fullName);
+        if (onSuccess) onSuccess(ld);
+      } else { setMode('login'); }
+    } catch { setSignupError('Network error. Is the backend running?'); }
+    finally { setSignupLoading(false); }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[70] flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-gradient-to-br from-[#0f2d1a] via-[#1a4a2e] to-[#0d3b22] rounded-3xl shadow-2xl w-full max-w-md my-4 border border-white/10 overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center">
+              <Leaf className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-white font-black text-base leading-tight">AgriShield</p>
+              <p className="text-emerald-400/70 text-xs">{mode === 'login' ? 'Sign in to checkout' : 'Create your account'}</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="text-white/50 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition">
+            <XCircle className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Tab switcher */}
+        <div className="flex mx-6 mt-5 bg-white/5 rounded-2xl p-1 gap-1">
+          {['login','signup'].map(m => (
+            <button key={m} onClick={() => setMode(m)}
+              className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition ${mode === m ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow' : 'text-white/50 hover:text-white/80'}`}>
+              {m === 'login' ? '🔑 Login' : '✨ Sign Up'}
+            </button>
+          ))}
+        </div>
+
+        <div className="p-6">
+          {mode === 'login' ? (
+            <form onSubmit={handleLogin} className="space-y-4" noValidate>
+              {loginError && (
+                <div className="px-4 py-3 bg-red-500/15 border border-red-500/30 rounded-xl text-red-300 text-sm flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />{loginError}
+                </div>
+              )}
+              <div>
+                <label className="block text-emerald-200/70 text-xs font-semibold uppercase tracking-widest mb-2">Phone Number</label>
+                <div className="relative">
+                  <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/50" />
+                  <span className="absolute left-9 top-1/2 -translate-y-1/2 text-emerald-400/50 text-sm pointer-events-none">+91</span>
+                  <input type="tel" value={loginData.phone}
+                    onChange={e => setLoginData({...loginData, phone: formatPhone(e.target.value)})}
+                    placeholder="98765 43210" required
+                    className="w-full border border-white/10 text-white placeholder-white/25 rounded-xl pl-[4.5rem] pr-4 py-3 text-sm focus:outline-none focus:border-emerald-500/60 transition"
+                    style={{ background: 'rgba(255,255,255,0.06)' }} />
+                </div>
+              </div>
+              <div>
+                <label className="block text-emerald-200/70 text-xs font-semibold uppercase tracking-widest mb-2">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/50" />
+                  <input type={showPwd ? 'text' : 'password'} value={loginData.password}
+                    onChange={e => setLoginData({...loginData, password: e.target.value})}
+                    placeholder="••••••••" required
+                    className="w-full border border-white/10 text-white placeholder-white/25 rounded-xl pl-10 pr-11 py-3 text-sm focus:outline-none focus:border-emerald-500/60 transition"
+                    style={{ background: 'rgba(255,255,255,0.06)' }} />
+                  <button type="button" onClick={() => setShowPwd(!showPwd)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-400/50 hover:text-emerald-300 transition">
+                    {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+              <button type="submit" disabled={loginLoading}
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold text-sm hover:from-emerald-400 hover:to-green-500 transition shadow-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                {loginLoading ? <><Loader2 className="w-4 h-4 animate-spin" /> Signing in...</> : <>Sign In <ArrowRight className="w-4 h-4" /></>}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleSignup} className="space-y-4" noValidate>
+              {signupError && (
+                <div className="px-4 py-3 bg-red-500/15 border border-red-500/30 rounded-xl text-red-300 text-sm flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />{signupError}
+                </div>
+              )}
+              <div>
+                <label className="block text-emerald-200/70 text-xs font-semibold uppercase tracking-widest mb-2">Full Name</label>
+                <div className="relative">
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/50" />
+                  <input type="text" value={signupData.fullName}
+                    onChange={e => setSignupData({...signupData, fullName: e.target.value})}
+                    placeholder="Ravi Kumar" required
+                    className="w-full border border-white/10 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-emerald-500/60 transition"
+                    style={{ background: 'rgba(255,255,255,0.06)' }} />
+                </div>
+              </div>
+              <div>
+                <label className="block text-emerald-200/70 text-xs font-semibold uppercase tracking-widest mb-2">Phone Number</label>
+                <div className="relative">
+                  <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/50" />
+                  <span className="absolute left-9 top-1/2 -translate-y-1/2 text-emerald-400/50 text-sm pointer-events-none">+91</span>
+                  <input type="tel" value={signupData.phone}
+                    onChange={e => setSignupData({...signupData, phone: formatPhone(e.target.value)})}
+                    placeholder="98765 43210" required
+                    className="w-full border border-white/10 text-white placeholder-white/25 rounded-xl pl-[4.5rem] pr-4 py-3 text-sm focus:outline-none focus:border-emerald-500/60 transition"
+                    style={{ background: 'rgba(255,255,255,0.06)' }} />
+                </div>
+              </div>
+              <div>
+                <label className="block text-emerald-200/70 text-xs font-semibold uppercase tracking-widest mb-2">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-400/50" />
+                  <input type="password" value={signupData.password}
+                    onChange={e => setSignupData({...signupData, password: e.target.value})}
+                    placeholder="••••••••" required minLength={6}
+                    className="w-full border border-white/10 text-white placeholder-white/25 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-emerald-500/60 transition"
+                    style={{ background: 'rgba(255,255,255,0.06)' }} />
+                </div>
+              </div>
+              <div>
+                <label className="block text-emerald-200/70 text-xs font-semibold uppercase tracking-widest mb-2">I am a</label>
+                <div className="flex gap-2">
+                  {['buyer','seller','both'].map(t => (
+                    <button key={t} type="button"
+                      onClick={() => setSignupData({...signupData, userType: t})}
+                      className={`flex-1 py-2.5 rounded-xl text-xs font-bold border transition capitalize ${signupData.userType === t ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300' : 'border-white/10 text-white/40 hover:border-white/25 hover:text-white/60'}`}>
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <button type="submit" disabled={signupLoading}
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 text-white font-bold text-sm hover:from-emerald-400 hover:to-green-500 transition shadow-lg flex items-center justify-center gap-2 disabled:opacity-50">
+                {signupLoading ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating account...</> : <>Create Account & Continue <ArrowRight className="w-4 h-4" /></>}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── Auth Gate Modal ──────────────────────────────────────────────────────────
+const AuthGateModal = ({ onClose, onNavigateLogin, onNavigateSignup }) => (
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[60] flex items-center justify-center p-4">
+    <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center border border-gray-100 animate-bounce-in">
+      <div className="w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-200 rounded-full flex items-center justify-center mx-auto mb-5">
+        <Lock className="w-10 h-10 text-green-600" />
+      </div>
+      <h2 className="text-2xl font-black text-gray-900 mb-2">Login Required</h2>
+      <p className="text-gray-500 text-sm mb-8 leading-relaxed">
+        Please log in to your AgriShield account to proceed with checkout and payment.
+      </p>
+      <div className="space-y-3">
+        <button
+          onClick={onNavigateLogin}
+          className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3.5 rounded-2xl font-bold text-base hover:from-green-700 hover:to-emerald-700 shadow-lg transition flex items-center justify-center gap-2"
+        >
+          <LogIn className="w-5 h-5" />
+          Login to Continue
+        </button>
+        <button
+          onClick={onNavigateSignup}
+          className="w-full border-2 border-green-500 text-green-700 py-3.5 rounded-2xl font-bold text-base hover:bg-green-50 transition flex items-center justify-center gap-2"
+        >
+          <UserPlus className="w-5 h-5" />
+          Create an Account
+        </button>
+        <button
+          onClick={onClose}
+          className="w-full text-gray-500 py-2.5 rounded-xl font-medium hover:bg-gray-100 transition text-sm"
+        >
+          Continue Shopping
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
+// ─── Checkout Flow Modal ──────────────────────────────────────────────────────
+
+const MarketPlace = ({ onNavigateLogin, onNavigateSignup, onNavigateOrders }) => {
   // Product categories and data
   const [products] = useState([
     // ── FERTILIZERS (12) ──
@@ -1487,6 +1741,7 @@ const MarketPlace = () => {
   ]);
 
   // State management
+
   const [cart, setCart] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -1494,6 +1749,41 @@ const MarketPlace = () => {
   const [showCart, setShowCart] = useState(false);
   const [notification, setNotification] = useState(null);
   const [highlightedProductId, setHighlightedProductId] = useState(null);
+  // New state for checkout flow
+  const [showAuthGate, setShowAuthGate] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [showInlineAuth, setShowInlineAuth] = useState(null); // null | 'login' | 'signup'
+
+
+  // ── Resume checkout if user just returned after logging in from auth gate ──
+  // Use a ref to signal "open checkout once cart is populated"
+  const pendingCheckoutRef = React.useRef(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('user_id');
+    const savedCart = sessionStorage.getItem('pendingCart');
+    if (token && userId && savedCart) {
+      try {
+        const parsedCart = JSON.parse(savedCart);
+        if (parsedCart && parsedCart.length > 0) {
+          sessionStorage.removeItem('pendingCart');
+          pendingCheckoutRef.current = true;
+          setCart(parsedCart); // triggers re-render -> next useEffect fires
+        }
+      } catch (e) {
+        sessionStorage.removeItem('pendingCart');
+      }
+    }
+  }, []);
+
+  // ── Open checkout once cart is non-empty after a pending restore ──────────
+  useEffect(() => {
+    if (pendingCheckoutRef.current && cart.length > 0) {
+      pendingCheckoutRef.current = false;
+      setShowCheckout(true);
+    }
+  }, [cart]);
 
  // Check for highlighted product from FarmingTips or CropRecommendation page
   useEffect(() => {
@@ -1609,6 +1899,32 @@ const MarketPlace = () => {
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
     setTimeout(() => setNotification(null), 3000);
+  };
+
+  // Handle checkout button - check auth first
+  const handleCheckout = () => {
+    const token = localStorage.getItem('token');
+    const userId = localStorage.getItem('user_id');
+    if (!token || !userId) {
+      // Save cart to sessionStorage so it can be restored after login
+      sessionStorage.setItem('pendingCart', JSON.stringify(cart));
+      setShowCart(false);
+      if (onNavigateLogin) {
+        // App.jsx handles routing — show the gate prompt
+        setShowAuthGate(true);
+      } else {
+        // Standalone mode — show inline login modal directly
+        setShowInlineAuth('login');
+      }
+    } else {
+      setShowCart(false);
+      setShowCheckout(true);
+    }
+  };
+
+  // Handle successful order placement
+  const handleOrderSuccess = () => {
+    setCart([]);
   };
 
   return (
@@ -1946,7 +2262,11 @@ const MarketPlace = () => {
                   </span>
                   <span className="text-4xl font-black bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">₹{calculateTotal()}</span>
                 </div>
-                <button className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-2xl font-bold text-lg hover:from-green-700 hover:to-emerald-700 shadow-lg transition transform hover:scale-105">
+                <button
+                  onClick={handleCheckout}
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 rounded-2xl font-bold text-lg hover:from-green-700 hover:to-emerald-700 shadow-lg transition transform hover:scale-105 flex items-center justify-center gap-2"
+                >
+                  <Lock className="w-5 h-5" />
                   Proceed to Checkout
                 </button>
                 <button
@@ -2055,6 +2375,62 @@ const MarketPlace = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ── INLINE AUTH MODAL (standalone mode — no App.jsx router) ────────── */}
+      {showInlineAuth && (
+        <InlineAuthModal
+          mode={showInlineAuth}
+          onClose={() => {
+            setShowInlineAuth(null);
+            sessionStorage.removeItem('pendingCart');
+          }}
+          onSuccess={(data) => {
+            setShowInlineAuth(null);
+            // Restore cart from sessionStorage if present
+            const saved = sessionStorage.getItem('pendingCart');
+            if (saved) {
+              try {
+                const parsed = JSON.parse(saved);
+                if (parsed && parsed.length > 0) {
+                  sessionStorage.removeItem('pendingCart');
+                  pendingCheckoutRef.current = true;
+                  setCart(parsed); // triggers cart useEffect -> opens checkout
+                  return;
+                }
+              } catch {}
+            }
+            // No pending cart - open checkout directly (cart already has items)
+            setShowCheckout(true);
+          }}
+        />
+      )}
+
+      {/* ── AUTH GATE MODAL ────────────────────────────────────────────── */}
+      {showAuthGate && (
+        <AuthGateModal
+          onClose={() => setShowAuthGate(false)}
+          onNavigateLogin={() => {
+            setShowAuthGate(false);
+            if (onNavigateLogin) { onNavigateLogin(); }
+            else { setShowInlineAuth('login'); }
+          }}
+          onNavigateSignup={() => {
+            setShowAuthGate(false);
+            if (onNavigateSignup) { onNavigateSignup(); }
+            else { setShowInlineAuth('signup'); }
+          }}
+        />
+      )}
+
+      {/* ── CHECKOUT + PAYMENT MODAL ────────────────────────────────────────────── */}
+      {showCheckout && (
+        <CheckoutModal
+          cart={cart}
+          onClose={() => setShowCheckout(false)}
+          onOrderSuccess={handleOrderSuccess}
+          onNavigateOrders={onNavigateOrders}
+        />
       )}
 
       <style jsx>{`
