@@ -9,6 +9,7 @@ import shutil
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
+import httpx
 from fastapi import APIRouter, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -397,4 +398,260 @@ async def predict(data: CropInput):
         alternatives     = [AlternativeCrop(**c) for c in top3[1:]],
         inputs_used      = raw,
         warnings         = warnings
+    )
+
+
+# ══════════════════════════════════════════════════════
+# REGIONAL COMPARISON ENDPOINT
+# Uses 100% FREE, NO-KEY APIs:
+#   1. Open-Meteo Geocoding API  → district name → lat/lon
+#      https://geocoding-api.open-meteo.com/v1/search
+#   2. Open-Meteo Historical Weather API → 15 years of real climate data
+#      https://archive-api.open-meteo.com/v1/archive
+#   3. Curated crop history map → which crops are commercially grown per state
+# Zero API keys needed. Zero cost.
+# ══════════════════════════════════════════════════════
+
+# ── Curated crop history: commercially dominant crops per Indian state ──────
+# Source: ICAR/Directorate of Economics & Statistics annual reports (public)
+STATE_CROP_HISTORY: Dict[str, List[str]] = {
+    "odisha":          ["rice","jute","maize","sugarcane","pigeonpeas","groundnut","mustard"],
+    "maharashtra":     ["cotton","sugarcane","soybean","wheat","rice","grapes","orange","banana","chickpea"],
+    "karnataka":       ["rice","maize","coffee","coconut","sugarcane","cotton","banana","mango","ragi"],
+    "andhra pradesh":  ["rice","sugarcane","cotton","groundnut","maize","banana","chilli","tobacco"],
+    "telangana":       ["rice","cotton","sugarcane","maize","chilli","groundnut","soybean"],
+    "tamil nadu":      ["rice","sugarcane","cotton","coconut","banana","mango","groundnut"],
+    "kerala":          ["rice","coconut","banana","coffee","pepper","cashew","rubber"],
+    "uttar pradesh":   ["wheat","sugarcane","rice","potato","maize","mustard","lentil"],
+    "madhya pradesh":  ["wheat","soybean","cotton","chickpea","lentil","sugarcane","maize"],
+    "rajasthan":       ["wheat","bajra","mustard","chickpea","cotton","guar","mothbeans"],
+    "punjab":          ["wheat","rice","maize","cotton","sugarcane","chickpea"],
+    "haryana":         ["wheat","rice","cotton","sugarcane","mustard","chickpea"],
+    "bihar":           ["rice","wheat","maize","sugarcane","lentil","potato","jute"],
+    "west bengal":     ["rice","jute","potato","wheat","maize","tea","mustard"],
+    "gujarat":         ["cotton","groundnut","wheat","rice","sugarcane","banana","mango"],
+    "assam":           ["rice","tea","jute","sugarcane","mustard","banana"],
+    "jharkhand":       ["rice","maize","wheat","sugarcane","lentil","mustard"],
+    "chhattisgarh":    ["rice","maize","wheat","lentil","soybean","pigeonpeas"],
+    "himachal pradesh":["apple","maize","wheat","potato","rice","ginger","tomato"],
+    "uttarakhand":     ["wheat","rice","maize","sugarcane","potato","lentil"],
+}
+
+# ── Per-crop scientific suitability explanation ──────────────────────────────
+CROP_SUITABILITY: Dict[str, Dict] = {
+    "rice":        {"temp":(20,35), "rain":(150,300), "hum":(70,90), "ph":(5.5,7.0)},
+    "wheat":       {"temp":(10,25), "rain":(30,100),  "hum":(50,70), "ph":(6.0,7.5)},
+    "maize":       {"temp":(18,32), "rain":(50,120),  "hum":(50,80), "ph":(5.8,7.0)},
+    "sugarcane":   {"temp":(20,35), "rain":(100,250), "hum":(70,90), "ph":(6.0,7.5)},
+    "cotton":      {"temp":(20,35), "rain":(60,120),  "hum":(50,80), "ph":(5.8,8.0)},
+    "jute":        {"temp":(24,37), "rain":(150,250), "hum":(70,90), "ph":(6.0,7.5)},
+    "banana":      {"temp":(24,32), "rain":(100,220), "hum":(70,90), "ph":(6.0,7.5)},
+    "mango":       {"temp":(22,32), "rain":(50,150),  "hum":(50,80), "ph":(5.5,7.5)},
+    "coconut":     {"temp":(20,32), "rain":(100,200), "hum":(70,90), "ph":(5.0,8.0)},
+    "coffee":      {"temp":(15,28), "rain":(100,200), "hum":(65,85), "ph":(5.5,6.5)},
+    "chickpea":    {"temp":(15,25), "rain":(30,80),   "hum":(30,60), "ph":(6.0,9.0)},
+    "lentil":      {"temp":(15,25), "rain":(20,70),   "hum":(40,70), "ph":(6.0,8.0)},
+    "pigeonpeas":  {"temp":(18,30), "rain":(60,150),  "hum":(50,80), "ph":(5.0,7.5)},
+    "kidneybeans": {"temp":(18,24), "rain":(30,80),   "hum":(50,75), "ph":(6.0,7.5)},
+    "blackgram":   {"temp":(25,35), "rain":(60,120),  "hum":(60,90), "ph":(6.0,7.5)},
+    "mungbean":    {"temp":(25,35), "rain":(50,100),  "hum":(60,85), "ph":(6.5,7.5)},
+    "mothbeans":   {"temp":(24,38), "rain":(20,60),   "hum":(20,50), "ph":(6.5,8.0)},
+    "grapes":      {"temp":(15,35), "rain":(50,100),  "hum":(30,70), "ph":(5.5,7.0)},
+    "apple":       {"temp":(10,25), "rain":(80,150),  "hum":(50,80), "ph":(5.5,6.5)},
+    "orange":      {"temp":(18,32), "rain":(75,150),  "hum":(50,80), "ph":(6.0,7.5)},
+    "papaya":      {"temp":(22,32), "rain":(80,150),  "hum":(60,85), "ph":(6.0,6.5)},
+    "muskmelon":   {"temp":(24,35), "rain":(30,80),   "hum":(40,75), "ph":(6.0,7.0)},
+    "watermelon":  {"temp":(21,35), "rain":(40,100),  "hum":(50,80), "ph":(6.0,7.0)},
+    "pomegranate": {"temp":(25,35), "rain":(30,80),   "hum":(20,60), "ph":(6.5,7.5)},
+}
+
+def _check_suitability(crop: str, temp: float, rain: float, hum: float) -> List[str]:
+    """Return list of matched suitability reasons based on historical climate vs crop needs."""
+    c   = crop.lower()
+    req = CROP_SUITABILITY.get(c, {})
+    matched = []
+    if req:
+        t_lo, t_hi = req["temp"]
+        r_lo, r_hi = req["rain"]
+        h_lo, h_hi = req["hum"]
+        if t_lo <= temp <= t_hi:
+            matched.append(f"Historical avg temperature ({temp:.1f}°C) is within {crop}'s ideal range ({t_lo}–{t_hi}°C)")
+        else:
+            matched.append(f"Historical avg temperature ({temp:.1f}°C) is {'below' if temp < t_lo else 'above'} {crop}'s ideal range ({t_lo}–{t_hi}°C)")
+        if r_lo <= rain <= r_hi:
+            matched.append(f"Average monthly rainfall ({rain:.0f} mm) suits {crop}'s water requirements")
+        else:
+            matched.append(f"Average monthly rainfall ({rain:.0f} mm) is {'below' if rain < r_lo else 'above'} {crop}'s optimal range ({r_lo}–{r_hi} mm)")
+        if h_lo <= hum <= h_hi:
+            matched.append(f"Average humidity ({hum:.0f}%) is suitable for {crop}")
+        else:
+            matched.append(f"Average humidity ({hum:.0f}%) is {'too low' if hum < h_lo else 'too high'} for ideal {crop} growth")
+    return matched
+
+
+# ── Schemas ───────────────────────────────────────────────────────────────────
+class CompareInput(BaseModel):
+    crop:     str
+    state:    str
+    district: str = ""
+
+class HistoricalClimate(BaseModel):
+    avg_temp_c:    float
+    avg_rain_mm:   float
+    avg_humidity:  float
+    years_fetched: int
+    source:        str
+
+class CompareOutput(BaseModel):
+    crop:              str
+    state:             str
+    district:          str
+    is_commonly_grown: bool
+    historical_crops:  List[str]
+    alternatives:      List[str]
+    climate:           Optional[HistoricalClimate]
+    suitability_notes: List[str]
+    summary:           str
+    lat:               Optional[float]
+    lon:               Optional[float]
+
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+GEOCODING_URL       = "https://geocoding-api.open-meteo.com/v1/search"
+HISTORICAL_WEATHER_URL = "https://archive-api.open-meteo.com/v1/archive"
+
+async def _geocode(district: str, state: str) -> Optional[tuple]:
+    """district + state → (lat, lon) using Open-Meteo free geocoding. No key needed."""
+    query = f"{district}, {state}, India" if district else f"{state}, India"
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            r = await client.get(GEOCODING_URL, params={"name": query, "count": 1, "language": "en", "format": "json"})
+            r.raise_for_status()
+            results = r.json().get("results", [])
+            if results:
+                return results[0]["latitude"], results[0]["longitude"]
+    except Exception as e:
+        log.warning(f"[GEOCODE] Failed for '{query}': {e}")
+    return None
+
+async def _fetch_historical_climate(lat: float, lon: float) -> Optional[HistoricalClimate]:
+    """
+    Fetch 15 years of daily climate data from Open-Meteo Historical Archive API.
+    Computes annual averages for temperature, precipitation, and humidity.
+    API: https://archive-api.open-meteo.com/v1/archive — FREE, no key required.
+    """
+    from datetime import date
+    end_year   = date.today().year - 1           # last full year
+    start_year = end_year - 14                   # 15 years back
+    params = {
+        "latitude":  lat,
+        "longitude": lon,
+        "start_date": f"{start_year}-01-01",
+        "end_date":   f"{end_year}-12-31",
+        "daily":      "temperature_2m_mean,precipitation_sum,relative_humidity_2m_mean",
+        "timezone":   "Asia/Kolkata",
+    }
+    try:
+        async with httpx.AsyncClient(timeout=20.0) as client:
+            r = await client.get(HISTORICAL_WEATHER_URL, params=params)
+            r.raise_for_status()
+            data   = r.json().get("daily", {})
+            temps  = [v for v in (data.get("temperature_2m_mean") or []) if v is not None]
+            rains  = [v for v in (data.get("precipitation_sum")   or []) if v is not None]
+            hums   = [v for v in (data.get("relative_humidity_2m_mean") or []) if v is not None]
+            if not temps:
+                return None
+            # Convert daily precipitation (mm/day) → monthly average (mm/month × 30)
+            avg_rain_monthly = (sum(rains) / len(rains)) * 30 if rains else 0.0
+            return HistoricalClimate(
+                avg_temp_c   = round(sum(temps) / len(temps), 1),
+                avg_rain_mm  = round(avg_rain_monthly, 1),
+                avg_humidity = round(sum(hums) / len(hums), 1) if hums else 0.0,
+                years_fetched= end_year - start_year + 1,
+                source       = "Open-Meteo ERA5 Reanalysis Archive (Free, No Key)"
+            )
+    except Exception as e:
+        log.warning(f"[HISTORICAL] Failed for ({lat},{lon}): {e}")
+    return None
+
+
+# ── Endpoint ──────────────────────────────────────────────────────────────────
+@router.post("/compare", response_model=CompareOutput, summary="Regional Historical Crop Comparison")
+async def compare(data: CompareInput):
+    """
+    Full comparison pipeline — 100% free, zero API keys:
+    1. Geocode district → lat/lon   (Open-Meteo Geocoding API, free)
+    2. Fetch 15-year climate data   (Open-Meteo Historical Archive API, free)
+    3. Check if crop is historically grown in this state (curated crop map)
+    4. Build suitability notes comparing real historical climate vs crop needs
+    5. Return structured comparison with alternatives if crop is not common
+    """
+    crop_lower  = data.crop.lower().replace(" ", "")
+    state_lower = data.state.lower().strip()
+
+    # Step 1 – Geocode
+    coords = await _geocode(data.district, data.state)
+    lat = lon = None
+    if coords:
+        lat, lon = coords
+        log.info(f"[COMPARE] Geocoded '{data.district}, {data.state}' → ({lat}, {lon})")
+    else:
+        log.warning(f"[COMPARE] Could not geocode '{data.district}, {data.state}'")
+
+    # Step 2 – Historical climate
+    climate = None
+    if lat and lon:
+        climate = await _fetch_historical_climate(lat, lon)
+        if climate:
+            log.info(f"[COMPARE] Climate: temp={climate.avg_temp_c}°C rain={climate.avg_rain_mm}mm hum={climate.avg_humidity}%")
+
+    # Step 3 – Crop history lookup
+    historical_crops = STATE_CROP_HISTORY.get(state_lower, [])
+    is_commonly_grown = crop_lower in [c.replace(" ", "") for c in historical_crops]
+    alternatives = [c for c in historical_crops if c.replace(" ", "") != crop_lower][:3]
+
+    # Step 4 – Suitability notes from real climate data
+    suitability_notes: List[str] = []
+    if climate:
+        suitability_notes = _check_suitability(
+            data.crop,
+            temp = climate.avg_temp_c,
+            rain = climate.avg_rain_mm,
+            hum  = climate.avg_humidity,
+        )
+    else:
+        suitability_notes = [
+            "Historical climate data could not be fetched for this location.",
+            "Suitability is assessed from your manually entered conditions only.",
+        ]
+
+    # Step 5 – Build summary sentence
+    if is_commonly_grown:
+        summary = (
+            f"{data.crop.capitalize()} is widely and commercially grown in {data.state}. "
+            f"The ML recommendation aligns with established regional farming practice."
+        )
+    else:
+        alt_str = ", ".join(c.capitalize() for c in alternatives) if alternatives else "local crops"
+        summary = (
+            f"{data.crop.capitalize()} is scientifically suitable based on your soil and climate data, "
+            f"but it is not commonly cultivated at commercial scale in {data.state}. "
+            f"Farmers in this region predominantly grow {alt_str}. "
+            f"Consider growing {data.crop.capitalize()} experimentally while using regional crops for primary income."
+        )
+
+    log.info(f"[COMPARE] crop='{data.crop}' state='{data.state}' commonly_grown={is_commonly_grown}")
+
+    return CompareOutput(
+        crop              = data.crop,
+        state             = data.state,
+        district          = data.district,
+        is_commonly_grown = is_commonly_grown,
+        historical_crops  = historical_crops,
+        alternatives      = alternatives,
+        climate           = climate,
+        suitability_notes = suitability_notes,
+        summary           = summary,
+        lat               = lat,
+        lon               = lon,
     )

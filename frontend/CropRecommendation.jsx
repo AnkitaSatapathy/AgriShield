@@ -307,7 +307,64 @@ function getMarketplaceLink(cropName) {
   return { seedId: id || null };
 }
 
+/* ─────────────────────────────────────────────
+   STATE → DISTRICT MAP
+───────────────────────────────────────────── */
+const STATE_DISTRICT_MAP = {
+  "Odisha":        ["Khordha","Cuttack","Puri","Ganjam","Sambalpur","Balasore","Mayurbhanj","Koraput","Sundargarh","Kalahandi","Bargarh","Dhenkanal","Keonjhar","Bolangir","Rayagada","Nuapada","Nabarangpur","Malkangiri","Kandhamal","Boudh","Nayagarh","Jagatsinghpur","Kendrapara","Jajpur","Angul","Deogarh","Jharsuguda","Sonepur","Gajapati"],
+  "Maharashtra":   ["Pune","Mumbai City","Mumbai Suburban","Nagpur","Nashik","Aurangabad","Solapur","Thane","Kolhapur","Satara","Sangli","Amravati","Latur","Nanded","Osmanabad","Jalna","Parbhani","Hingoli","Buldhana","Akola","Washim","Yavatmal","Wardha","Bhandara","Gondia","Chandrapur","Gadchiroli","Raigad","Ratnagiri","Sindhudurg","Dhule","Nandurbar","Jalgaon","Ahmednagar","Bid"],
+  "Karnataka":     ["Bangalore Urban","Bangalore Rural","Mysore","Mangalore","Hubli-Dharwad","Belgaum","Gulbarga","Bidar","Bijapur","Bagalkot","Raichur","Koppal","Bellary","Haveri","Davanagere","Shimoga","Chikmagalur","Hassan","Kodagu","Mandya","Tumkur","Kolar","Chikkaballapur","Ramnagara","Chamarajanagar","Udupi","Uttara Kannada","Gadag","Yadgir","Chitradurga"],
+  "Andhra Pradesh":["Visakhapatnam","East Godavari","West Godavari","Krishna","Guntur","Prakasam","Nellore","Kurnool","Kadapa","Anantapur","Chittoor","Srikakulam","Vizianagaram"],
+  "Tamil Nadu":    ["Chennai","Coimbatore","Madurai","Tiruchirappalli","Salem","Tirunelveli","Erode","Tiruppur","Vellore","Thoothukudi","Thanjavur","Dindigul","Kancheepuram","Cuddalore","Nagapattinam","Pudukkottai","Ramanathapuram","Sivaganga","Virudhunagar","Nilgiris","Namakkal","Dharmapuri","Krishnagiri","Ariyalur","Perambalur","Tiruvallur","Villupuram","Tiruvannamalai"],
+  "Uttar Pradesh": ["Lucknow","Kanpur","Agra","Varanasi","Prayagraj","Meerut","Ghaziabad","Bareilly","Aligarh","Moradabad","Saharanpur","Gorakhpur","Noida","Firozabad","Jhansi","Muzaffarnagar","Mathura","Budaun","Rampur","Shahjahanpur","Fatehpur","Pratapgarh","Rae Bareli","Sitapur","Lakhimpur Kheri","Hardoi","Unnao","Jaunpur","Ghazipur","Azamgarh","Ballia","Deoria","Kushinagar","Maharajganj","Sant Kabir Nagar","Basti","Siddharth Nagar","Gonda","Balrampur","Shravasti","Bahraich","Faizabad","Sultanpur","Ambedkar Nagar","Amethi"],
+  "Madhya Pradesh":["Bhopal","Indore","Gwalior","Jabalpur","Ujjain","Sagar","Ratlam","Satna","Rewa","Murwara","Singrauli","Dewas","Chhindwara","Guna","Shivpuri","Vidisha","Mandsaur","Betul","Hoshangabad","Damoh","Khandwa","Khargone","Shahdol","Neemuch","Sehore","Barwani","Dhar","Jhabua","Alirajpur","Agar Malwa"],
+  "Rajasthan":     ["Jaipur","Jodhpur","Kota","Bikaner","Ajmer","Udaipur","Bharatpur","Alwar","Bhilwara","Sikar","Pali","Nagaur","Churu","Jhunjhunu","Tonk","Dausa","Sawai Madhopur","Barmer","Jaisalmer","Jalore","Sirohi","Bundi","Baran","Jhalawar","Rajsamand","Dungarpur","Banswara","Chittorgarh","Pratapgarh","Karauli","Dholpur","Ganganagar","Hanumangarh"],
+  "Punjab":        ["Ludhiana","Amritsar","Jalandhar","Patiala","Bathinda","Mohali","Hoshiarpur","Gurdaspur","Firozpur","Moga","Fatehgarh Sahib","Sangrur","Barnala","Mansa","Muktsar","Faridkot","Kapurthala","Rupnagar","Nawanshahr","Tarn Taran","Pathankot"],
+  "Haryana":       ["Gurugram","Faridabad","Hisar","Rohtak","Panipat","Karnal","Sonipat","Ambala","Yamunanagar","Panchkula","Bhiwani","Sirsa","Jhajjar","Jind","Kaithal","Kurukshetra","Mahendragarh","Rewari","Mewat","Palwal","Fatehabad","Charkhi Dadri"],
+  "Bihar":         ["Patna","Gaya","Muzaffarpur","Bhagalpur","Darbhanga","Purnia","Arrah","Bihar Sharif","Motihari","Munger","Chapra","Hajipur","Begusarai","Katihar","Samastipur","Sitamarhi","Madhubani","Saharsa","Supaul","Kishanganj","Araria","Purnia","Banka","Jamui","Lakhisarai","Sheikhpura","Nalanda","Nawada","Jehanabad","Aurangabad (Bihar)","Bhojpur","Buxar","Rohtas","Kaimur"],
+  "West Bengal":   ["Kolkata","Howrah","Hooghly","North 24 Parganas","South 24 Parganas","Midnapore","Bardhaman","Murshidabad","Nadia","Malda","Birbhum","Bankura","Purulia","Jalpaiguri","Darjeeling","Cooch Behar","Dinajpur","Alipurduar","Jhargram","Paschim Medinipur","Purba Medinipur","Paschim Bardhaman","Purba Bardhaman"],
+  "Gujarat":       ["Ahmedabad","Surat","Vadodara","Rajkot","Bhavnagar","Jamnagar","Junagadh","Gandhinagar","Anand","Mehsana","Patan","Banaskantha","Sabarkantha","Mahesana","Kutch","Porbandar","Amreli","Botad","Gir Somnath","Diu","Dwarka","Morbi","Arvalli"],
+  "Assam":         ["Kamrup","Dibrugarh","Jorhat","Nagaon","Lakhimpur","Sibsagar","Darrang","Cachar","Goalpara","Dhubri","Bongaigaon","Golaghat","Sonitpur","Tinsukia","Karimganj"],
+  "Jharkhand":     ["Ranchi","Dhanbad","Jamshedpur","Bokaro","Hazaribagh","Giridih","Deoghar","Dumka","Pakur","Godda","Sahibganj","Jamtara","Koderma","Chatra","Lohardaga","Gumla","Simdega","Khunti","Seraikela Kharsawan","East Singhbhum","West Singhbhum","Latehar","Garhwa","Palamu","West Singhbhum"],
+  "Chhattisgarh":  ["Raipur","Bilaspur","Durg","Rajnandgaon","Raigarh","Jagdalpur","Ambikapur","Kawardha","Kondagaon","Kanker","Dantewada","Sukma","Bijapur (CG)","Narayanpur","Balod","Gariaband","Baloda Bazar","Bemetara","Balrampur","Surajpur","Korba","Janjgir"],
+  "Himachal Pradesh":["Shimla","Mandi","Kangra","Kullu","Solan","Hamirpur","Una","Bilaspur","Chamba","Lahaul & Spiti","Kinnaur","Sirmaur"],
+  "Uttarakhand":   ["Dehradun","Haridwar","Nainital","Udham Singh Nagar","Almora","Pauri Garhwal","Tehri Garhwal","Uttarkashi","Chamoli","Rudraprayag","Pithoragarh","Champawat","Bageshwar"],
+  "Kerala":        ["Thiruvananthapuram","Ernakulam","Kozhikode","Thrissur","Kollam","Palakkad","Malappuram","Kottayam","Alappuzha","Idukki","Pathanamthitta","Wayanad","Kasaragod","Kannur"],
+  "Telangana":     ["Hyderabad","Warangal","Nizamabad","Karimnagar","Khammam","Mahbubnagar","Rangareddy","Medak","Nalgonda","Adilabad","Suryapet","Yadadri Bhongir","Sangareddy","Siddipet","Peddapalli","Jayashankar","Rajanna Sircilla","Kamareddy","Wanaparthy","Gadwal"],
+};
 
+/* Commercially popular crops by state (for regional analysis) */
+const STATE_POPULAR_CROPS = {
+  "Odisha":         ["rice","jute","maize","sugarcane","pigeonpeas","groundnut"],
+  "Maharashtra":    ["cotton","sugarcane","soybean","wheat","rice","grapes","orange","banana"],
+  "Karnataka":      ["rice","ragi","maize","jowar","coffee","coconut","sugarcane","cotton","banana","mango"],
+  "Andhra Pradesh": ["rice","sugarcane","cotton","groundnut","maize","banana","chilli"],
+  "Tamil Nadu":     ["rice","sugarcane","cotton","coconut","banana","mango","groundnut"],
+  "Uttar Pradesh":  ["wheat","sugarcane","rice","potato","maize","mustard"],
+  "Madhya Pradesh": ["wheat","soybean","cotton","chickpea","lentil","sugarcane","maize"],
+  "Rajasthan":      ["wheat","bajra","mustard","gram","cotton","guar"],
+  "Punjab":         ["wheat","rice","maize","cotton","sugarcane"],
+  "Haryana":        ["wheat","rice","cotton","sugarcane","mustard"],
+  "Bihar":          ["rice","wheat","maize","sugarcane","potato"],
+  "West Bengal":    ["rice","jute","potato","wheat","maize","tea"],
+  "Gujarat":        ["cotton","groundnut","wheat","rice","sugarcane","tobacco"],
+  "Assam":          ["rice","tea","jute","sugarcane","mustard"],
+  "Jharkhand":      ["rice","maize","wheat","sugarcane","vegetables"],
+  "Chhattisgarh":   ["rice","maize","wheat","lentil","soybean"],
+  "Himachal Pradesh":["apple","maize","wheat","potato","rice","ginger"],
+  "Uttarakhand":    ["wheat","rice","maize","sugarcane","potato"],
+  "Kerala":         ["rice","coconut","banana","rubber","pepper","coffee","cashew"],
+  "Telangana":      ["rice","cotton","sugarcane","maize","chilli","groundnut","soybean"],
+};
+
+function getRegionalAnalysis(cropName, state) {
+  if (!state || !cropName) return null;
+  const crop = cropName.toLowerCase();
+  const popular = STATE_POPULAR_CROPS[state] || [];
+  const isWidely = popular.includes(crop);
+  const alternatives = popular.filter(c => c !== crop).slice(0, 3);
+  return { isWidely, alternatives, state };
+}
 
 /* Dynamic "why this crop" reasons based on actual input values */
 function buildWhyReasons(cropName, N, P, K, ph, temp, humidity, rainfall) {
@@ -365,6 +422,130 @@ function buildWhyReasons(cropName, N, P, K, ph, temp, humidity, rainfall) {
     reasons.push({ icon:"⚖️", text:`Your NPK ratio (${N}:${P}:${K}) is well-balanced, which the model weighted strongly in this prediction`, tag:"NPK Balance", color:"#fce4ec" });
 
   return reasons.slice(0, 5);
+}
+
+/* ─────────────────────────────────────────────
+   REGIONAL ANALYSIS PANEL
+───────────────────────────────────────────── */
+function RegionalAnalysis({ cropName, state }) {
+  const analysis = getRegionalAnalysis(cropName, state);
+  if (!analysis) return null;
+
+  const { isWidely, alternatives } = analysis;
+  const cropTitle = cropName.charAt(0).toUpperCase() + cropName.slice(1);
+
+  return (
+    <div className="anim-scale-in" style={{ background:"#fff", border:"2px solid #e0e7ff", borderRadius:"18px", padding:"22px", marginTop:"16px", boxShadow:"0 2px 12px rgba(99,102,241,0.07)" }}>
+      {/* Header */}
+      <div style={{ display:"flex", alignItems:"center", gap:"10px", marginBottom:"18px" }}>
+        <div style={{ background:"linear-gradient(135deg,#4f46e5,#7c3aed)", padding:"8px", borderRadius:"10px", boxShadow:"0 3px 10px rgba(79,70,229,0.3)" }}>
+          <BarChart3 style={{ width:"18px", height:"18px", color:"#fff" }} />
+        </div>
+        <div>
+          <h3 className="serif" style={{ margin:0, fontSize:"1.05rem", color:"#1e1b4b", fontWeight:400 }}>
+            Regional Crop Analysis — <em>{state}</em>
+          </h3>
+          <p style={{ margin:0, fontSize:"0.73rem", color:"#6366f1" }}>How {cropTitle} fits your local agricultural context</p>
+        </div>
+      </div>
+
+      {/* Section A: Scientific Suitability */}
+      <div className="anim-slide-in d1" style={{ background:"linear-gradient(135deg,#f0fdf4,#dcfce7)", border:"1px solid #86efac", borderRadius:"14px", padding:"14px 16px", marginBottom:"12px" }}>
+        <p style={{ fontWeight:700, fontSize:"0.78rem", color:"#14532d", display:"flex", alignItems:"center", gap:"6px", margin:"0 0 10px", letterSpacing:"0.04em" }}>
+          🔬 SCIENTIFIC SUITABILITY
+        </p>
+        <p style={{ fontSize:"0.8rem", color:"#166534", margin:"0 0 8px", lineHeight:1.55 }}>
+          This crop is recommended based on your soil and climate data:
+        </p>
+        <div style={{ display:"flex", flexDirection:"column", gap:"6px" }}>
+          {[
+            "Suitable temperature range for vegetative and reproductive stages",
+            "Soil pH within the preferred range for nutrient uptake",
+            "NPK levels consistent with this crop's growth requirements",
+            "Humidity and rainfall match the crop's water demand",
+          ].map((pt, i) => (
+            <div key={i} style={{ display:"flex", alignItems:"center", gap:"8px", fontSize:"0.77rem", color:"#15803d" }}>
+              <CheckCircle style={{ width:"13px", height:"13px", color:"#16a34a", flexShrink:0 }} />{pt}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section B+C: Historical Reality */}
+      {isWidely ? (
+        <div className="anim-slide-in d2" style={{ background:"linear-gradient(135deg,#eff6ff,#dbeafe)", border:"1px solid #93c5fd", borderRadius:"14px", padding:"14px 16px", marginBottom:"12px" }}>
+          <p style={{ fontWeight:700, fontSize:"0.78rem", color:"#1e3a8a", display:"flex", alignItems:"center", gap:"6px", margin:"0 0 8px", letterSpacing:"0.04em" }}>
+            📊 REGIONAL REALITY — STRONG FIT ✅
+          </p>
+          <p style={{ fontSize:"0.8rem", color:"#1d4ed8", margin:0, lineHeight:1.6 }}>
+            {cropTitle} is widely and consistently cultivated in {state}, with well-established farming practices,
+            local market demand, and accessible supply chains. This prediction aligns strongly with regional agricultural patterns.
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="anim-slide-in d2" style={{ background:"linear-gradient(135deg,#fffbeb,#fef3c7)", border:"1px solid #fcd34d", borderRadius:"14px", padding:"14px 16px", marginBottom:"12px" }}>
+            <p style={{ fontWeight:700, fontSize:"0.78rem", color:"#78350f", display:"flex", alignItems:"center", gap:"6px", margin:"0 0 8px", letterSpacing:"0.04em" }}>
+              📊 REGIONAL REALITY — NOT WIDELY GROWN ⚠️
+            </p>
+            <p style={{ fontSize:"0.8rem", color:"#92400e", margin:0, lineHeight:1.6 }}>
+              Although {cropTitle} is scientifically suitable for your soil and climate conditions,
+              it is not widely cultivated in {state} at a commercial scale.
+            </p>
+          </div>
+
+          <div className="anim-slide-in d3" style={{ background:"linear-gradient(135deg,#fdf4ff,#fae8ff)", border:"1px solid #d8b4fe", borderRadius:"14px", padding:"14px 16px", marginBottom:"12px" }}>
+            <p style={{ fontWeight:700, fontSize:"0.78rem", color:"#581c87", display:"flex", alignItems:"center", gap:"6px", margin:"0 0 10px", letterSpacing:"0.04em" }}>
+              📌 WHY IT'S NOT WIDELY GROWN
+            </p>
+            <div style={{ display:"flex", flexDirection:"column", gap:"7px" }}>
+              {[
+                "Lack of large-scale market demand or procurement networks in this region",
+                "Farmers prefer crops with more stable and established profit margins",
+                "Absence of dedicated processing industries or supply chains locally",
+                "Regional agricultural traditions and extension programs favor other crops",
+                "Limited awareness, seed availability, or technical support for this crop",
+              ].map((reason, i) => (
+                <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:"8px", fontSize:"0.77rem", color:"#6b21a8" }}>
+                  <AlertTriangle style={{ width:"13px", height:"13px", color:"#a855f7", flexShrink:0, marginTop:"2px" }} />{reason}
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Section D: Smart Suggestion */}
+      <div className="anim-slide-in d4" style={{ background:"linear-gradient(135deg,#f0fdf4,#f7fee7)", border:"1px solid #86efac", borderRadius:"14px", padding:"14px 16px" }}>
+        <p style={{ fontWeight:700, fontSize:"0.78rem", color:"#14532d", display:"flex", alignItems:"center", gap:"6px", margin:"0 0 10px", letterSpacing:"0.04em" }}>
+          💡 SMART SUGGESTION
+        </p>
+        {isWidely ? (
+          <p style={{ fontSize:"0.8rem", color:"#166534", margin:0, lineHeight:1.6 }}>
+            {cropTitle} is a commercially proven choice in {state}. You can proceed with confidence — local farmers,
+            input suppliers, and markets are well-acquainted with this crop.
+          </p>
+        ) : (
+          <>
+            <p style={{ fontSize:"0.8rem", color:"#166534", margin:"0 0 10px", lineHeight:1.6 }}>
+              You can still consider cultivating {cropTitle} on a <strong>small-scale or experimental basis</strong> —
+              your soil conditions are scientifically favorable. However, for better commercial returns, the following
+              crops are more commonly and successfully grown in {state}:
+            </p>
+            <div style={{ display:"flex", flexDirection:"column", gap:"7px" }}>
+              {alternatives.map((alt, i) => (
+                <div key={alt} style={{ display:"flex", alignItems:"center", gap:"10px", background:"#fff", border:"1px solid #d1fae5", borderRadius:"10px", padding:"8px 12px" }}>
+                  <span style={{ background:"#dcfce7", color:"#16a34a", fontWeight:800, fontSize:"0.7rem", width:"22px", height:"22px", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>{i+1}</span>
+                  <span style={{ fontSize:"0.8rem", fontWeight:600, color:"#14532d", textTransform:"capitalize" }}>{alt}</span>
+                  <ArrowRight style={{ width:"13px", height:"13px", color:"#16a34a", marginLeft:"auto" }} />
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
 
 function getSoilTips(N, P, K, ph) {
@@ -824,10 +1005,24 @@ function WhyThisCrop({ cropName, N, P, K, ph, temperature, humidity, rainfall, c
 function RecommendationForm() {
   const empty = { N:"", P:"", K:"", ph:"", temperature:"", humidity:"", rainfall:"" };
   const [form, setForm] = useState(empty);
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [districts, setDistricts] = useState([]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const resultRef = useRef(null);
+
+  const handleStateChange = (state) => {
+    setSelectedState(state);
+    setSelectedDistrict("");
+    setDistricts(STATE_DISTRICT_MAP[state] || []);
+  };
+
+  const [activeTab, setActiveTab] = useState("recommendation");
+  const [comparison, setComparison]   = useState(null);
+  const [compLoading, setCompLoading] = useState(false);
+  const [compError, setCompError]     = useState("");
 
   const handleShopNow = (cropName) => {
     const { seedId } = getMarketplaceLink(cropName);
@@ -835,15 +1030,31 @@ function RecommendationForm() {
       sessionStorage.setItem('highlightProductId', String(seedId));
     }
     sessionStorage.setItem('highlightCropName', cropName.toLowerCase());
-    // App uses hash-based routing opened in new tab — open marketplace the same way
     window.open(window.location.origin + '/#/marketplace', '_blank');
+  };
+
+  const runComparison = async (crop) => {
+    if (!selectedState) { setCompError("Please select a State first to run comparison."); return; }
+    setCompLoading(true); setCompError(""); setComparison(null);
+    try {
+      const res = await fetch("http://localhost:8000/compare", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ crop, state: selectedState, district: selectedDistrict || "" }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Comparison failed");
+      setComparison(data);
+    } catch (err) {
+      setCompError(err.message || "Could not fetch comparison. Check your backend is running.");
+    } finally { setCompLoading(false); }
   };
 
   const change = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const submit = async (e) => {
     e.preventDefault();
-    setError(""); setResult(null);
+    setError(""); setResult(null); setComparison(null); setActiveTab("recommendation");
     const fields = [["N","Nitrogen"],["P","Phosphorus"],["K","Potassium"],["ph","Soil pH"],["temperature","Temperature"],["humidity","Humidity"],["rainfall","Rainfall"]];
     for (const [k,l] of fields) {
       if (!form[k] || form[k].toString().trim()==="") { setError(`Please fill in: ${l}`); return; }
@@ -867,11 +1078,31 @@ function RecommendationForm() {
     } finally { setLoading(false); }
   };
 
-  const reset = () => { setForm(empty); setResult(null); setError(""); };
+  const reset = () => { setForm(empty); setResult(null); setError(""); setSelectedState(""); setSelectedDistrict(""); setDistricts([]); setComparison(null); setCompError(""); setActiveTab("recommendation"); };
 
   const cropInfo = result ? getCropInfo(result.recommended_crop) : null;
   const soilTips = result ? getSoilTips(+form.N,+form.P,+form.K,+form.ph) : null;
   const confPct  = result ? Math.round(result.confidence*100) : 0;
+
+  // Pre-compute conditional styles outside JSX to avoid Babel parser issues
+  // with commas inside CSS values (e.g. linear-gradient, rgba) in ternary expressions
+  const btnCompareStyle = {
+    width:"100%", padding:"14px 20px", border:"none", borderRadius:"14px",
+    fontWeight:700, fontSize:"0.92rem", display:"flex", alignItems:"center",
+    justifyContent:"center", gap:"9px", fontFamily:"'DM Sans',sans-serif", transition:"all 0.2s",
+    background:  selectedState ? "linear-gradient(135deg,#1a6b3a,#2e9e56)" : "#e5e7eb",
+    color:       selectedState ? "#fff"     : "#9ca3af",
+    cursor:      selectedState ? "pointer"  : "not-allowed",
+    boxShadow:   selectedState ? "0 4px 16px rgba(26,107,58,0.3)" : "none",
+  };
+  const bannerStyle = comparison ? {
+    background:    comparison.is_commonly_grown ? "linear-gradient(135deg,#f0fdf4,#dcfce7)" : "linear-gradient(135deg,#fffbeb,#fef3c7)",
+    border:        comparison.is_commonly_grown ? "2px solid #86efac" : "2px solid #fcd34d",
+    borderRadius:  "16px", padding: "18px 20px",
+  } : {};
+  const bannerTitleColor  = comparison ? (comparison.is_commonly_grown ? "#14532d" : "#78350f")  : "#000";
+  const bannerSubColor    = comparison ? (comparison.is_commonly_grown ? "#16a34a" : "#92400e")  : "#000";
+  const bannerBodyColor   = comparison ? (comparison.is_commonly_grown ? "#166534" : "#92400e")  : "#000";
 
   return (
     <div style={{ background:"#fff", borderRadius:"20px", boxShadow:"0 2px 16px rgba(0,0,0,0.06)", border:"1px solid #eaeaea", overflow:"hidden" }}>
@@ -889,6 +1120,50 @@ function RecommendationForm() {
       </div>
 
       <div style={{ padding:"24px", display:"flex", flexDirection:"column", gap:"24px" }}>
+        {/* Location */}
+        <div>
+          <div style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"#fdf4ff", border:"1px solid #e9d5ff", borderRadius:"8px", padding:"5px 12px", marginBottom:"16px" }}>
+            <Target style={{ width:"13px", height:"13px", color:"#9333ea" }} />
+            <span style={{ fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.08em", color:"#7e22ce", textTransform:"uppercase" }}>Location (for Regional Analysis)</span>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(200px,1fr))", gap:"14px" }}>
+            {/* State dropdown */}
+            <div>
+              <label style={{ display:"block", fontSize:"0.78rem", fontWeight:600, color:"#374151", marginBottom:"6px" }}>State</label>
+              <div style={{ position:"relative" }}>
+                <select
+                  value={selectedState}
+                  onChange={e => handleStateChange(e.target.value)}
+                  style={{ width:"100%", padding:"11px 12px", border:"2px solid #e5e7eb", borderRadius:"12px", fontSize:"0.88rem", color: selectedState ? "#1f2937" : "#9ca3af", background:"#fff", outline:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif", appearance:"none" }}
+                  onFocus={e => { e.target.style.borderColor="#9333ea"; e.target.style.boxShadow="0 0 0 3px rgba(147,51,234,0.15)"; }}
+                  onBlur={e => { e.target.style.borderColor="#e5e7eb"; e.target.style.boxShadow="none"; }}>
+                  <option value="">Select State</option>
+                  {Object.keys(STATE_DISTRICT_MAP).sort().map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+                <ChevronRight style={{ position:"absolute", right:"12px", top:"50%", transform:"translateY(-50%) rotate(90deg)", width:"14px", height:"14px", color:"#9ca3af", pointerEvents:"none" }} />
+              </div>
+            </div>
+            {/* District dropdown */}
+            <div>
+              <label style={{ display:"block", fontSize:"0.78rem", fontWeight:600, color:"#374151", marginBottom:"6px" }}>District</label>
+              <div style={{ position:"relative" }}>
+                <select
+                  value={selectedDistrict}
+                  onChange={e => setSelectedDistrict(e.target.value)}
+                  disabled={!selectedState}
+                  style={{ width:"100%", padding:"11px 12px", border:"2px solid #e5e7eb", borderRadius:"12px", fontSize:"0.88rem", color: selectedDistrict ? "#1f2937" : "#9ca3af", background: selectedState ? "#fff" : "#f9fafb", outline:"none", cursor: selectedState ? "pointer" : "not-allowed", fontFamily:"'DM Sans',sans-serif", appearance:"none", opacity: selectedState ? 1 : 0.6 }}
+                  onFocus={e => { if(selectedState) { e.target.style.borderColor="#9333ea"; e.target.style.boxShadow="0 0 0 3px rgba(147,51,234,0.15)"; }}}
+                  onBlur={e => { e.target.style.borderColor="#e5e7eb"; e.target.style.boxShadow="none"; }}>
+                  <option value="">{selectedState ? "Select District" : "Select State first"}</option>
+                  {districts.map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
+                <ChevronRight style={{ position:"absolute", right:"12px", top:"50%", transform:"translateY(-50%) rotate(90deg)", width:"14px", height:"14px", color:"#9ca3af", pointerEvents:"none" }} />
+              </div>
+            </div>
+          </div>
+          <p style={{ fontSize:"0.72rem", color:"#9ca3af", margin:"6px 0 0 2px" }}>Optional — enables district-level regional crop analysis in results</p>
+        </div>
+
         {/* Soil Nutrients */}
         <div>
           <div style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"#f0fdf4", border:"1px solid #bbf7d0", borderRadius:"8px", padding:"5px 12px", marginBottom:"16px" }}>
@@ -949,102 +1224,261 @@ function RecommendationForm() {
         </div>
       </div>
 
-      {/* ── RESULTS ── */}
+
       {result && (
         <div ref={resultRef} style={{ borderTop:"1px solid #f3f4f6" }}>
-          {/* Hero result card */}
-          <div style={{ margin:"16px 24px 0" }} className="anim-scale-in">
-            <div style={{ background:"linear-gradient(135deg, #f0fdf4, #ecfdf5, #f0fdf4)", border:"2px solid #86efac", borderRadius:"20px", overflow:"hidden", boxShadow:"0 4px 20px rgba(22,163,74,0.12)" }}>
-              {/* Top row */}
-              <div style={{ padding:"20px 22px 16px", display:"flex", alignItems:"flex-start", justifyContent:"space-between", flexWrap:"wrap", gap:"12px" }}>
-                <div>
-                  <p style={{ fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.1em", color:"#16a34a", textTransform:"uppercase", margin:"0 0 8px" }}>✦ Best Recommendation</p>
-                  <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
-                    <span style={{ fontSize:"3rem", lineHeight:1 }}>{cropInfo.icon}</span>
-                    <div>
-                      <h3 className="serif" style={{ margin:"0 0 8px", fontSize:"2rem", color:"#14532d", fontWeight:400, textTransform:"capitalize" }}>{result.recommended_crop}</h3>
-                      <button
-                        onClick={() => handleShopNow(result.recommended_crop)}
-                        style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"linear-gradient(135deg,#1a6b3a,#2e9e56)", color:"#fff", textDecoration:"none", padding:"8px 16px", borderRadius:"10px", fontSize:"0.82rem", fontWeight:700, boxShadow:"0 3px 10px rgba(26,107,58,0.3)", transition:"all 0.2s", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}
-                        onMouseEnter={e => { e.currentTarget.style.transform="translateY(-1px)"; e.currentTarget.style.boxShadow="0 6px 16px rgba(26,107,58,0.4)"; }}
-                        onMouseLeave={e => { e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow="0 3px 10px rgba(26,107,58,0.3)"; }}>
-                        <ExternalLink style={{ width:"13px", height:"13px" }} />
-                        Shop Now — Marketplace
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                {/* Quick stats */}
-                <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
-                  {[["📅",cropInfo.when,"When to Plant"],["💧",cropInfo.water,"Water Need"],["📦",cropInfo.yield,"Est. Yield"],["🌱",cropInfo.season,"Season"]].map(([ic,v,l]) => (
-                    <div key={l} className="hover-lift" style={{ background:"#fff", borderRadius:"12px", padding:"8px 14px", display:"flex", alignItems:"center", gap:"10px", border:"1px solid #d1fae5", boxShadow:"0 1px 4px rgba(0,0,0,0.05)" }}>
-                      <span style={{ fontSize:"1.1rem" }}>{ic}</span>
-                      <div>
-                        <p style={{ fontSize:"0.72rem", fontWeight:700, color:"#1f2937", margin:0 }}>{v}</p>
-                        <p style={{ fontSize:"0.65rem", color:"#9ca3af", margin:0 }}>{l}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Why This Crop */}
-              <div style={{ padding:"0 22px 0" }}>
-                <WhyThisCrop
-                  cropName={result.recommended_crop}
-                  N={+form.N} P={+form.P} K={+form.K} ph={+form.ph}
-                  temperature={+form.temperature} humidity={+form.humidity} rainfall={+form.rainfall}
-                  confidence={result.confidence}
-                />
-              </div>
-
-              {/* Soil & Fertilizer */}
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(220px,1fr))", margin:"16px 22px", gap:"12px" }}>
-                <div style={{ background:"#fff", borderRadius:"14px", padding:"16px", border:"1px solid #d1fae5" }}>
-                  <p style={{ fontWeight:700, color:"#1f2937", fontSize:"0.82rem", display:"flex", alignItems:"center", gap:"6px", margin:"0 0 10px" }}>
-                    <Leaf style={{ width:"14px", height:"14px", color:"#16a34a" }} />Soil Insights
-                  </p>
-                  {soilTips.tips.map((t,i) => (
-                    <div key={i} className="anim-slide-in" style={{ animationDelay:`${i*0.08}s`, display:"flex", alignItems:"flex-start", gap:"8px", marginBottom:"8px" }}>
-                      <CheckCircle style={{ width:"14px", height:"14px", color:"#22c55e", flexShrink:0, marginTop:"2px" }} />
-                      <p style={{ fontSize:"0.78rem", color:"#4b5563", margin:0, lineHeight:1.5 }}>{t}</p>
-                    </div>
-                  ))}
-                </div>
-                <div style={{ background:"#fffbf0", borderRadius:"14px", padding:"16px", border:"1px solid #fed7aa" }}>
-                  <p style={{ fontWeight:700, color:"#1f2937", fontSize:"0.82rem", display:"flex", alignItems:"center", gap:"6px", margin:"0 0 10px" }}>
-                    <FlaskConical style={{ width:"14px", height:"14px", color:"#ea580c" }} />Fertilizer Advice
-                  </p>
-                  <div style={{ display:"inline-flex", alignItems:"center", gap:"5px", background:"#fff7ed", border:"1px solid #fed7aa", borderRadius:"8px", padding:"4px 10px", marginBottom:"8px" }}>
-                    <Gauge style={{ width:"11px", height:"11px", color:"#ea580c" }} />
-                    <span style={{ fontSize:"0.73rem", fontWeight:600, color:"#c2410c" }}>{soilTips.health}</span>
-                  </div>
-                  <p style={{ fontSize:"0.78rem", color:"#6b7280", margin:0, lineHeight:1.55 }}>{soilTips.fertilizer}</p>
-                </div>
-              </div>
-            </div>
+          <div style={{ display:"flex", borderBottom:"2px solid #f3f4f6", margin:"0 24px" }}>
+            {[
+              { id:"recommendation", label:"Recommendation", desc:"ML result & soil analysis" },
+              { id:"comparison",     label:"Comparison",     desc:"Historical regional data"  },
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  flex:1, padding:"14px 16px", border:"none", background:"none",
+                  cursor:"pointer", fontFamily:"'DM Sans',sans-serif",
+                  borderBottom: activeTab === tab.id ? "3px solid #1a6b3a" : "3px solid transparent",
+                  marginBottom:"-2px", transition:"all 0.2s",
+                }}
+              >
+                <p style={{ fontWeight:700, fontSize:"0.85rem", color: activeTab === tab.id ? "#1a6b3a" : "#6b7280", margin:"0 0 2px" }}>
+                  {tab.id === "recommendation" ? "🌱 " : "📊 "}{tab.label}
+                </p>
+                <p style={{ fontSize:"0.68rem", color:"#9ca3af", margin:0 }}>{tab.desc}</p>
+              </button>
+            ))}
           </div>
 
-          {/* Alternatives */}
-          {result.alternatives?.length > 0 && (
-            <div style={{ margin:"16px 24px 24px" }} className="anim-fade-up">
-              <p style={{ fontWeight:700, color:"#374151", fontSize:"0.85rem", display:"flex", alignItems:"center", gap:"6px", margin:"0 0 12px" }}>
-                <BarChart3 style={{ width:"15px", height:"15px", color:"#6b7280" }} />Alternative Crops
-              </p>
-              <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(200px,1fr))", gap:"10px" }}>
-                {result.alternatives.map((alt,i) => {
-                  const ai = getCropInfo(alt.crop);
-                  return (
-                    <div key={alt.crop} className="hover-lift card-shimmer anim-slide-in" style={{ animationDelay:`${i*0.08}s`, display:"flex", alignItems:"center", gap:"12px", background:"#fff", borderRadius:"14px", padding:"12px 14px", border:"1px solid #e5e7eb", boxShadow:"0 1px 4px rgba(0,0,0,0.05)" }}>
-                      <div style={{ width:"44px", height:"44px", background:"linear-gradient(135deg,#f0fdf4,#d1fae5)", borderRadius:"12px", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"1.5rem", flexShrink:0 }}>{ai.icon}</div>
-                      <div style={{ flex:1, minWidth:0 }}>
-                        <p style={{ fontWeight:700, color:"#1f2937", fontSize:"0.85rem", margin:"0 0 4px", textTransform:"capitalize" }}>{alt.crop}</p>
-                        <p style={{ fontSize:"0.72rem", color:"#6b7280", margin:0 }}>{ai.when} · {ai.season}</p>
+          {activeTab === "recommendation" && (
+            <div>
+              <div style={{ margin:"16px 24px 0" }} className="anim-scale-in">
+                <div style={{ background:"linear-gradient(135deg,#f0fdf4,#ecfdf5,#f0fdf4)", border:"2px solid #86efac", borderRadius:"20px", overflow:"hidden", boxShadow:"0 4px 20px rgba(22,163,74,0.12)" }}>
+                  <div style={{ padding:"20px 22px 16px", display:"flex", alignItems:"flex-start", justifyContent:"space-between", flexWrap:"wrap", gap:"12px" }}>
+                    <div>
+                      <p style={{ fontSize:"0.68rem", fontWeight:700, letterSpacing:"0.1em", color:"#16a34a", textTransform:"uppercase", margin:"0 0 8px" }}>Best Recommendation</p>
+                      <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
+                        <span style={{ fontSize:"3rem", lineHeight:1 }}>{cropInfo.icon}</span>
+                        <div>
+                          <h3 className="serif" style={{ margin:"0 0 8px", fontSize:"2rem", color:"#14532d", fontWeight:400, textTransform:"capitalize" }}>{result.recommended_crop}</h3>
+                          <button
+                            onClick={() => handleShopNow(result.recommended_crop)}
+                            style={{ display:"inline-flex", alignItems:"center", gap:"6px", background:"linear-gradient(135deg,#1a6b3a,#2e9e56)", color:"#fff", padding:"8px 16px", borderRadius:"10px", fontSize:"0.82rem", fontWeight:700, transition:"all 0.2s", border:"none", cursor:"pointer", fontFamily:"'DM Sans',sans-serif" }}
+                            onMouseEnter={e => { e.currentTarget.style.transform="translateY(-1px)"; }}
+                            onMouseLeave={e => { e.currentTarget.style.transform="translateY(0)"; }}
+                          >
+                            <ExternalLink style={{ width:"13px", height:"13px" }} />
+                            Shop Now
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  );
-                })}
+                    <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
+                      {[["📅",cropInfo.when,"When to Plant"],["💧",cropInfo.water,"Water Need"],["📦",cropInfo.yield,"Est. Yield"],["🌱",cropInfo.season,"Season"]].map(([ic,v,l]) => (
+                        <div key={l} className="hover-lift" style={{ background:"#fff", borderRadius:"12px", padding:"8px 14px", display:"flex", alignItems:"center", gap:"10px", border:"1px solid #d1fae5", boxShadow:"0 1px 4px rgba(0,0,0,0.05)" }}>
+                          <span style={{ fontSize:"1.1rem" }}>{ic}</span>
+                          <div>
+                            <p style={{ fontSize:"0.72rem", fontWeight:700, color:"#1f2937", margin:0 }}>{v}</p>
+                            <p style={{ fontSize:"0.65rem", color:"#9ca3af", margin:0 }}>{l}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ padding:"0 22px" }}>
+                    <WhyThisCrop
+                      cropName={result.recommended_crop}
+                      N={+form.N} P={+form.P} K={+form.K} ph={+form.ph}
+                      temperature={+form.temperature} humidity={+form.humidity} rainfall={+form.rainfall}
+                      confidence={result.confidence}
+                    />
+                  </div>
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))", margin:"16px 22px", gap:"12px" }}>
+                    <div style={{ background:"#fff", borderRadius:"14px", padding:"16px", border:"1px solid #d1fae5" }}>
+                      <p style={{ fontWeight:700, color:"#1f2937", fontSize:"0.82rem", display:"flex", alignItems:"center", gap:"6px", margin:"0 0 10px" }}>
+                        <Leaf style={{ width:"14px", height:"14px", color:"#16a34a" }} />Soil Insights
+                      </p>
+                      {soilTips.tips.map((t,i) => (
+                        <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:"8px", marginBottom:"8px" }}>
+                          <CheckCircle style={{ width:"14px", height:"14px", color:"#22c55e", flexShrink:0, marginTop:"2px" }} />
+                          <p style={{ fontSize:"0.78rem", color:"#4b5563", margin:0, lineHeight:1.5 }}>{t}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ background:"#fffbf0", borderRadius:"14px", padding:"16px", border:"1px solid #fed7aa" }}>
+                      <p style={{ fontWeight:700, color:"#1f2937", fontSize:"0.82rem", display:"flex", alignItems:"center", gap:"6px", margin:"0 0 10px" }}>
+                        <FlaskConical style={{ width:"14px", height:"14px", color:"#ea580c" }} />Fertilizer Advice
+                      </p>
+                      <div style={{ display:"inline-flex", alignItems:"center", gap:"5px", background:"#fff7ed", border:"1px solid #fed7aa", borderRadius:"8px", padding:"4px 10px", marginBottom:"8px" }}>
+                        <Gauge style={{ width:"11px", height:"11px", color:"#ea580c" }} />
+                        <span style={{ fontSize:"0.73rem", fontWeight:600, color:"#c2410c" }}>{soilTips.health}</span>
+                      </div>
+                      <p style={{ fontSize:"0.78rem", color:"#6b7280", margin:0, lineHeight:1.55 }}>{soilTips.fertilizer}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
+              {result.alternatives && result.alternatives.length > 0 && (
+                <div style={{ margin:"16px 24px 24px" }} className="anim-fade-up">
+                  <p style={{ fontWeight:700, color:"#374151", fontSize:"0.85rem", display:"flex", alignItems:"center", gap:"6px", margin:"0 0 12px" }}>
+                    <BarChart3 style={{ width:"15px", height:"15px", color:"#6b7280" }} />Alternative Crops
+                  </p>
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:"10px" }}>
+                    {result.alternatives.map((alt,i) => {
+                      const ai = getCropInfo(alt.crop);
+                      return (
+                        <div key={alt.crop} style={{ display:"flex", alignItems:"center", gap:"12px", background:"#fff", borderRadius:"14px", padding:"12px 14px", border:"1px solid #e5e7eb" }}>
+                          <div style={{ width:"44px", height:"44px", background:"linear-gradient(135deg,#f0fdf4,#d1fae5)", borderRadius:"12px", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"1.5rem", flexShrink:0 }}>{ai.icon}</div>
+                          <div style={{ flex:1, minWidth:0 }}>
+                            <p style={{ fontWeight:700, color:"#1f2937", fontSize:"0.85rem", margin:"0 0 4px", textTransform:"capitalize" }}>{alt.crop}</p>
+                            <p style={{ fontSize:"0.72rem", color:"#6b7280", margin:0 }}>{ai.when}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === "comparison" && (
+            <div style={{ padding:"20px 24px 28px", display:"flex", flexDirection:"column", gap:"16px" }}>
+              {!comparison && !compLoading && (
+                <div>
+                  {!selectedState && (
+                    <div style={{ background:"#fef9c3", border:"1px solid #fde047", borderRadius:"12px", padding:"12px 16px", display:"flex", gap:"10px", alignItems:"center", marginBottom:"12px" }}>
+                      <AlertTriangle style={{ width:"16px", height:"16px", color:"#ca8a04", flexShrink:0 }} />
+                      <p style={{ fontSize:"0.82rem", color:"#854d0e", margin:0 }}>
+                        Select a State in the form above to enable regional comparison.
+                      </p>
+                    </div>
+                  )}
+                  <button onClick={() => runComparison(result.recommended_crop)} disabled={!selectedState} style={btnCompareStyle}>
+                    <BarChart3 style={{ width:"17px", height:"17px" }} />
+                    <span>{"Run Regional Comparison" + (selectedState ? " for " + selectedState : "")}</span>
+                  </button>
+                </div>
+              )}
+              {compLoading && (
+                <div style={{ background:"#f0fdf4", border:"2px solid #86efac", borderRadius:"16px", padding:"22px", display:"flex", alignItems:"center", gap:"14px" }}>
+                  <div className="dot-loader" style={{ display:"flex", gap:"5px", color:"#16a34a" }}><span/><span/><span/></div>
+                  <div>
+                    <p style={{ fontSize:"0.88rem", color:"#14532d", fontWeight:700, margin:0 }}>Fetching 15 years of climate data...</p>
+                  </div>
+                </div>
+              )}
+              {compError && (
+                <div style={{ background:"#fff1f2", border:"1px solid #fca5a5", borderRadius:"12px", padding:"14px 16px", display:"flex", gap:"10px" }}>
+                  <XCircle style={{ width:"16px", height:"16px", color:"#dc2626", flexShrink:0, marginTop:"2px" }} />
+                  <p style={{ fontSize:"0.82rem", color:"#dc2626", margin:0 }}>{compError}</p>
+                </div>
+              )}
+              {comparison && !compLoading && (
+                <div style={{ display:"flex", flexDirection:"column", gap:"14px" }}>
+                  <div style={bannerStyle}>
+                    <div style={{ display:"flex", alignItems:"center", gap:"10px", marginBottom:"10px" }}>
+                      <span style={{ fontSize:"1.8rem" }}>{comparison.is_commonly_grown ? "✅" : "⚠️"}</span>
+                      <div>
+                        <p style={{ fontWeight:700, fontSize:"0.9rem", color:bannerTitleColor, margin:0, textTransform:"capitalize" }}>
+                          {result.recommended_crop + " — " + (comparison.is_commonly_grown ? "Widely Grown in " + comparison.state : "Not Commonly Grown in " + comparison.state)}
+                        </p>
+                        <p style={{ fontSize:"0.72rem", color:bannerSubColor, margin:"3px 0 0" }}>
+                          {comparison.is_commonly_grown ? "Strong regional fit" : "Scientifically suitable but not dominant commercially"}
+                        </p>
+                      </div>
+                    </div>
+                    <p style={{ fontSize:"0.82rem", color:bannerBodyColor, margin:0, lineHeight:1.65 }}>{comparison.summary}</p>
+                  </div>
+                  {comparison.climate && (
+                    <div style={{ background:"#eff6ff", border:"1px solid #93c5fd", borderRadius:"14px", padding:"16px" }}>
+                      <p style={{ fontWeight:700, fontSize:"0.78rem", color:"#1e3a8a", letterSpacing:"0.05em", margin:"0 0 12px" }}>
+                        {"15-YEAR CLIMATE DATA — " + (comparison.district || comparison.state).toUpperCase()}
+                      </p>
+                      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:"10px" }}>
+                        {[
+                          { icon:"🌡️", label:"Avg Temperature", val:comparison.climate.avg_temp_c + "°C" },
+                          { icon:"🌧️", label:"Avg Monthly Rain", val:comparison.climate.avg_rain_mm + " mm" },
+                          { icon:"💧", label:"Avg Humidity",    val:comparison.climate.avg_humidity + "%" },
+                        ].map(item => (
+                          <div key={item.label} style={{ background:"#fff", border:"1px solid #bfdbfe", borderRadius:"10px", padding:"10px 12px", textAlign:"center" }}>
+                            <div style={{ fontSize:"1.4rem", marginBottom:"4px" }}>{item.icon}</div>
+                            <div style={{ fontWeight:800, fontSize:"1.1rem", color:"#1e40af" }}>{item.val}</div>
+                            <div style={{ fontSize:"0.68rem", color:"#6b7280", marginTop:"2px" }}>{item.label}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {comparison.suitability_notes && comparison.suitability_notes.length > 0 && (
+                    <div style={{ background:"#f5f3ff", border:"1px solid #ddd6fe", borderRadius:"14px", padding:"16px" }}>
+                      <p style={{ fontWeight:700, fontSize:"0.78rem", color:"#4c1d95", margin:"0 0 10px" }}>CLIMATE SUITABILITY vs CROP NEEDS</p>
+                      <div style={{ display:"flex", flexDirection:"column", gap:"7px" }}>
+                        {comparison.suitability_notes.map((note, i) => (
+                          <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:"8px", fontSize:"0.8rem", color:"#5b21b6" }}>
+                            {(note.includes("below") || note.includes("above") || note.includes("low") || note.includes("high"))
+                              ? <AlertTriangle style={{ width:"13px", height:"13px", color:"#f59e0b", flexShrink:0, marginTop:"2px" }} />
+                              : <CheckCircle style={{ width:"13px", height:"13px", color:"#7c3aed", flexShrink:0, marginTop:"2px" }} />
+                            }
+                            <span>{note}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {!comparison.is_commonly_grown && comparison.alternatives && comparison.alternatives.length > 0 && (
+                    <div style={{ background:"#f0fdf4", border:"1px solid #86efac", borderRadius:"14px", padding:"16px" }}>
+                      <p style={{ fontWeight:700, fontSize:"0.78rem", color:"#14532d", margin:"0 0 12px" }}>
+                        {"REGIONAL ALTERNATIVES IN " + comparison.state.toUpperCase()}
+                      </p>
+                      <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
+                        {comparison.alternatives.map((alt, i) => {
+                          const ci = getCropInfo(alt);
+                          return (
+                            <div key={alt} style={{ display:"flex", alignItems:"center", gap:"12px", background:"#fff", border:"1px solid #d1fae5", borderRadius:"10px", padding:"10px 14px" }}>
+                              <span style={{ background:"#dcfce7", color:"#16a34a", fontWeight:800, fontSize:"0.75rem", width:"24px", height:"24px", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>{i + 1}</span>
+                              <span style={{ fontSize:"1.2rem" }}>{ci.icon}</span>
+                              <div style={{ flex:1 }}>
+                                <p style={{ fontWeight:700, color:"#14532d", fontSize:"0.85rem", margin:0, textTransform:"capitalize" }}>{alt}</p>
+                                <p style={{ fontSize:"0.7rem", color:"#6b7280", margin:0 }}>{ci.when}</p>
+                              </div>
+                              <ArrowRight style={{ width:"14px", height:"14px", color:"#16a34a" }} />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  {comparison.historical_crops && comparison.historical_crops.length > 0 && (
+                    <div style={{ background:"#fff", border:"1px solid #e5e7eb", borderRadius:"14px", padding:"16px" }}>
+                      <p style={{ fontWeight:700, fontSize:"0.78rem", color:"#374151", margin:"0 0 10px" }}>
+                        {"ALL CROPS IN " + comparison.state.toUpperCase()}
+                      </p>
+                      <div style={{ display:"flex", flexWrap:"wrap", gap:"8px" }}>
+                        {comparison.historical_crops.map(c => {
+                          const isCurrent = c.toLowerCase().replace(" ","") === result.recommended_crop.toLowerCase().replace(" ","");
+                          return (
+                            <span key={c} style={{
+                              padding:"5px 12px", borderRadius:"99px", fontSize:"0.76rem", fontWeight:600, textTransform:"capitalize",
+                              background: isCurrent ? "#dcfce7" : "#f3f4f6",
+                              color:      isCurrent ? "#14532d" : "#4b5563",
+                              border:     "1px solid " + (isCurrent ? "#86efac" : "#e5e7eb"),
+                            }}>
+                              {isCurrent ? "✓ " : ""}{c}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  <div style={{ background:"#f9fafb", border:"1px solid #e5e7eb", borderRadius:"10px", padding:"10px 14px", display:"flex", alignItems:"center", gap:"8px" }}>
+                    <Globe style={{ width:"13px", height:"13px", color:"#6b7280", flexShrink:0 }} />
+                    <p style={{ fontSize:"0.7rem", color:"#9ca3af", margin:0 }}>
+                      {comparison.lat ? "Coords: " + comparison.lat.toFixed(3) + ", " + comparison.lon.toFixed(3) : ""}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
