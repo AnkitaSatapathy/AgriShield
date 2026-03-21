@@ -141,7 +141,51 @@ const App = () => {
       setScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    // ── Cross-tab auth sync: when marketplace (new tab) logs in,
+    // it writes to localStorage → this event fires in the home tab
+    // so the navbar updates without a page refresh ──────────────────
+    const syncUserFromStorage = () => {
+      const tok  = localStorage.getItem('token');
+      const uid  = localStorage.getItem('user_id');
+      const uTyp = localStorage.getItem('userType') || '';
+      const nm   = localStorage.getItem('user_name') || '';
+      if (tok && uid) {
+        setUser(prev => {
+          // Only update if something actually changed
+          if (prev?.token === tok && prev?.user_id === uid && prev?.name === nm) return prev;
+          return { token: tok, user_id: uid, userType: uTyp, name: nm };
+        });
+      } else {
+        setUser(prev => prev === null ? null : null);
+      }
+    };
+
+    // Cross-tab: fires when another tab changes localStorage
+    const handleStorage = (e) => {
+      if (e.key === 'token' || e.key === 'user_id' || e.key === 'user_name' || e.key === 'userType') {
+        syncUserFromStorage();
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+
+    // Same-tab focus recovery: fires when this tab regains focus
+    // (e.g. user comes back from marketplace tab after logging in there)
+    const handleFocus = () => syncUserFromStorage();
+    window.addEventListener('focus', handleFocus);
+
+    // Visibility change: fires when tab becomes visible again
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') syncUserFromStorage();
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, []);
 
   const scrollToFeatures = () => {
@@ -275,7 +319,13 @@ const App = () => {
             </div>
           </div>
         </nav>
-        <Profile onBack={goToHome} />
+        <Profile
+            onBack={goToHome}
+            onViewOrders={() => {
+              window.location.hash = '#/my-orders';
+              setCurrentPage('my-orders');
+            }}
+          />
       </div>
     );
   }
