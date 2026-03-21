@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
-const MERCHANT_UPI_ID = 'agrishield@upi';
+const MERCHANT_UPI_ID = '8249196843@ybl';
 const MERCHANT_NAME   = 'AgriShield';
 const MERCHANT_CODE   = 'AGRISHIELD001';
 
@@ -141,7 +141,7 @@ const CheckoutModal = ({ cart, onClose, onOrderSuccess, onNavigateOrders }) => {
   const handleQRPay = () => {
     setQrRevealed(true);
     // Wait 10 seconds silently (user scans and pays in real life), then auto-process
-    setTimeout(() => processPayment('QR Code'), 10000);
+    setTimeout(() => processPayment('QR Code'), 15000);
   };
 
   // ── UPI ID Pay clicked ────────────────────────────────────────────────────
