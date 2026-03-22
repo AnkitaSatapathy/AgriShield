@@ -7,59 +7,6 @@ const HERO_CONFIG = {
   backgroundImage: image,
 };
 
-// ─── Back to Home Button ────────────────────────────────────────────────────
-function BackToHomeButton() {
-  const handleBack = () => {
-    // window.close() works because this tab was opened via window.open()
-    window.close();
-    // Fallback: if close is blocked by browser, navigate to home hash
-    setTimeout(() => {
-      window.location.hash = "#/";
-    }, 300);
-  };
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        top: "16px",
-        left: "16px",
-        zIndex: 9999,
-      }}
-    >
-      <button
-        onClick={handleBack}
-        style={{
-          background: "linear-gradient(135deg, #1b7d3f, #27ae60)",
-          color: "white",
-          border: "none",
-          borderRadius: "25px",
-          padding: "10px 20px",
-          fontWeight: "700",
-          cursor: "pointer",
-          boxShadow: "0 4px 12px rgba(27,125,63,0.45)",
-          fontSize: "0.9rem",
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          transition: "all 0.3s ease",
-          letterSpacing: "0.3px",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "translateY(-2px) scale(1.04)";
-          e.currentTarget.style.boxShadow = "0 8px 20px rgba(27,125,63,0.55)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "translateY(0) scale(1)";
-          e.currentTarget.style.boxShadow = "0 4px 12px rgba(27,125,63,0.45)";
-        }}
-      >
-        ← Back to Home
-      </button>
-    </div>
-  );
-}
-
 // ─── Why Chatbot Section ─────────────────────────────────────────────────────
 function WhyChatbotSection({ setIsOpen }) {
   return (
@@ -336,9 +283,6 @@ function FarmingTips() {
 
   return (
     <div className="farming-tips-container">
-      {/* ── Back to Home ─────────────────────────────────────────── */}
-      <BackToHomeButton />
-
       {/* ── Hero Section ─────────────────────────────────────────── */}
       <section
         className="hero-section"
