@@ -373,8 +373,24 @@ const MarketPlace = ({ onNavigateLogin, onNavigateSignup, onNavigateOrders }) =>
   }, [products]);
 
   // State management
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(() => {
+    try {
+      const saved = localStorage.getItem('agrimart_cart');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });  
   const [selectedCategory, setSelectedCategory] = useState('all');
+
+  // Persist cart to localStorage on every change
+  useEffect(() => {
+    try {
+      if (cart.length > 0) {
+        localStorage.setItem('agrimart_cart', JSON.stringify(cart));
+      } else {
+        localStorage.removeItem('agrimart_cart');
+      }
+    } catch {}
+  }, [cart]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showCart, setShowCart] = useState(false);
@@ -518,8 +534,10 @@ const MarketPlace = ({ onNavigateLogin, onNavigateSignup, onNavigateOrders }) =>
     }
   };
 
-  const handleOrderSuccess = () => { setCart([]); };
-
+  const handleOrderSuccess = () => {
+    setCart([]);
+    localStorage.removeItem('agrimart_cart');
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
       {notification && (
