@@ -52,6 +52,7 @@ class UserProfileUpdate(BaseModel):
     phone:    Optional[str] = None
     state:    Optional[str] = None
     district: Optional[str] = None
+    address:  Optional[dict] = None
 
 
 class UserProfileResponse(BaseModel):
@@ -61,6 +62,7 @@ class UserProfileResponse(BaseModel):
     userType: Optional[str] = None
     state:    Optional[str] = None
     district: Optional[str] = None
+    address:  Optional[dict] = None
 
     class Config:
         from_attributes = True
@@ -72,3 +74,4 @@ class UserProfileCreate(BaseModel):
     userType: str            = "buyer"
     state:    Optional[str]  = None
     district: Optional[str]  = None
+    address:  Optional[dict] = None
