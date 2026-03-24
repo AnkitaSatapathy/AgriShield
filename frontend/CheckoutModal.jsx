@@ -54,7 +54,7 @@ const CheckoutModal = ({ cart, onClose, onOrderSuccess, onNavigateOrders }) => {
   const [upiPaying,   setUpiPaying]  = useState(false); // true while waiting 10s after Pay clicked
   const timerRef                     = useRef(null);
 
-  const userId = localStorage.getItem('user_id') || '';
+  const userId = localStorage.getItem('user_id') || 'user_1234';
   const token  = localStorage.getItem('token')   || '';
 
   const subtotal   = cart.reduce((s, i) => s + i.price * i.quantity, 0);
