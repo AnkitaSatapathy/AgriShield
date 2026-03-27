@@ -7,73 +7,104 @@ from datetime import datetime
 # ============================================================================
 
 class ProductBase(BaseModel):
-    name: str = Field(..., description="Product name")
-    category: str = Field(..., description="Product category (e.g., Seeds, Fertilizer, Pesticide)")
-    price: float = Field(..., description="Price of the product per unit")
-    quantity: int = Field(..., description="Available quantity in stock")
-    unit: str = Field(..., description="Unit of measurement (e.g., kg, L, bag)")
-    description: str = Field(..., description="Detailed description of the product")
-    image_url: Optional[str] = Field(None, description="URL of the product image")
-    location: str = Field(..., description="Location of the seller/product")
+    name: str
+    category: str
+    price: float
+    quantity: int
+    unit: str
+    description: str
+    image_url: Optional[str] = None
+    location: str
 
 class ProductCreate(ProductBase):
-    seller_id: str = Field(..., description="ID of the seller creating the product")
+    seller_id: str
 
 class ProductResponse(ProductBase):
-    id: str = Field(..., description="Product ID (MongoDB ObjectId as string)")
-    seller_id: str = Field(..., description="ID of the seller")
-    created_at: datetime = Field(..., description="Creation timestamp")
+    id: str
+    seller_id: str
+    created_at: datetime
+
+    class Config:
+        populate_by_name = True
 
 class ProductUpdate(BaseModel):
-    name: Optional[str] = None
-    category: Optional[str] = None
-    price: Optional[float] = None
-    quantity: Optional[int] = None
-    unit: Optional[str] = None
+    name: Optional[str]        = None
+    category: Optional[str]    = None
+    price: Optional[float]     = None
+    quantity: Optional[int]    = None
+    unit: Optional[str]        = None
     description: Optional[str] = None
-    image_url: Optional[str] = None
-    location: Optional[str] = None
+    image_url: Optional[str]   = None
+    location: Optional[str]    = None
 
 
-class OrderBase(BaseModel):
-    product_id: str = Field(..., description="ID of the ordered product")
-    buyer_id: str = Field(..., description="ID of the buyer")
-    seller_id: str = Field(..., description="ID of the seller")
-    quantity: int = Field(..., description="Quantity ordered")
-    total_amount: float = Field(..., description="Total cost of the order")
-    address: str = Field(..., description="Delivery address")
-    payment_method: str = Field(..., description="Method of payment (e.g., UPI, Card, COD)")
+# ── OrderBase used for CREATE (all required) ──────────────────────────────────
+class OrderCreate(BaseModel):
+    product_id: str
+    buyer_id: str
+    seller_id: str
+    quantity: int
+    total_amount: float
+    address: str
+    payment_method: str
+    # optional extras CheckoutModal sends
+    upi_ref: Optional[str]        = None
+    card_auth_code: Optional[str] = None
+    bank_ref: Optional[str]       = None
+    merchant_upi: Optional[str]   = None
 
-class OrderCreate(OrderBase):
-    pass
 
-class OrderResponse(OrderBase):
-    id: str = Field(..., description="Order ID (MongoDB ObjectId as string)")
-    payment_status: str = Field(..., description="Payment status (e.g., Pending, Completed)")
-    order_status: str = Field(..., description="Order status (e.g., Pending, Accepted, Delivered, Rejected)")
-    created_at: datetime = Field(..., description="Creation timestamp")
+# ── OrderResponse — ALL fields Optional so old/partial DB docs never crash ────
+# Any field the DB stored as None will just come back as None instead of 500.
+class OrderResponse(BaseModel):
+    id: str
+    product_id: Optional[str]      = None   # FIX: was str (required) → crashed on None
+    buyer_id: Optional[str]        = None
+    seller_id: Optional[str]       = None
+    quantity: Optional[int]        = None
+    total_amount: Optional[float]  = None
+    address: Optional[str]         = None   # FIX: was str (required) → crashed on None
+    payment_method: Optional[str]  = None
+    payment_status: Optional[str]  = None
+    order_status: Optional[str]    = None
+    created_at: Optional[datetime] = None
+    # extra fields CheckoutModal / otp flow may write
+    upi_ref: Optional[str]         = None
+    card_auth_code: Optional[str]  = None
+    bank_ref: Optional[str]        = None
+    merchant_upi: Optional[str]    = None
+
+    class Config:
+        populate_by_name = True
+
 
 class OrderStatusUpdate(BaseModel):
-    order_status: str = Field(..., description="New order status (e.g., Accepted, Delivered, Rejected)")
+    order_status: str
 
 
+# ── Cart ──────────────────────────────────────────────────────────────────────
 class CartItemBase(BaseModel):
-    user_id: str = Field(..., description="ID of the user")
-    product_id: str = Field(..., description="ID of the product being added to cart")
-    quantity: int = Field(..., description="Quantity to add")
+    user_id: str
+    product_id: str
+    quantity: int
 
 class CartItemCreate(CartItemBase):
     pass
 
 class CartItemResponse(CartItemBase):
-    id: str = Field(..., description="Cart Item ID (MongoDB ObjectId as string)")
+    id: str
 
+    class Config:
+        populate_by_name = True
+
+
+# ── Payment ───────────────────────────────────────────────────────────────────
 class PaymentInitiateRequest(BaseModel):
-    amount: float = Field(..., description="Amount to be paid")
-    currency: str = Field("INR", description="Currency of payment")
-    method: str = Field(..., description="Payment method (UPI/Card)")
+    amount: float
+    currency: str  = "INR"
+    method: str
 
 class PaymentVerifyRequest(BaseModel):
-    payment_id: str = Field(..., description="Gateway Payment ID")
-    order_id: str = Field(..., description="Order ID to update")
-    status: str = Field(..., description="Verification status (e.g., SUCCESS, FAILURE)")
+    payment_id: Optional[str] = None   # FIX: was required → crashed when not sent
+    order_id: str
+    status: str

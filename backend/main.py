@@ -30,6 +30,8 @@ from schemes_api import router as schemes_router
 # Import NEW weather services
 from weather_service import WeatherService
 from advisory_service import AdvisoryService
+from otp_service import router as otp_router
+
 
 # Import SEASONAL ANALYSIS services
 try:
@@ -89,6 +91,7 @@ if disease_service_available:
 app.include_router(crop_recommendation_router)
 app.include_router(schemes_router)
 app.include_router(chatbot_router)
+app.include_router(otp_router)
 
 try:
     from user_api import router as user_router
