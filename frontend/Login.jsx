@@ -1,6 +1,37 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Phone, Lock, ArrowRight, Leaf, Eye, EyeOff } from 'lucide-react';
 
+// ─── Custom Exception Classes ─────────────────────────────────────────────────
+
+class AppError extends Error {
+  constructor(message, code = 'UNKNOWN_ERROR') {
+    super(message);
+    this.name = 'AppError';
+    this.code = code;
+  }
+}
+
+class NetworkError extends AppError {
+  constructor(message = 'Network error. Is the backend running on port 8000?') {
+    super(message, 'NETWORK_ERROR');
+    this.name = 'NetworkError';
+  }
+}
+
+class AuthError extends AppError {
+  constructor(message = 'Invalid credentials. Please try again.') {
+    super(message, 'AUTH_ERROR');
+    this.name = 'AuthError';
+  }
+}
+
+class ServerError extends AppError {
+  constructor(message = 'Something went wrong on our end. Please try again later.') {
+    super(message, 'SERVER_ERROR');
+    this.name = 'ServerError';
+  }
+}
+
 // ─── Avatar helpers (exported so App.jsx / navbar can reuse) ──────────────────
 
 const AVATAR_GRADIENTS = [
@@ -150,8 +181,13 @@ const Login = ({ onSignupClick, onLoginSuccess, signupToast }) => {
       const data = await res.json();
 
       if (!res.ok) {
-        setErrorMsg(data.detail || 'Invalid credentials. Please try again.');
-        return;
+        if (res.status === 401 || res.status === 403) {
+          throw new AuthError(data.detail || 'Invalid credentials. Please try again.');
+        } else if (res.status >= 500) {
+          throw new ServerError(data.detail || 'Something went wrong on our end. Please try again later.');
+        } else {
+          throw new AppError(data.detail || 'Login failed. Please try again.', 'REQUEST_ERROR');
+        }
       }
 
       localStorage.setItem('token', data.token);
@@ -172,8 +208,12 @@ const Login = ({ onSignupClick, onLoginSuccess, signupToast }) => {
       }
 
       if (onLoginSuccess) onLoginSuccess(data);
-    } catch {
-      setErrorMsg('Network error. Is the backend running on port 8000?');
+    } catch (err) {
+      if (err instanceof AppError) {
+        setErrorMsg(err.message);
+      } else {
+        setErrorMsg(new NetworkError().message);
+      }
     } finally {
       setIsLoading(false);
     }

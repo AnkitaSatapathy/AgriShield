@@ -2,6 +2,37 @@ import React, { useState, useRef, useEffect } from 'react';
 import { User, Phone, Lock, ArrowRight, Leaf, Eye, EyeOff } from 'lucide-react';
 import { UserAvatar } from './Login';
 
+// ─── Custom Exception Classes ─────────────────────────────────────────────────
+
+class AppError extends Error {
+  constructor(message, code = 'UNKNOWN_ERROR') {
+    super(message);
+    this.name = 'AppError';
+    this.code = code;
+  }
+}
+
+class NetworkError extends AppError {
+  constructor(message = 'Network error. Is the backend running on port 8000?') {
+    super(message, 'NETWORK_ERROR');
+    this.name = 'NetworkError';
+  }
+}
+
+class ConflictError extends AppError {
+  constructor(message = 'An account with this phone number already exists.') {
+    super(message, 'CONFLICT_ERROR');
+    this.name = 'ConflictError';
+  }
+}
+
+class ServerError extends AppError {
+  constructor(message = 'Something went wrong on our end. Please try again later.') {
+    super(message, 'SERVER_ERROR');
+    this.name = 'ServerError';
+  }
+}
+
 // ─── Phone formatter ──────────────────────────────────────────────────────────
 
 const formatPhone = (raw) => {
@@ -128,10 +159,20 @@ const Signup = ({ onLoginClick }) => {
       if (response.ok) {
         if (onLoginClick) onLoginClick({ signupSuccess: true, name: formData.fullName });
       } else {
-        setErrorMsg(data.detail || 'Failed to create account. Please try again.');
+        if (response.status === 409 || response.status === 422) {
+          throw new ConflictError(data.detail || 'An account with this phone number already exists.');
+        } else if (response.status >= 500) {
+          throw new ServerError(data.detail || 'Something went wrong on our end. Please try again later.');
+        } else {
+          throw new AppError(data.detail || 'Failed to create account. Please try again.', 'REQUEST_ERROR');
+        }
       }
-    } catch {
-      setErrorMsg('Network error. Is the backend running on port 8000?');
+    } catch (err) {
+      if (err instanceof AppError) {
+        setErrorMsg(err.message);
+      } else {
+        setErrorMsg(new NetworkError().message);
+      }
     } finally {
       setIsLoading(false);
     }

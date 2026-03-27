@@ -1410,22 +1410,7 @@ function RecommendationForm() {
                       </div>
                     </div>
                   )}
-                  {comparison.suitability_notes && comparison.suitability_notes.length > 0 && (
-                    <div style={{ background:"#f5f3ff", border:"1px solid #ddd6fe", borderRadius:"14px", padding:"16px" }}>
-                      <p style={{ fontWeight:700, fontSize:"0.78rem", color:"#4c1d95", margin:"0 0 10px" }}>CLIMATE SUITABILITY vs CROP NEEDS</p>
-                      <div style={{ display:"flex", flexDirection:"column", gap:"7px" }}>
-                        {comparison.suitability_notes.map((note, i) => (
-                          <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:"8px", fontSize:"0.8rem", color:"#5b21b6" }}>
-                            {(note.includes("below") || note.includes("above") || note.includes("low") || note.includes("high"))
-                              ? <AlertTriangle style={{ width:"13px", height:"13px", color:"#f59e0b", flexShrink:0, marginTop:"2px" }} />
-                              : <CheckCircle style={{ width:"13px", height:"13px", color:"#7c3aed", flexShrink:0, marginTop:"2px" }} />
-                            }
-                            <span>{note}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+
                   {!comparison.is_commonly_grown && comparison.alternatives && comparison.alternatives.length > 0 && (
                     <div style={{ background:"#f0fdf4", border:"1px solid #86efac", borderRadius:"14px", padding:"16px" }}>
                       <p style={{ fontWeight:700, fontSize:"0.78rem", color:"#14532d", margin:"0 0 12px" }}>
